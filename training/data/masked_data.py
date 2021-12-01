@@ -1,8 +1,8 @@
 import torch
 from training.model_configs import TransformerType, Transformer
 from pathlib import Path
-
-paths = [str(x) for x in Path('../data/wikipedia/20200501.en').glob('**/*.txt')]
+import training
+import os
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, encodings):
@@ -22,9 +22,15 @@ def get_data(transformer_type: TransformerType):
     transformer = Transformer.get_transformer(transformer_type)
     tokenizer = transformer.tokenizer
 
+    all_input_ids = []
+    all_mask = []
+    all_labels = []
+    mod_path = Path(training.__file__).parent.parent
+    absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
+    paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
     for path in paths:
         with open(path, 'r', encoding='utf-8') as fp:
-            lines = fp.read().split('\n')  #[:x]
+            lines = fp.read().split('\n')[:10]
             batch = tokenizer(lines, add_special_tokens=True, max_length=512, padding='max_length', truncation=True)
 
             labels = torch.tensor(batch["input_ids"])
@@ -42,7 +48,14 @@ def get_data(transformer_type: TransformerType):
                 # mask input_ids
                 input_ids[i, selection] = 4  # MASK token of BOTH tokenizers are currently at index 4
 
-    encodings = {'input_ids': input_ids, 'attention_mask': mask, 'labels': labels}
+            all_input_ids.append(input_ids)
+            all_mask.append(mask)
+            all_labels.append(labels)
+
+    all_input_ids = torch.cat(all_input_ids, dim=0)
+    all_mask = torch.cat(all_mask, dim=0)
+    all_labels = torch.cat(all_labels, dim=0)
+    encodings = {'input_ids': all_input_ids, 'attention_mask': all_mask, 'labels': all_labels}
     dataset = Dataset(encodings)
     return dataset
 

@@ -13,7 +13,7 @@ class TransformerType(Enum):
     ELECTRA = 3
 
 class Transformer:
-    tokenizer = None
+    tokenizer: transformers.PreTrainedTokenizer = None
     config: transformers.PretrainedConfig = None
     model: transformers.PreTrainedModel = None
 
@@ -23,7 +23,9 @@ class Transformer:
             conf: transformers.PretrainedConfig,
             model: transformers.PreTrainedModel,
     ):
+        self.tokenizer = tokenizer
         self.config = conf
+        self.model = model
 
     @staticmethod
     def get_transformer(transformer_type: TransformerType):
