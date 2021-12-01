@@ -1,0 +1,12 @@
+datasets==1.12.1
+#gensim==3.8.3
+#huggingface-hub==0.0.19
+jsonlines==2.0.0
+#more-itertools==8.7.0
+PyYAML==5.3.1
+regex==2020.9.27
+tokenizers==0.8.1rc2
+torch==1.8.1
+tqdm==4.62.3
+#transformers==3.3.1
+
