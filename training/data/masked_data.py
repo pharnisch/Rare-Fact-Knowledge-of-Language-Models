@@ -30,7 +30,7 @@ def get_data(transformer_type: TransformerType):
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
     for path in paths:
         with open(path, 'r', encoding='utf-8') as fp:
-            lines = fp.read().split('\n')[:10]
+            lines = fp.read().split('\n')  #[:10]
             batch = tokenizer(lines, add_special_tokens=True, max_length=512, padding='max_length', truncation=True)
 
             labels = torch.tensor(batch["input_ids"])

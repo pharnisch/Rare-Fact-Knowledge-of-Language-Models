@@ -9,9 +9,9 @@ class TransformerType(Enum):
     ELECTRA = 3
 
 
-fill = pipeline('fill-mask', model='../train_prototype_1/bert_test_model', tokenizer=BertTokenizer.from_pretrained('../train_prototype_1/bert_test_tokenizer', max_len=512))
-tokenizer = BertTokenizer.from_pretrained('../train_prototype_1/bert_test_tokenizer', max_len=512)
-model = BertForMaskedLM.from_pretrained('../train_prototype_1/bert_test_model')
+fill = pipeline('fill-mask', model='../models/BERT', tokenizer=BertTokenizer.from_pretrained('../models/word_piece_tokenizer', max_len=512))
+#tokenizer = BertTokenizer.from_pretrained('../models/bert_test_tokenizer', max_len=512)
+#model = BertForMaskedLM.from_pretrained('../models/bert_test_model')
 
 #print(fill(f'Hello {fill.tokenizer.mask_token}!'))
 def get_id(tokenizer, string):
@@ -27,8 +27,9 @@ def get_id(tokenizer, string):
 # lama probe daten können verwendet werden: conceptnet, googlere, trex; Squad sieht unbrauchbar aus,
 # da sublabel nicht sinnvoll gefüllt ist
 import jsonlines
-with jsonlines.open('../data_from_lama_probe/Google_RE/date_of_birth_test.jsonl') as f:
-    cnt= 0
+
+with jsonlines.open('question_dialogue/Google_RE/date_of_birth_test.jsonl') as f:
+    cnt = 0
     for line in f.iter():
         sub_label = line["sub_label"]
         obj_label = line["obj_label"]
@@ -39,9 +40,9 @@ with jsonlines.open('../data_from_lama_probe/Google_RE/date_of_birth_test.jsonl'
         #print(obj_label)
         #print(masked_sent)
 
-        print(f"Cloze-Question: {masked_sent}")
+        #print(f"Cloze-Question: {masked_sent}")
         # in this google re data of birth, only the obj is masked
-        print(f"Gold Sentence: {gold_sent}")
+        #print(f"Gold Sentence: {gold_sent}")
 
         #trans_type = TransformerType.BERT
         #if trans_type == TransformerType.BERT:
@@ -52,7 +53,10 @@ with jsonlines.open('../data_from_lama_probe/Google_RE/date_of_birth_test.jsonl'
         score = predicted_sent['score']
         token = predicted_sent["token"]
         token_str = predicted_sent["token_str"]
-        print(f"score {score} for token {token_str} with id {token}")
+        if score >= 0.001:
+            print(f"Cloze-Question: {masked_sent}")
+            print(f"score {score} for token {token_str} with id {token}")
+            print()
         ## BEGIN
         # inputs = tokenizer(masked_sent, return_tensors="pt")
         # original = tokenizer(gold_sent, return_tensors="pt")
