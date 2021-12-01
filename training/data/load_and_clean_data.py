@@ -2,13 +2,15 @@ from datasets import load_dataset
 from tqdm.auto import tqdm
 import re
 from pathlib import Path
+import training
 
 
 dataset_name = "wikipedia"
 dataset_version = "20200501.en"
 dataset = load_dataset(dataset_name, dataset_version)
 
-path = f"./{dataset_name}/{dataset_version}/"
+mod_path = Path(training.__file__).parent.parent
+path = f"{mod_path}/training/data/{dataset_name}/{dataset_version}/"
 Path(path).mkdir(parents=True, exist_ok=True)
 
 text_data = []

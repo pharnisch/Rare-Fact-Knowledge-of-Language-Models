@@ -3,6 +3,10 @@ from training.model_configs import TransformerType, Transformer
 import torch
 from tqdm.auto import tqdm
 from transformers import AdamW
+from pathlib import Path
+import training
+
+mod_path = Path(training.__file__).parent.parent
 
 transformer_type = TransformerType.BERT
 model_name = str(transformer_type)[16:]
@@ -50,4 +54,4 @@ for epoch in range(EPOCHS):
         loop.set_description(f'Epoch {epoch}')
         loop.set_postfix(loss=loss.item())
 
-model.save_pretrained(f"../models/{model_name}")
+model.save_pretrained(f"{mod_path}/models/{model_name}")
