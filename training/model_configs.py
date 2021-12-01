@@ -1,5 +1,11 @@
 from enum import Enum
 import transformers
+import os
+from pathlib import Path
+import training
+
+mod_path = Path(training.__file__).parent.parent
+absolute_path = str(os.path.join(str(mod_path), "models"))
 
 class TransformerType(Enum):
     BERT = 1
@@ -13,7 +19,7 @@ class Transformer:
 
     def __init__(
             self,
-            tokenizer: transformer.Tokenizer,
+            tokenizer: transformers.PreTrainedTokenizer,
             conf: transformers.PretrainedConfig,
             model: transformers.PreTrainedModel,
     ):
@@ -31,7 +37,7 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.BertTokenizer.from_pretrained('../models/word_piece_tokenizer', max_len=512),
+                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", max_len=512),
                 conf=conf,
                 model=transformers.BertForMaskedLM(conf)
             )
@@ -45,7 +51,7 @@ class Transformer:
                 type_vocab_size=1  # this change makes sense (?)
             )
             return Transformer(
-                tokenizer=transformers.ElectraTokenizer.from_pretrained('../models/word_piece_tokenizer', max_len=512),
+                tokenizer=transformers.ElectraTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", max_len=512),
                 conf=conf,
                 model=transformers.ElectraForMaskedLM(conf)
             )
@@ -59,7 +65,7 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.RobertaTokenizer.from_pretrained('../models/byte_level_bpe_tokenizer', max_len=512),
+                tokenizer=transformers.RobertaTokenizer.from_pretrained(f"{absolute_path}/byte_level_bpe_tokenizer", max_len=512),
                 conf=conf,
                 model=transformers.RobertaForMaskedLM(conf)
             )
