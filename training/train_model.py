@@ -4,9 +4,8 @@ import torch
 from tqdm.auto import tqdm
 from transformers import AdamW
 from pathlib import Path
-import training
 
-mod_path = Path(training.__file__).parent.parent
+mod_path = Path(__file__).parent.parent
 
 transformer_type = TransformerType.BERT
 model_name = str(transformer_type)[16:]
