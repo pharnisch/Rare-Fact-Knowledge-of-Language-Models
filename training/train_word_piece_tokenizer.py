@@ -19,5 +19,5 @@ tokenizer.train(files=paths, vocab_size=30_522, min_frequency=2,
                     '[PAD]', '[UNK]', '[CLS]', '[SEP]', '[MASK]'])
 
 name = str(os.path.join(str(mod_path), "models", "word_piece_tokenizer"))
-os.mkdir(name)
+os.makedirs(name)
 tokenizer.save_model(name)

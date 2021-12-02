@@ -12,5 +12,5 @@ tokenizer.train(files=paths, vocab_size=30_522, min_frequency=2,
                 special_tokens=['<s>', '<pad>', '</s>', '<unk>', '<mask>'])
 
 name = str(os.path.join(str(mod_path), "models", "byte_level_bpe_tokenizer"))
-os.mkdir(name)
+os.makedirs(name)
 tokenizer.save_model(name)
