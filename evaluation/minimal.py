@@ -3,6 +3,7 @@ from transformers import BertTokenizer, BertForMaskedLM
 from enum import Enum
 import torch
 from pathlib import Path
+import os
 
 mod_path = Path(__file__).parent.parent
 
@@ -12,7 +13,7 @@ class TransformerType(Enum):
     ELECTRA = 3
 
 
-fill = pipeline('fill-mask', model=f"{mod_path}/models/BERT", tokenizer=BertTokenizer.from_pretrained(f"{mod_path}/models/word_piece_tokenizer", max_len=512))
+fill = pipeline('fill-mask', model=BertForMaskedLM.from_pretrained(os.path.join(f"{mod_path}","models","BERT")), tokenizer=BertTokenizer.from_pretrained(os.path.join(f"{mod_path}","models","word_piece_tokenizer"), max_len=512))
 #tokenizer = BertTokenizer.from_pretrained('../models/bert_test_tokenizer', max_len=512)
 #model = BertForMaskedLM.from_pretrained('../models/bert_test_model')
 
@@ -31,7 +32,7 @@ def get_id(tokenizer, string):
 # da sublabel nicht sinnvoll gefüllt ist
 import jsonlines
 
-with jsonlines.open(f"{mod_path}/evaluation/question_dialogue/Google_RE/date_of_birth_test.jsonl") as f:
+with jsonlines.open(os.path.join(f"{mod_path}","evaluation","question_dialogue","Google_RE","date_of_birth_test.jsonl")) as f:
     cnt = 0
     for line in f.iter():
         sub_label = line["sub_label"]
@@ -51,15 +52,20 @@ with jsonlines.open(f"{mod_path}/evaluation/question_dialogue/Google_RE/date_of_
         #if trans_type == TransformerType.BERT:
 
         # ALTERNATIVE
-        predicted_sents = fill(masked_sent, targets=[obj_label])
-        predicted_sent = predicted_sents[0]
-        score = predicted_sent['score']
-        token = predicted_sent["token"]
-        token_str = predicted_sent["token_str"]
-        if score >= 0.001:
-            print(f"Cloze-Question: {masked_sent}")
-            print(f"score {score} for token {token_str} with id {token}")
-            print()
+        predicted_sents = fill(masked_sent) #fill(masked_sent, targets=[obj_label])
+        print(f"predictions for {obj_label}:")
+        for i in predicted_sents:
+            print(f"{i['token_str']}, {i['score']}")
+        print("______")
+
+        #predicted_sent = predicted_sents[0] #predicted_sents[0]
+        #score = predicted_sent['score']
+        #token = predicted_sent["token"]
+        #token_str = predicted_sent["token_str"]
+        #if score >= 0.001:
+        #    print(f"Cloze-Question: {masked_sent}")
+        #    print(f"score {score} for token {token_str} with id {token}")
+        #    print()
         ## BEGIN
         # inputs = tokenizer(masked_sent, return_tensors="pt")
         # original = tokenizer(gold_sent, return_tensors="pt")
