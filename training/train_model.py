@@ -1,5 +1,5 @@
-from training.data.masked_data import get_data
-from training.model_configs import TransformerType, Transformer
+from data.masked_data import get_data
+from model_configs import TransformerType, Transformer
 import torch
 from tqdm.auto import tqdm
 from transformers import AdamW
@@ -50,7 +50,7 @@ for epoch in range(EPOCHS):
         optim.step()
 
         # print relevant info to progress bar
-        loop.set_description(f"Epoch {epoch}")
+        loop.set_description("Epoch " + str(epoch))
         loop.set_postfix(loss=loss.item())
 
 model.save_pretrained(f"{mod_path}/models/{model_name}")

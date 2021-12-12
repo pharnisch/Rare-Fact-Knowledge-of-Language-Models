@@ -1,6 +1,7 @@
 import torch
-from training.model_configs import TransformerType, Transformer
+from model_configs import TransformerType, Transformer
 from pathlib import Path
+#import training
 import os
 
 class Dataset(torch.utils.data.Dataset):
@@ -24,12 +25,12 @@ def get_data(transformer_type: TransformerType):
     all_input_ids = []
     all_mask = []
     all_labels = []
-    mod_path = Path(__file__).parent.parent
+    mod_path = Path(__file__).parent.parent.parent
     absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
     for path in paths:
         with open(path, 'r', encoding='utf-8') as fp:
-            lines = fp.read().split('\n')  #[:10]
+            lines = fp.read().split('\n')[:10000]
             batch = tokenizer(lines, add_special_tokens=True, max_length=512, padding='max_length', truncation=True)
 
             labels = torch.tensor(batch["input_ids"])
