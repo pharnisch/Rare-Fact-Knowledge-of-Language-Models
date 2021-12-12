@@ -2,9 +2,9 @@ from enum import Enum
 import transformers
 import os
 from pathlib import Path
-import training
+#import training
 
-mod_path = Path(training.__file__).parent.parent
+mod_path = Path(__file__).parent.parent
 absolute_path = str(os.path.join(str(mod_path), "models"))
 
 class TransformerType(Enum):
