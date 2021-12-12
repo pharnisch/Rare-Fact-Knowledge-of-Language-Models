@@ -50,7 +50,7 @@ for epoch in range(EPOCHS):
         optim.step()
 
         # print relevant info to progress bar
-        loop.set_description(f'Epoch {epoch}')
+        loop.set_description(f"Epoch {epoch}")
         loop.set_postfix(loss=loss.item())
 
 model.save_pretrained(f"{mod_path}/models/{model_name}")

@@ -2,6 +2,9 @@ from transformers import pipeline
 from transformers import BertTokenizer, BertForMaskedLM
 from enum import Enum
 import torch
+from pathlib import Path
+
+mod_path = Path(__file__).parent.parent
 
 class TransformerType(Enum):
     BERT = 1
@@ -9,7 +12,7 @@ class TransformerType(Enum):
     ELECTRA = 3
 
 
-fill = pipeline('fill-mask', model='../models/BERT', tokenizer=BertTokenizer.from_pretrained('../models/word_piece_tokenizer', max_len=512))
+fill = pipeline('fill-mask', model=f"{mod_path}/models/BERT", tokenizer=BertTokenizer.from_pretrained(f"{mod_path}/models/word_piece_tokenizer", max_len=512))
 #tokenizer = BertTokenizer.from_pretrained('../models/bert_test_tokenizer', max_len=512)
 #model = BertForMaskedLM.from_pretrained('../models/bert_test_model')
 
@@ -28,7 +31,7 @@ def get_id(tokenizer, string):
 # da sublabel nicht sinnvoll gefüllt ist
 import jsonlines
 
-with jsonlines.open('question_dialogue/Google_RE/date_of_birth_test.jsonl') as f:
+with jsonlines.open(f"{mod_path}/evaluation/question_dialogue/Google_RE/date_of_birth_test.jsonl") as f:
     cnt = 0
     for line in f.iter():
         sub_label = line["sub_label"]
