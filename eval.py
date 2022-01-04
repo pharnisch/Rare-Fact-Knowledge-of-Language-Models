@@ -5,62 +5,77 @@ from enum import Enum
 import torch
 from pathlib import Path
 import os
-from evaluation.metrics_for_question_dialogue import GoogleREMetricCalculator
+from evaluation.metrics_for_question_dialogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
 
 base_path = Path(__file__).parent
 
 
-
 def evaluate():
+    # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('modelname',  type=str, help='Name of model folder within /models.')
     args = parser.parse_args()
 
-    #print(args.modelname)
-    #print(base_path)
-
-    fill = pipeline(
-        'fill-mask',
-        model=BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.modelname)),  # "BERT"
-        tokenizer=BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"),
-        max_len=512, top_k=100)
-    )
+    # INSTANTIATE MODELS
+    #fill = pipeline(
+    #    'fill-mask',
+    #    model=BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.modelname)),  # "BERT"
+    #    tokenizer=BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"),
+    #    max_len=512, top_k=100)
+    #)
     tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"), max_len=512)
     model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.modelname), return_dict=True)
 
-    # get data (optional MAXAMOUNT)
-    # get metric
-
+    # CALCULATE METRICS
     metrics = []
-    metrics.append(GoogleREMetricCalculator.get_metrics({
+
+    conceptNet = ConceptNetMetricCalculator()
+    metrics.append(conceptNet.get_metrics({
         "base_path": base_path,
         "tokenizer": tokenizer,
         "model": model,
         "k": 10,
         "max_questions": 3,
-        "relation": "date_of_birth"
+        "file": "test"
     }))
-    metrics.append(GoogleREMetricCalculator.get_metrics({
+
+    googleRE = GoogleREMetricCalculator()
+    metrics.append(googleRE.get_metrics({
         "base_path": base_path,
         "tokenizer": tokenizer,
         "model": model,
         "k": 10,
         "max_questions": 3,
-        "relation": "place_of_birth"
+        "file": "date_of_birth"
     }))
-    metrics.append(GoogleREMetricCalculator.get_metrics({
+    metrics.append(googleRE.get_metrics({
         "base_path": base_path,
         "tokenizer": tokenizer,
         "model": model,
         "k": 10,
         "max_questions": 3,
-        "relation": "place_of_death"
+        "file": "place_of_birth"
+    }))
+    metrics.append(googleRE.get_metrics({
+        "base_path": base_path,
+        "tokenizer": tokenizer,
+        "model": model,
+        "k": 10,
+        "max_questions": 3,
+        "file": "place_of_death"
     }))
 
+    trex = TRExMetricCalculator(base_path)
+    metrics.append(trex.get_metrics({
+        "base_path": base_path,
+        "tokenizer": tokenizer,
+        "model": model,
+        "k": 10,
+        "max_questions": 3,
+        "file": "P17"
+    }))
 
-
-    # TODO: make use of info about obj_aliases and sub_aliases (e.g take metrics for highest ranked variant)
-
+    # VISUALIZE AND SAVE RESULTS
     print("metrics:")
     for catalogue_metrics in metrics:
         for metric in catalogue_metrics:
