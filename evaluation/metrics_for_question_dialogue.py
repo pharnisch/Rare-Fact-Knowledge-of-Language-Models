@@ -18,10 +18,8 @@ class MetricCalculator(abc.ABC):
             cnt = 0
             for line in f.iter():
                 sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line)
-                obj_labels = []
+                obj_labels = [obj_alias for obj_alias in obj_aliases]
                 obj_labels.append(obj_label)
-                for obj_alias in obj_aliases:
-                    obj_labels.append(obj_alias)
                 metric = {}
                 metric["sub_label"] = sub_label
                 metric["sub_aliases"] = sub_aliases
@@ -69,10 +67,28 @@ class MetricCalculator(abc.ABC):
     def get_path_to_file(self, base_path, file):
         pass
 
+    @abc.abstractmethod
+    def get_path_to_frequencies(self, base_path, file):
+        pass
+
+    @abc.abstractmethod
+    def get_all_file_names(self):
+        pass
+
+    @staticmethod
+    def get_frequency(sub: str, obj: str, relation: str):
+        fact_identifier = sub + "---" + relation + "-->" + obj  # e.g. Khatchig Mouradian---place_of_birth-->Lebanon
+        # get value from PRECALCULATED frequency per fact dict (absolute numbers)
+        return 3
+
+
 
 class GoogleREMetricCalculator(MetricCalculator):
     def get_path_to_file(self, base_path, file):
         return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "Google_RE", f"{file}_test.jsonl")
+
+    def get_path_to_frequencies(self, base_path, file):
+        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "Google_RE", f"{file}_test_frequencies.jsonl")
 
     def parse_line(self, line: str):
         sub_label = line["sub_label"]
@@ -83,10 +99,17 @@ class GoogleREMetricCalculator(MetricCalculator):
         masked_sent = "".join(line["masked_sentences"])  # TODO:DOCUMENTATION, sentences are joined
         return sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent
 
+    def get_all_file_names(self):
+        return ["date_of_birth", "place_of_birth", "place_of_death"]
+
 
 class ConceptNetMetricCalculator(MetricCalculator):
     def get_path_to_file(self, base_path, file):
         return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "ConceptNet", f"{file}.jsonl")
+
+    def get_path_to_frequencies(self, base_path, file):
+        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "ConceptNet",
+                            f"{file}_frequencies.jsonl")
 
     def parse_line(self, line: str):
         sub_label = line["sub_label"] if "sub_label" in line.keys() else line["sub"]
@@ -96,6 +119,9 @@ class ConceptNetMetricCalculator(MetricCalculator):
         relation = line["pred"]
         masked_sent = "".join(line["masked_sentences"])
         return sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent
+
+    def get_all_file_names(self):
+        return ["test"]
 
 
 class TRExMetricCalculator(MetricCalculator):
@@ -113,6 +139,10 @@ class TRExMetricCalculator(MetricCalculator):
         self.relation_key = file
         return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "TREx", f"{file}.jsonl")
 
+    def get_path_to_frequencies(self, base_path, file):
+        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "TREx",
+                            f"{file}_frequencies.jsonl")
+
     def parse_line(self, line: str):
         evidences = line["evidences"]
         sub_label = line["sub_label"]
@@ -123,3 +153,8 @@ class TRExMetricCalculator(MetricCalculator):
         masked_sentences = [evidence["masked_sentence"] for evidence in evidences]
         masked_sent = "".join(masked_sentences)  # TODO:DOCUMENTATION, sentences are joined
         return sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent
+
+    def get_all_file_names(self):
+        return ["P17", "P19", "P20", "P27", "P30", "P31", "P36", "P37", "P39", "P47", "P101", "P103", "P106", "P108", "P127",
+                "P131", "P136", "P138", "P140", "P159", "P176", "P178", "P190", "P264", "P276", "P279", "P361", "P364",
+                "P407", "P413", "P449", "P463", "P495", "P527", "P530", "P740", "P937", "P1001", "P1303", "P1376", "P1412"]
