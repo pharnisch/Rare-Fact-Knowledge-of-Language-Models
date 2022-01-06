@@ -4,6 +4,7 @@ from evaluation.metrics_for_question_dialogue import GoogleREMetricCalculator, C
 import jsonlines
 from misc.helper_functions import printProgressBar
 import json
+from tqdm.auto import tqdm
 
 
 def sentence_contains_fact(sentence: str, sub_labels: [str], obj_labels: [str], relation: str):
@@ -21,22 +22,22 @@ def sentence_contains_fact(sentence: str, sub_labels: [str], obj_labels: [str], 
 def precalculate_frequencies(base_path):
     absolute_path = str(os.path.join(base_path, "training", "data", "wikipedia", "20200501.en"))
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
-    global_save_path = str(os.path.join(base_path, "evaluation", "question_dialogue", "fact_frequencies.jsonl"))
+    #global_save_path = str(os.path.join(base_path, "evaluation", "question_dialogue", "fact_frequencies.jsonl"))
 
     metric_calculators = [
-        #ConceptNetMetricCalculator(),  # TODO: uncomment
+        ConceptNetMetricCalculator(),
         GoogleREMetricCalculator(),
-        #TRExMetricCalculator(base_path)  # TODO: uncomment
+        TRExMetricCalculator(base_path)
     ]
 
     fact_frequencies = {}
-    mq = -1  # TODO: set to -1
-    mf = -1  # TODO: set to -1
+    mq = -1  #
+    mf = -1  #
 
-    l = 0
-    for metricCalculator in metric_calculators:
-        l += len(metricCalculator.get_all_file_names())
-    printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
+    #l = 0
+    #for metricCalculator in metric_calculators:
+    #    l += len(metricCalculator.get_all_file_names())
+    #printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
 
     file_count = 0
     # FOR EVERY FACT
@@ -47,7 +48,8 @@ def precalculate_frequencies(base_path):
                 file_save_path = metricCalculator.get_path_to_frequencies(base_path, file)
                 file_fact_frequencies = {}
                 fact_count = 0
-                for line in f.iter():
+                loop = tqdm(f.iter(), leave=True)
+                for line in loop:
                     fact_count += 1
                     if mq != -1 and fact_count > mq:
                         break
@@ -61,8 +63,8 @@ def precalculate_frequencies(base_path):
                     # CHECK EVERY SENTENCE
                     for path in paths:
                         with open(path, 'r', encoding='utf-8') as fp:
-                            lines = fp.read().split('\n')[:10000]
-                            for line in lines:
+                            #lines = fp.read().split('\n')[:10000]
+                            for line in fp:
                                 sentences = line.split(".")
                                 for sentence in sentences:
                                     if sentence_contains_fact(sentence, sub_labels, obj_labels, relation):
@@ -79,7 +81,7 @@ def precalculate_frequencies(base_path):
                     f.write(json.dumps(file_fact_frequencies) + "\n")
 
             file_count += 1
-            printProgressBar(file_count, l, prefix='Progress:', suffix='Complete', length=50)
+            #printProgressBar(file_count, l, prefix='Progress:', suffix='Complete', length=50)
             if mf != -1 and file_count >= mf:
                 break
 
