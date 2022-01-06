@@ -10,13 +10,15 @@ mod_path = Path(__file__).parent.parent
 transformer_type = TransformerType.BERT
 model_name = str(transformer_type)[16:]
 
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+CUDA = 0
+device = torch.device(f"cuda:{CUDA}") if torch.cuda.is_available() else torch.device('cpu')
 
 # TRAINING PARAMS
 OPTIM = "adamw"
 LR = 1e-4
-EPOCHS = 2
+EPOCHS = 1
 BATCH_SIZE = 16
+NUM_WORKERS = 1
 
 # GET DATA SET
 data = get_data(transformer_type)
@@ -53,4 +55,4 @@ for epoch in range(EPOCHS):
         loop.set_description("Epoch " + str(epoch))
         loop.set_postfix(loss=loss.item())
 
-model.save_pretrained(f"{mod_path}/models/{model_name}")
+model.save_pretrained(f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{EPOCHS}-{CUDA}")
