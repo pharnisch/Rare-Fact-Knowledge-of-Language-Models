@@ -28,6 +28,9 @@ model = transformer.model
 model.train()  # activate training mode
 model.to(device)
 
+# TODO: https://discuss.huggingface.co/t/saving-optimizer/8884/4
+
+
 # DO TRAINING
 if OPTIM == "adamw":
     optim = AdamW(model.parameters(), lr=LR)  # initialize optimizer
@@ -53,4 +56,5 @@ for epoch in range(EPOCHS):
         loop.set_description("Epoch " + str(epoch))
         loop.set_postfix(loss=loss.item())
 
+# SAVE MODEL, OPTIMIZER, SCHEDULER
 model.save_pretrained(f"{mod_path}/models/{model_name}")
