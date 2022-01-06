@@ -10,10 +10,10 @@ def sentence_contains_fact(sentence: str, sub_labels: [str], obj_labels: [str], 
     sub_in_sent = False
     obj_in_sent = False
     for sub_l in sub_labels:
-        if sub_l in sentence:
+        if sub_l.lower() in sentence.lower():
             sub_in_sent = True
     for obj_l in obj_labels:
-        if obj_l in sentence:
+        if obj_l.lower() in sentence.lower():
             obj_in_sent = True
     return sub_in_sent and obj_in_sent
 
@@ -30,8 +30,8 @@ def precalculate_frequencies(base_path):
     ]
 
     fact_frequencies = {}
-    mq = 20  # TODO: set to -1
-    mf = 3  # TODO: set to -1
+    mq = -1  # TODO: set to -1
+    mf = -1  # TODO: set to -1
 
     l = 0
     for metricCalculator in metric_calculators:
