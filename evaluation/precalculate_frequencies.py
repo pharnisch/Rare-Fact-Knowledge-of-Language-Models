@@ -49,7 +49,7 @@ def precalculate_frequencies(base_path):
                 fact_count = 0
                 for line in f.iter():
                     fact_count += 1
-                    if fact_count != -1 and fact_count > mq:
+                    if mq != -1 and fact_count > mq:
                         break
                     sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = metricCalculator.parse_line(line)
                     sub_labels = [sub_alias for sub_alias in sub_aliases]
@@ -80,7 +80,7 @@ def precalculate_frequencies(base_path):
 
             file_count += 1
             printProgressBar(file_count, l, prefix='Progress:', suffix='Complete', length=50)
-            if file_count != -1 and file_count >= mf:
+            if mf != -1 and file_count >= mf:
                 break
 
     #with open(global_save_path, 'w') as f:
