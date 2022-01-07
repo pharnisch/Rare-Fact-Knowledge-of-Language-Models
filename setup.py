@@ -31,11 +31,16 @@ def load_and_clean_setup(remaining_args):
 
 
 def precalculate_frequencies_setup(remaining_args):
-    #parser = argparse.ArgumentParser(description='Setup actions that are required for training or evaluation.')
-    #parser.add_argument('-k', "--k",default=10,action='store',nargs='?',type=int,help='Param for P@k metric (default 10).')
-    #name_space, _ = parser.parse_known_args(remaining_args)
-    #k = name_space.k
-    precalculate_frequencies(base_path)
+    parser = argparse.ArgumentParser(description='Setup actions that are required for training or evaluation.')
+    parser.add_argument('-v', "--verbose",default=False,action='store_true',help='')
+    parser.add_argument('-cn', "--concept-net", default=False, action='store_true', help='')
+    parser.add_argument('-gre', "--google-re", default=False, action='store_true', help='')
+    parser.add_argument('-tr', "--t-rex", default=False, action='store_true', help='')
+    parser.add_argument('-mf', "--max-files",default=-1,action='store',nargs='?',type=int,help='')
+    parser.add_argument('-mq', "--max-questions-per-file", default=-1, action='store', nargs='?', type=int, help='')
+    name_space, _ = parser.parse_known_args(remaining_args)
+    verbose = name_space.verbose
+    precalculate_frequencies(base_path, verbose, name_space.concept_net, name_space.google_re, name_space.t_rex, name_space.max_questions_per_file, name_space.max_files)
 
 
 if __name__ == "__main__":

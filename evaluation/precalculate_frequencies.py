@@ -19,41 +19,31 @@ def sentence_contains_fact(sentence: str, sub_labels: [str], obj_labels: [str], 
     return sub_in_sent and obj_in_sent
 
 
-def precalculate_frequencies(base_path):
+def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False, google_re: bool = False, t_rex: bool = False, max_questions_per_file: int = -1, max_files: int = -1):
     absolute_path = str(os.path.join(base_path, "training", "data", "wikipedia", "20200501.en"))
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
-    #global_save_path = str(os.path.join(base_path, "evaluation", "question_dialogue", "fact_frequencies.jsonl"))
 
-    metric_calculators = [
-        ConceptNetMetricCalculator(),
-        GoogleREMetricCalculator(),
-        TRExMetricCalculator(base_path)
-    ]
-
-    fact_frequencies = {}
-    mq = -1  #
-    mf = -1  #
-
-    #l = 0
-    #for metricCalculator in metric_calculators:
-    #    l += len(metricCalculator.get_all_file_names())
-    #printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
+    metric_calculators = []
+    metric_calculators.append(ConceptNetMetricCalculator()) if concept_net else None
+    metric_calculators.append(GoogleREMetricCalculator()) if google_re else None
+    metric_calculators.append(TRExMetricCalculator(base_path)) if t_rex else None
 
     file_count = 0
     # FOR EVERY FACT
-    for metricCalculator in metric_calculators:
+    for metricCalculator in metric_calculators:  # ~ 3
         file_names = metricCalculator.get_all_file_names()
-        for file in file_names:
+        for file in file_names:  # ~ 1-30
             with jsonlines.open(metricCalculator.get_path_to_file(base_path, file)) as f:
                 file_save_path = metricCalculator.get_path_to_frequencies(base_path, file)
                 file_fact_frequencies = {}
                 fact_count = 0
                 loop = tqdm(f.iter(), leave=True)
-                for line in loop:
+                for line in loop:  # ~ 1000; 1x 30.000
                     fact_count += 1
-                    if mq != -1 and fact_count > mq:
+                    if max_questions_per_file != -1 and fact_count > max_questions_per_file:
                         break
-                    sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = metricCalculator.parse_line(line)
+                    sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = metricCalculator.parse_line(
+                        line)
                     sub_labels = [sub_alias for sub_alias in sub_aliases]
                     sub_labels.append(sub_label)
                     obj_labels = [obj_alias for obj_alias in obj_aliases]
@@ -61,29 +51,24 @@ def precalculate_frequencies(base_path):
                     fact_identifier = sub_label + "---" + relation + "-->" + obj_label  # e.g. Khatchig Mouradian---place_of_birth-->Lebanon
 
                     # CHECK EVERY SENTENCE
-                    for path in paths:
+                    for path in paths:  # ~ 500
                         with open(path, 'r', encoding='utf-8') as fp:
-                            #lines = fp.read().split('\n')[:10000]
-                            for line in fp:
+                            for line in fp:  # ~ 100.000
                                 sentences = line.split(".")
                                 for sentence in sentences:
                                     if sentence_contains_fact(sentence, sub_labels, obj_labels, relation):
-                                        if fact_identifier in fact_frequencies.keys():
-                                            fact_frequencies[fact_identifier] += 1
-                                        else:
-                                            fact_frequencies[fact_identifier] = 1
                                         if fact_identifier in file_fact_frequencies.keys():
                                             file_fact_frequencies[fact_identifier] += 1
                                         else:
                                             file_fact_frequencies[fact_identifier] = 1
+                                        if verbose:
+                                            print(
+                                                f"{fact_identifier}: {file_fact_frequencies[fact_identifier]}")
 
                 with open(file_save_path, 'w') as f:
                     f.write(json.dumps(file_fact_frequencies) + "\n")
 
             file_count += 1
-            #printProgressBar(file_count, l, prefix='Progress:', suffix='Complete', length=50)
-            if mf != -1 and file_count >= mf:
+            if max_files != -1 and file_count >= max_files:
                 break
 
-    #with open(global_save_path, 'w') as f:
-    #    f.write(json.dumps(fact_frequencies) + "\n")
