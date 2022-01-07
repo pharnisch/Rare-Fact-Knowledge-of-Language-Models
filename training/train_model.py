@@ -3,6 +3,7 @@ from model_configs import TransformerType, Transformer
 import torch
 from tqdm.auto import tqdm
 from transformers import AdamW
+import transformers
 from pathlib import Path
 
 mod_path = Path(__file__).parent.parent
@@ -16,7 +17,7 @@ device = torch.device(f"cuda:{CUDA}") if torch.cuda.is_available() else torch.de
 # TRAINING PARAMS
 OPTIM = "adamw"
 LR = 1e-4
-EPOCHS = 1
+EPOCHS = 2
 BATCH_SIZE = 16
 NUM_WORKERS = 1
 
@@ -36,9 +37,22 @@ model.to(device)
 # DO TRAINING
 if OPTIM == "adamw":
     optim = AdamW(model.parameters(), lr=LR)  # initialize optimizer
+    #SCHEDULER = transformers.get_
 else:
     raise Exception("Optimizer not implemented!")
-for epoch in range(EPOCHS):
+
+already_trained_epochs = 0
+if True:
+    already_trained_epochs = 2
+    checkpoint = torch.load(f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{already_trained_epochs-1}-checkpoint.pth")
+    epoch = checkpoint["epoch"]
+    model = checkpoint["model_state_dict"]  # TODO: rename
+    optim = checkpoint["optimizer_state_dict"]
+
+
+for i in range(EPOCHS):
+    epoch = i + already_trained_epochs
+    print(f"now beginning with epoch {epoch}")
     loop = tqdm(loader, leave=True)
     for batch in loop:
         optim.zero_grad()
@@ -58,5 +72,17 @@ for epoch in range(EPOCHS):
         loop.set_description("Epoch " + str(epoch))
         loop.set_postfix(loss=loss.item())
 
-model.save_pretrained(f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{EPOCHS}-{CUDA}")
+    torch.save({
+        "epoch": epoch,
+        "model_state_dict": model,
+        "optimizer_state_dict": optim,
+        "loss": loss
+        # scheduler
+    }, f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{epoch}-checkpoint.pth")
+    print(f"SAVED for epoch {epoch}")
+
+
+#model.save_pretrained(f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{EPOCHS}")
+
 # SAVE MODEL, OPTIMIZER, SCHEDULER
+
