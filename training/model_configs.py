@@ -35,7 +35,7 @@ class Transformer:
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
-                num_hidden_layers=6,
+                num_hidden_layers=12,
                 type_vocab_size=1
             )
             return Transformer(
@@ -49,8 +49,8 @@ class Transformer:
                 max_position_embeddings=512,  # 513?
                 hidden_size=256,
                 num_attention_heads=4,
-                num_hidden_layers=6,  # this change is only because of computational reduction in prototype
-                type_vocab_size=1  # this change makes sense (?)
+                num_hidden_layers=12,
+                type_vocab_size=1  # this change makes sense (?) because we only insert one input (no SEP and more content)
             )
             return Transformer(
                 tokenizer=transformers.ElectraTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", max_len=512),
@@ -63,7 +63,7 @@ class Transformer:
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
-                num_hidden_layers=6,
+                num_hidden_layers=12,
                 type_vocab_size=1
             )
             return Transformer(
