@@ -78,7 +78,7 @@ for i in range(EPOCHS):
         "optimizer_state_dict": optim,
         "loss": loss
         # scheduler
-    }, f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{epoch}-checkpoint.pth")
+    }, f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{epoch}-{round(loss, 6)}-checkpoint.pth")
     print(f"SAVED for epoch {epoch}")
 
 
