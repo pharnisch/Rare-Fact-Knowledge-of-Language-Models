@@ -37,7 +37,7 @@ def precalculate_frequencies_setup(remaining_args):
     parser.add_argument('-gre', "--google-re", default=False, action='store_true', help='')
     parser.add_argument('-tr', "--t-rex", default=False, action='store_true', help='')
     parser.add_argument('-mf', "--max-files",default=-1,action='store',nargs='?',type=int,help='')
-    parser.add_argument('-mq', "--max-questions-per-file", default=-1, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-mq', "--max-questions-per-file", default=100, action='store', nargs='?', type=int, help='')
     name_space, _ = parser.parse_known_args(remaining_args)
     verbose = name_space.verbose
     precalculate_frequencies(base_path, verbose, name_space.concept_net, name_space.google_re, name_space.t_rex, name_space.max_questions_per_file, name_space.max_files)

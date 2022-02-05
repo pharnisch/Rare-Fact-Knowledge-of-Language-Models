@@ -68,27 +68,41 @@ class MetricCalculator(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_path_to_frequencies(self, base_path, file):
-        pass
-
-    @abc.abstractmethod
     def get_all_file_names(self):
         pass
 
+    @abc.abstractmethod
+    def get_path_to_frequencies(self, base_path: str, file: str, start_line: int):
+        pass
+
     @staticmethod
-    def get_frequency(sub: str, obj: str, relation: str):
+    def get_frequency(frequencies: dict, sub: str, obj: str, relation: str):
         fact_identifier = sub + "---" + relation + "-->" + obj  # e.g. Khatchig Mouradian---place_of_birth-->Lebanon
         # get value from PRECALCULATED frequency per fact dict (absolute numbers)
-        return 3
+        return frequencies[fact_identifier]
 
+    def get_frequencies(self, base_path: str, file: str):
+        max_questions_per_file = 100
+        frequencies = {}
+        file_path = self.get_path_to_file(base_path, file)
+        with jsonlines.open(file_path) as f:
+            file_len = sum(1 for line in f.iter())
+            sub_work_amount = int(file_len / max_questions_per_file) + 1
+        for i in range(sub_work_amount):
+            sub_work_frequencies_path = self.get_path_to_frequencies(base_path, file, 0 + i * max_questions_per_file)
+            with jsonlines.open(sub_work_frequencies_path) as sub_work_frequencies_file:
+                sub_work_frequencies_dict = sub_work_frequencies_file.read()
+                frequencies.update(sub_work_frequencies_dict)
+        return frequencies
 
 
 class GoogleREMetricCalculator(MetricCalculator):
     def get_path_to_file(self, base_path, file):
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "Google_RE", f"{file}_test.jsonl")
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "Google_RE", f"{file}_test.jsonl")
 
-    def get_path_to_frequencies(self, base_path, file):
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "Google_RE", f"{file}_test_frequencies.jsonl")
+    def get_path_to_frequencies(self, base_path, file, start_line):
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "GoogleRE",
+                            f"{file}_frequencies_{start_line}.jsonl")
 
     def parse_line(self, line: str):
         sub_label = line["sub_label"]
@@ -105,11 +119,11 @@ class GoogleREMetricCalculator(MetricCalculator):
 
 class ConceptNetMetricCalculator(MetricCalculator):
     def get_path_to_file(self, base_path, file):
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "ConceptNet", f"{file}.jsonl")
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "ConceptNet", f"{file}.jsonl")
 
-    def get_path_to_frequencies(self, base_path, file):
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "ConceptNet",
-                            f"{file}_frequencies.jsonl")
+    def get_path_to_frequencies(self, base_path, file, start_line):
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "ConceptNet",
+                            f"{file}_frequencies_{start_line}.jsonl")
 
     def parse_line(self, line: str):
         sub_label = line["sub_label"] if "sub_label" in line.keys() else line["sub"]
@@ -126,10 +140,11 @@ class ConceptNetMetricCalculator(MetricCalculator):
 
 class TRExMetricCalculator(MetricCalculator):
     relation_key = None  # e.g. P17
-    relation_dict = {}  # e.g. P17 -> country
+    #relation_dict = {}  # e.g. P17 -> country
 
     def __init__(self, base_path):
-        with jsonlines.open(os.path.join(f"{base_path}", "evaluation", "question_dialogue", "relations.jsonl")) as f:
+        self.relation_dict = {}
+        with jsonlines.open(os.path.join(f"{base_path}", "evaluation", "question_catalogue", "relations.jsonl")) as f:
             for line in f.iter():
                 relation = line["relation"]
                 label = line["label"]
@@ -137,11 +152,11 @@ class TRExMetricCalculator(MetricCalculator):
 
     def get_path_to_file(self, base_path, file):
         self.relation_key = file
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "TREx", f"{file}.jsonl")
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "TREx", f"{file}.jsonl")
 
-    def get_path_to_frequencies(self, base_path, file):
-        return os.path.join(f"{base_path}", "evaluation", "question_dialogue", "TREx",
-                            f"{file}_frequencies.jsonl")
+    def get_path_to_frequencies(self, base_path, file, start_line):
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "TREx",
+                            f"{file}_frequencies_{start_line}.jsonl")
 
     def parse_line(self, line: str):
         evidences = line["evidences"]
