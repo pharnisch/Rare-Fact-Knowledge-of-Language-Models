@@ -56,7 +56,7 @@ def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False
             sub_work_amount = int(file_len / max_questions_per_file) + 1
             for i in range(sub_work_amount):
                 work_array.append(
-                    (metric_calculator.get_path_to_file(base_path, file_name), 0 + i * max_questions_per_file,
+                    (file_name, metric_calculator.get_path_to_file(base_path, file_name), 0 + i * max_questions_per_file,
                      f"./evaluation/question_catalogue/{folder}/{file_name}_frequencies_{0 + i * max_questions_per_file}.jsonl",
                      max_questions_per_file, paths,
                      metric_calculator),
@@ -129,7 +129,7 @@ def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False
 
 
 def precalculate_frequencies_partial(args):
-    file_path, start_line, file_save_path, max_questions_per_file, paths, metricCalculator = args
+    file_name, file_path, start_line, file_save_path, max_questions_per_file, paths, metricCalculator = args
     print(f"{file_path}:{start_line}")
     verbose = False
 
@@ -150,7 +150,7 @@ def precalculate_frequencies_partial(args):
             if max_questions_per_file != -1 and fact_count > max_questions_per_file:
                 break
             sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = metricCalculator.parse_line(
-                line)
+                line, file_name)
             sub_labels = [sub_alias for sub_alias in sub_aliases]
             sub_labels.append(sub_label)
             obj_labels = [obj_alias for obj_alias in obj_aliases]

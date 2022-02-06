@@ -60,7 +60,7 @@ class MetricCalculator(abc.ABC):
         return metrics
 
     @abc.abstractmethod
-    def parse_line(self, line: str):
+    def parse_line(self, line: str, file: str):
         pass
 
     @abc.abstractmethod
@@ -104,7 +104,7 @@ class GoogleREMetricCalculator(MetricCalculator):
         return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "GoogleRE",
                             f"{file}_frequencies_{start_line}.jsonl")
 
-    def parse_line(self, line: str):
+    def parse_line(self, line: str, file: str):
         sub_label = line["sub_label"]
         sub_aliases = line["sub_aliases"]
         obj_label = line["obj_label"]
@@ -125,7 +125,7 @@ class ConceptNetMetricCalculator(MetricCalculator):
         return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "ConceptNet",
                             f"{file}_frequencies_{start_line}.jsonl")
 
-    def parse_line(self, line: str):
+    def parse_line(self, line: str, file: str):
         sub_label = line["sub_label"] if "sub_label" in line.keys() else line["sub"]
         sub_aliases = []
         obj_label = line["obj_label"]
@@ -158,13 +158,16 @@ class TRExMetricCalculator(MetricCalculator):
         return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "TREx",
                             f"{file}_frequencies_{start_line}.jsonl")
 
-    def parse_line(self, line: str):
+    def parse_line(self, line: str, file: str):
         evidences = line["evidences"]
         sub_label = line["sub_label"]
         sub_aliases = []
         obj_label = evidences[0]["obj_surface"]
         obj_aliases = []
-        relation = self.relation_dict[self.relation_key]
+        if file == "":
+            relation = self.relation_dict[self.relation_key]
+        else:
+            relation = self.relation_dict[file]
         masked_sentences = [evidence["masked_sentence"] for evidence in evidences]
         masked_sent = "".join(masked_sentences)  # TODO:DOCUMENTATION, sentences are joined
         return sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent
