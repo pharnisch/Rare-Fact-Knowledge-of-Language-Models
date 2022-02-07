@@ -55,13 +55,19 @@ def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False
             file_len = sum(1 for line in f.iter())
             sub_work_amount = int(file_len / max_questions_per_file) + 1
             for i in range(sub_work_amount):
+                file_path = metric_calculator.get_path_to_file(base_path, file_name)
+                file_save_path = f"./evaluation/question_catalogue/{folder}/{file_name}_frequencies_{0 + i * max_questions_per_file}.jsonl"
+                if os.path.exists(file_save_path):
+                    continue
                 work_array.append(
-                    (file_name, metric_calculator.get_path_to_file(base_path, file_name), 0 + i * max_questions_per_file,
-                     f"./evaluation/question_catalogue/{folder}/{file_name}_frequencies_{0 + i * max_questions_per_file}.jsonl",
+                    (file_name, file_path, 0 + i * max_questions_per_file, file_save_path,
                      max_questions_per_file, paths,
                      metric_calculator),
                 )
 
+    if len(work_array) == 0:
+        print(f"All frequency calculations for {folder} are already done!")
+        quit()
     print(
         f"{file_names_count} files with a total of {len(work_array)} subtasks, max questions per file: {max_questions_per_file}.")
 
