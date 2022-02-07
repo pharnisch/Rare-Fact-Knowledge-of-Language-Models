@@ -17,7 +17,7 @@ class MetricCalculator(abc.ABC):
 
             cnt = 0
             for line in f.iter():
-                sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line)
+                sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
                 obj_labels = [obj_alias for obj_alias in obj_aliases]
                 obj_labels.append(obj_label)
                 metric = {}
