@@ -91,7 +91,10 @@ class MetricCalculator(abc.ABC):
     def get_frequency(frequencies: dict, sub: str, obj: str, relation: str):
         fact_identifier = sub + "---" + relation + "-->" + obj  # e.g. Khatchig Mouradian---place_of_birth-->Lebanon
         # get value from PRECALCULATED frequency per fact dict (absolute numbers)
-        return frequencies[fact_identifier]
+        if fact_identifier in frequencies:
+            return frequencies[fact_identifier]
+        else:
+            return 0
 
     def get_frequencies(self, base_path: str, file: str):
         max_questions_per_file = 100
