@@ -35,6 +35,7 @@ class MetricCalculator(abc.ABC):
                 mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
                 mask_word = softmax[0, mask_index, :]
 
+                # take all token predictions (30522 is the vocab_size for all transformers)
                 top_30522 = torch.topk(mask_word, 30522, dim=1)
                 top_30522_values = top_30522[0][0]
                 top_30522_indices = top_30522[1][0]

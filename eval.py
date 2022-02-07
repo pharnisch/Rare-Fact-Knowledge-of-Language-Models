@@ -5,7 +5,7 @@ from enum import Enum
 import torch
 from pathlib import Path
 import os
-from evaluation.metrics_for_question_dialogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
+from evaluation.metrics_for_question_catalogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
 
 base_path = Path(__file__).parent
 
