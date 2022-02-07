@@ -113,7 +113,7 @@ class GoogleREMetricCalculator(MetricCalculator):
         return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "Google_RE", f"{file}_test.jsonl")
 
     def get_path_to_frequencies(self, base_path, file, start_line):
-        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "GoogleRE",
+        return os.path.join(f"{base_path}", "evaluation", "question_catalogue", "Google_RE",
                             f"{file}_frequencies_{start_line}.jsonl")
 
     def parse_line(self, line: str, file: str):
