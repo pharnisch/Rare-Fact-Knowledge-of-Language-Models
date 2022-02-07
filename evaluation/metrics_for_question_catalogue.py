@@ -17,6 +17,15 @@ class MetricCalculator(abc.ABC):
 
             cnt = 0
             for line in f.iter():
+                if cnt % 100 == 0:
+                    frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
+                    if os.path.exists(frequency_dict_path):
+                        with jsonlines.open(frequency_dict_path) as f:
+                            frequency_dict = f.read()
+                    else:
+                        print(f"frequency dict for file {file} and line {cnt} does not exist!")
+                        quit()
+
                 sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
                 obj_labels = [obj_alias for obj_alias in obj_aliases]
                 obj_labels.append(obj_label)
@@ -51,6 +60,8 @@ class MetricCalculator(abc.ABC):
                                 metric["prediction_confidence"] = value.item()
                                 metric["reciprocal_rank"] = 1 / (rank + 1)
                                 metric["rank"] = rank
+
+                metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
 
                 metrics.append(metric)
 
