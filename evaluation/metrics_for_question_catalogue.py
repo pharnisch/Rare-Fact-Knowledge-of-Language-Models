@@ -15,6 +15,8 @@ class MetricCalculator(abc.ABC):
         metrics = []
         with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
 
+            frequency_sum = 0
+            prediction_confidence_sum = 0
             cnt = 0
             for line in f.iter():
                 if cnt % 100 == 0:
@@ -65,11 +67,28 @@ class MetricCalculator(abc.ABC):
 
                 metrics.append(metric)
 
+                prediction_confidence_sum += metric["prediction_confidence"]
+                frequency_sum += metric["frequency"]
                 cnt += 1
                 if cnt == max_questions:
                     return metrics
 
-        return metrics
+        pred_conf_avg = prediction_confidence_sum/cnt
+        freq_avg = frequency_sum/cnt
+        print(f"average prediction confidence: {pred_conf_avg}")
+        print(f"average frequency: {freq_avg}")
+        pred_conf_diff_sum = 0
+        pred_conf_diff_sum_squared = 0
+        freq_diff_sum = 0
+        freq_diff_sum_squared = 0
+        for m in metrics:
+            pred_conf_diff_sum += m["prediction_confidence"] - pred_conf_avg
+            pred_conf_diff_sum_squared += (m["prediction_confidence"] - pred_conf_avg)**2
+            freq_diff_sum += m["frequency"] - freq_avg
+            freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
+        r = (pred_conf_diff_sum * freq_diff_sum)/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
+        print(f"r: {r}")
+        return metrics, prediction_confidence_sum/cnt, frequency_sum/cnt
 
     @abc.abstractmethod
     def parse_line(self, line: str, file: str):
