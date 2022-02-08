@@ -22,7 +22,7 @@ def sentence_contains_fact(sentence: str, sub_labels: [str], obj_labels: [str], 
 
 
 def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False, google_re: bool = False,
-                             t_rex: bool = False, max_questions_per_file: int = 100, max_files: int = -1):
+                             t_rex: bool = False, max_questions_per_file: int = 100, max_files: int = -1, random_order: bool = False):
     absolute_path = str(os.path.join(base_path, "training", "data", "wikipedia", "20200501.en"))
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
 
@@ -68,6 +68,9 @@ def precalculate_frequencies(base_path, verbose=False, concept_net: bool = False
     if len(work_array) == 0:
         print(f"All frequency calculations for {folder} are already done!")
         quit()
+    if random_order:
+        import random
+        random.shuffle(work_array)
     print(
         f"{file_names_count} files with a total of {len(work_array)} subtasks, max questions per file: {max_questions_per_file}.")
 
