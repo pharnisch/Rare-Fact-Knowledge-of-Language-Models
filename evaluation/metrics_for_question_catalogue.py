@@ -73,7 +73,7 @@ class MetricCalculator(abc.ABC):
                 frequency_sum += metric["frequency"]
                 cnt += 1
                 if cnt == max_questions:
-                    return metrics
+                    break
 
         pred_conf_avg = prediction_confidence_sum/cnt
         freq_avg = frequency_sum/cnt
