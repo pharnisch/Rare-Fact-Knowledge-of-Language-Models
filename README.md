@@ -36,8 +36,14 @@ Please see ```python eval.py --help``` for more options.
 
 ## Further Information
 
+### Fact Frequencies
+
 The fact frequencies are required to calculate the metrics with ```python eval.py``` and are already part of the repository.
-They were generated with ```python setup.py calc-freqs --concept-net --google-re --t-rex``` of the general command
+They were generated with the following commands, using a pool of worker threads in the size of the available cores, subpartioning the counting task into 100-fact-pieces of a file:
 ```
-python setup.py calc-freqs [--concept-net] [--google-re] [--t-rex] [--max-files=int] [--max-questions-per-file=int] [--verbose]
+python setup.py calc-freqs --concept-net [--random-order]
+python setup.py calc-freqs --google-re [--random-order]
+python setup.py calc-freqs --t-rex [--random-order]
 ```
+
+For example, ```date_of_birth_frequencies_0.jsonl``` contains the frequencies of the first 100 date_of_birth facts (index 0 to 99).
