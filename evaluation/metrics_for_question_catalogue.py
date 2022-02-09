@@ -39,7 +39,7 @@ class MetricCalculator(abc.ABC):
                 metric["relation"] = relation
                 metric["p_at_k"] = 0
 
-                inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt")
+                inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs)
                 logits = output.logits
                 softmax = torch.nn.functional.softmax(logits, dim=-1)
@@ -61,12 +61,9 @@ class MetricCalculator(abc.ABC):
                             if "prediction_confidence" not in metric.keys() or metric["prediction_confidence"] < value.item():
                                 metric["prediction_confidence"] = value.item()
                                 metric["reciprocal_rank"] = 1 / (rank + 1)
-                                metric["rank"] = rank
+                                metric["rank"] = rank + 1
                 if "prediction_confidence" not in metric.keys():
-                    continue  # skip facts with objects that are not within the vocabulary
-                    metric["prediction_confidence"] = -1
-                    metric["reciprocal_rank"] = -1
-                    metric["rank"] = -1
+                    continue  # skip facts with objects that are not within the vocabulary (TODO: does this make sense?)
 
                 metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
 
