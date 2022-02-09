@@ -62,6 +62,11 @@ class MetricCalculator(abc.ABC):
                                 metric["prediction_confidence"] = value.item()
                                 metric["reciprocal_rank"] = 1 / (rank + 1)
                                 metric["rank"] = rank
+                if "prediction_confidence" not in metric.keys():
+                    continue  # skip facts with objects that are not within the vocabulary
+                    metric["prediction_confidence"] = -1
+                    metric["reciprocal_rank"] = -1
+                    metric["rank"] = -1
 
                 metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
 
@@ -88,7 +93,7 @@ class MetricCalculator(abc.ABC):
             freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
         r = (pred_conf_diff_sum * freq_diff_sum)/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
         print(f"r: {r}")
-        return metrics, prediction_confidence_sum/cnt, frequency_sum/cnt
+        return metrics
 
     @abc.abstractmethod
     def parse_line(self, line: str, file: str):
