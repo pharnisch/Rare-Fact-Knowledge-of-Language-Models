@@ -26,7 +26,7 @@ def setup():
 
 
 def load_and_clean_setup(remaining_args):
-    # TODO: implement
+    # TODO: implement and update README
     pass
 
 
