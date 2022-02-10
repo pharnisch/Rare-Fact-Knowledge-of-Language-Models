@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 base_path = Path(__file__).parent
 from evaluation.precalculate_frequencies import precalculate_frequencies
+from training.data.load_and_clean_data import load_and_clean
 import sys
 
 
@@ -17,6 +18,7 @@ def setup():
     # 1. Download and persist cleaned Wikipedia data
     if action == "load-and-clean":
         print("load and clean ...")
+        load_and_clean()
     # 2. Calculate and persist frequencies of facts
     elif action == "calc-freqs":
         print("calculate frequencies ...")
@@ -26,9 +28,7 @@ def setup():
 
 
 def load_and_clean_setup(remaining_args):
-    # TODO: implement and update README
-    pass
-
+    load_and_clean()
 
 def precalculate_frequencies_setup(remaining_args):
     parser = argparse.ArgumentParser(description='Setup actions that are required for training or evaluation.')
