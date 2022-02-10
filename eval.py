@@ -28,7 +28,7 @@ def evaluate():
                         help='Maximal amount of questions per file (default 3). Set to -1 for no limitation.')
     args = parser.parse_args()
     k = args.k
-    mq = args.max_questions if args.max_questions is not None else -1
+    mq = args.max_questions_per_file if args.max_questions_per_file is not None else -1
 
     # INSTANTIATE MODELS
     #fill = pipeline(
