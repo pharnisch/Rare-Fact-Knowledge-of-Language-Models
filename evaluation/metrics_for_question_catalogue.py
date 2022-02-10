@@ -79,16 +79,14 @@ class MetricCalculator(abc.ABC):
         freq_avg = frequency_sum/cnt
         print(f"average prediction confidence: {pred_conf_avg}")
         print(f"average frequency: {freq_avg}")
-        pred_conf_diff_sum = 0
+        pred_conf_diff_times_freq_diff_sum = 0
         pred_conf_diff_sum_squared = 0
-        freq_diff_sum = 0
         freq_diff_sum_squared = 0
         for m in metrics:
-            pred_conf_diff_sum += m["prediction_confidence"] - pred_conf_avg
+            pred_conf_diff_times_freq_diff_sum += (m["prediction_confidence"] - pred_conf_avg) * (m["frequency"] - freq_avg)
             pred_conf_diff_sum_squared += (m["prediction_confidence"] - pred_conf_avg)**2
-            freq_diff_sum += m["frequency"] - freq_avg
             freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
-        r = (pred_conf_diff_sum * freq_diff_sum)/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
+        r = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
         print(f"r: {r}")
         return metrics
 

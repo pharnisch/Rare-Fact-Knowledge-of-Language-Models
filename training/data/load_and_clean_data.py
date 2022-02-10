@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 import training
 
+
 def load_and_clean():
     dataset_name = "wikipedia"
     dataset_version = "20200501.en"
@@ -17,7 +18,6 @@ def load_and_clean():
     file_count = 0
     for sample in tqdm(dataset['train']):
         sample = sample['text'].replace('\n', ' ')  # "\n" -> " "
-        #sample = sample.replace("  "," ")
 
         words = sample.split(" ")
         new_words = []
@@ -29,8 +29,8 @@ def load_and_clean():
 
         sample = sample.replace("()", " ")  # "()" -> " "
         sample = re.sub("( +)", " ", sample)  # "( )", "(  )", ... -> " "
-        nonBreakSpace = u'\xa0'
-        sample = sample.replace(nonBreakSpace, " ")  # "[NBSP]" -> " "
+        non_break_space = u'\xa0'
+        sample = sample.replace(non_break_space, " ")  # "[NBSP]" -> " "
         sample = re.sub(" +", " ", sample)  # " ", "  ", ... -> " "
 
         text_data.append(sample)

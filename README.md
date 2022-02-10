@@ -14,22 +14,29 @@ pip install -r requirements.txt
 ### Downloading and cleaning the pretraining data (approx. 18 GB)
 
 ```
-python training/data/load_and_clean_data.py
+python setup.py load-and-clean
 ```
 Data files containing each a maximum of texts of 10.000 Wikipedia articles, and are stored under "/training/data/wikipedia/20200501.en/".
 
-### Training
+### (Pre)Training
 
+#### Tokenizer Model
+```
+python setup.py train-tokenizer <tokenizer_name>
+```
+Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) and ```word_piece``` (e.g. for BERT) möglich.
+
+#### Transformer Language Model
 ```
 python train.py BERT
 ```
 Please see ```python train.py --help``` for more options.
 
 
-### Evaluating
+### Evaluation
 
 ```
-python eval.py BERT -k 10
+python eval.py BERT
 ```
 Please see ```python eval.py --help``` for more options.
 

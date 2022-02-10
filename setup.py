@@ -1,11 +1,8 @@
 import argparse
-import torch
 from pathlib import Path
-import os
-base_path = Path(__file__).parent
 from evaluation.precalculate_frequencies import precalculate_frequencies
 from training.data.load_and_clean_data import load_and_clean
-import sys
+base_path = Path(__file__).parent
 
 
 def setup():
@@ -23,12 +20,31 @@ def setup():
     elif action == "calc-freqs":
         print("calculate frequencies ...")
         precalculate_frequencies_setup(remaining_args)
+    # 3. Train tokenizer
+    elif action == "train-tokenizer":
+        print("train tokeniizer ...")
+        train_tokenizer(remaining_args)
     else:
         print(f"No valid action: {action}")
 
 
+def train_tokenizer(remaining_args):
+    parser = argparse.ArgumentParser(description='Setup actions that are required for training or evaluation.')
+    parser.add_argument('tokenizer_name', type=str, help='Name of tokenizer to train (byte_Level_bpe or word_piece).')
+    name_space, _ = parser.parse_known_args(remaining_args)
+    if name_space.tokenizer_name == "byte_level_bpe":
+        from training.train_byte_level_bpe_tokenizer import train
+        train()
+    elif name_space.tokenizer_name == "word_piece":
+        from training.train_word_piece_tokenizer import train
+        train()
+    else:
+        print(f"Can not train tokenizer with name {name_space.tokenizer_name}.")
+
+
 def load_and_clean_setup(remaining_args):
     load_and_clean()
+
 
 def precalculate_frequencies_setup(remaining_args):
     parser = argparse.ArgumentParser(description='Setup actions that are required for training or evaluation.')
