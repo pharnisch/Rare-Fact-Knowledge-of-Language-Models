@@ -20,7 +20,7 @@ def evaluate():
                         nargs='?',
                         type=int,
                         help='Param for P@k metric (default 10).')
-    parser.add_argument('-mq', "--max-questions",
+    parser.add_argument('-mq', "--max-questions-per-file",
                         default=3,
                         action='store',
                         nargs='?',
@@ -90,10 +90,10 @@ def evaluate():
     }))
 
     # VISUALIZE AND SAVE RESULTS
-    print("metrics:")
-    for catalogue_metrics in metrics:
-        for metric in catalogue_metrics:
-            print(metric)
+    #print("metrics:")
+    #for catalogue_metrics in metrics:
+        #for metric in catalogue_metrics:
+            #print(metric)
 
 if __name__ == "__main__":
     evaluate()

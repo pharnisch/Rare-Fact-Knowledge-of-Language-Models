@@ -36,7 +36,7 @@ Please see ```python train.py --help``` for more options.
 ### Evaluation
 
 ```
-python eval.py BERT
+python eval.py BERT --max-questions-per-file=-1
 ```
 Please see ```python eval.py --help``` for more options.
 
