@@ -1,5 +1,5 @@
-from data.masked_data import get_data
-from model_configs import TransformerType, Transformer
+from training.data.masked_data import get_data
+from training.model_configs import TransformerType, Transformer
 import torch
 from tqdm.auto import tqdm
 from pathlib import Path

@@ -1,5 +1,5 @@
 import torch
-from model_configs import TransformerType, Transformer
+from training.model_configs import TransformerType, Transformer
 from pathlib import Path
 #import training
 import os
