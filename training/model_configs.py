@@ -28,14 +28,14 @@ class Transformer:
         self.model = model
 
     @staticmethod
-    def get_transformer(transformer_type: TransformerType):
+    def get_transformer(transformer_type: TransformerType, num_hidden_layers=12):
         if transformer_type == TransformerType.BERT:
             conf = transformers.BertConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
-                num_hidden_layers=12,
+                num_hidden_layers=num_hidden_layers,
                 type_vocab_size=1
             )
             return Transformer(
@@ -49,7 +49,7 @@ class Transformer:
                 max_position_embeddings=512,  # 513?
                 hidden_size=256,
                 num_attention_heads=4,
-                num_hidden_layers=12,
+                num_hidden_layers=num_hidden_layers,
                 type_vocab_size=1  # this change makes sense (?) because we only insert one input (no SEP and more content)
             )
             return Transformer(
@@ -63,7 +63,7 @@ class Transformer:
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
-                num_hidden_layers=12,
+                num_hidden_layers=num_hidden_layers,
                 type_vocab_size=1
             )
             return Transformer(
