@@ -5,7 +5,7 @@ from pathlib import Path
 import os
 from training.model_configs import TransformerType, Transformer
 from training.data.masked_data import get_data
-from training.train_model import train
+from training.train_model import training_procedure
 
 base_path = Path(__file__).parent
 
@@ -48,7 +48,7 @@ def train():
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # SCHEDULER = transformers.get_
     already_trained_epochs = 0
-    train(model, args.model_name, optim, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs)
+    training_procedure(model, args.model_name, optim, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs)
 
 
 if __name__ == "__main__":

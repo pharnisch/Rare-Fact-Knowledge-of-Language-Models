@@ -6,7 +6,7 @@ from pathlib import Path
 mod_path = Path(__file__).parent.parent
 
 
-def train(model, model_name, optimizer, cuda_index, epochs, batch_size, already_trained_epochs):
+def training_procedure(model, model_name, optimizer, cuda_index, epochs, batch_size, already_trained_epochs):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
