@@ -21,7 +21,7 @@ class Dataset(torch.utils.data.Dataset):
 def get_data(transformer_type: TransformerType, training_data_rate: float):
     transformer = Transformer.get_transformer(transformer_type)
     tokenizer = transformer.tokenizer
-    lines = int(10000 * training_data_rate)
+    lines_amount = int(10000 * training_data_rate)
 
     all_input_ids = []
     all_mask = []
@@ -31,7 +31,7 @@ def get_data(transformer_type: TransformerType, training_data_rate: float):
     paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
     for path in paths:
         with open(path, 'r', encoding='utf-8') as fp:
-            lines = fp.read().split('\n')[:lines]
+            lines = fp.read().split('\n')[:lines_amount]
             batch = tokenizer(lines, add_special_tokens=True, max_length=512, padding='max_length', truncation=True)
 
             labels = torch.tensor(batch["input_ids"])
