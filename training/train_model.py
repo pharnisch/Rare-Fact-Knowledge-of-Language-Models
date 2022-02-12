@@ -42,5 +42,5 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "optimizer_state_dict": optimizer,
             "loss": loss
             # scheduler
-        }, f"{mod_path}/models/{model_name}-{batch_size}-{epoch}-{round(loss, 6)}-checkpoint.pth")
+        }, f"{mod_path}/models/{model_name}-{batch_size}-{epoch}-{round(loss.item(), 6)}-checkpoint.pth")
         print(f"SAVED for epoch {epoch}")
