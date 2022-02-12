@@ -28,7 +28,7 @@ Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) 
 
 #### Transformer Language Model
 ```
-python train.py BERT
+python train.py BERT --num-hidden-layers=6 --cuda-index=0
 ```
 Please see ```python train.py --help``` for more options.
 

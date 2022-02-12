@@ -21,6 +21,7 @@ def train():
     parser.add_argument('-ci', "--cuda-index", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-bs', "--batch_size", default=16, action='store', nargs='?', type=int, help='')
     parser.add_argument('-hl', "--num-hidden-layers", default=12, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-tdr', "--training-data-rate", default=1, action='store', nargs='?', type=float, help='')
     args = parser.parse_args()
 
     # TODO: SEED
@@ -49,7 +50,7 @@ def train():
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # SCHEDULER = transformers.get_
     already_trained_epochs = 0
-    training_procedure(model, args.model_name, optim, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs)
+    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs)
 
 
 if __name__ == "__main__":
