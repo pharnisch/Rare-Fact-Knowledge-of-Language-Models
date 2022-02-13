@@ -6,6 +6,7 @@ import os
 from training.model_configs import TransformerType, Transformer
 from training.data.masked_data import get_data
 from training.train_model import training_procedure
+import torch
 
 base_path = Path(__file__).parent
 
@@ -27,20 +28,34 @@ def train():
     # TODO: SEED
 
     if not args.fresh_start:
-        # TODO: automatic look for highest checkpoint and use when fresh-start is not set
-        checkpoint_available = False
+        # Example for checkpoint name: BERT-16-4-1.068896-checkpoint.pth
+        absolute_path = str(os.path.join(str(base_path), "models"))
+        paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
+        path_splits = [f_name.split("-") for f_name in paths]
+        checkpoints = [
+            {
+                "path": paths[idx],
+                "epoch": int(s[2]),
+                "loss": float(s[3])
+            }
+            for idx, s in enumerate(path_splits) if args.model_name in s[0] and int(s[1]) == args.batch_size
+        ]
+        last_checkpoint = None
+        for checkpoint in checkpoints:
+            if last_checkpoint is None or checkpoint["epoch"] > last_checkpoint["epoch"]:
+                last_checkpoint = checkpoint
+        checkpoint_available = len(checkpoints) > 0
+
         if checkpoint_available:
-            #already_trained_epochs = 2
-            #checkpoint = torch.load(f"{mod_path}/models/{model_name}-{BATCH_SIZE}-{already_trained_epochs - 1}-checkpoint.pth")
-            #epoch = checkpoint["epoch"]
-            #model = checkpoint["model_state_dict"]  # TODO: rename
-            #optim = checkpoint["optimizer_state_dict"]
+            checkpoint = torch.load(last_checkpoint["path"])
+            already_trained_epochs = checkpoint["epoch"]
+            model = checkpoint["model_state_dict"]
+            optim = checkpoint["optimizer_state_dict"]
 
             #optimizer.load_state_dict(torch.load("optimizer.pth.tar"))
             #scheduler.load_state_dict(torch.load("scheduler.pth.tar"))
-            # use checkpoint: load model, optimizer, scheduler
-            model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name),
-                                                    return_dict=True)
+            training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
+                               args.batch_size, already_trained_epochs)
             return
 
     # make fresh start: instantiate model, optimizer, scheduler

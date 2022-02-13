@@ -1,8 +1,8 @@
 import torch
 from training.model_configs import TransformerType, Transformer
 from pathlib import Path
-#import training
 import os
+
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, encodings):
@@ -59,8 +59,3 @@ def get_data(transformer_type: TransformerType, training_data_rate: float):
     encodings = {'input_ids': all_input_ids, 'attention_mask': all_mask, 'labels': all_labels}
     dataset = Dataset(encodings)
     return dataset
-
-
-#data = get_data(TransformerType.BERT)
-#loader = torch.utils.data.DataLoader(data, batch_size=16, shuffle=True)
-
