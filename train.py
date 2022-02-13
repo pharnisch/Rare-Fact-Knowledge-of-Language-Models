@@ -52,7 +52,7 @@ def train():
 
         if checkpoint_available:
             checkpoint = torch.load(last_checkpoint["path"])
-            already_trained_epochs = checkpoint["epoch"]
+            already_trained_epochs = checkpoint["epoch"] + 1
             model = checkpoint["model_state_dict"]
             optim = checkpoint["optimizer_state_dict"]
 
