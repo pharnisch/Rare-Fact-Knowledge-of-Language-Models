@@ -43,6 +43,8 @@ def evaluate():
     absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
     checkpoint = torch.load(absolute_path)
     model = checkpoint["model_state_dict"]
+    model.to('cpu')
+    model.eval()
 
     # CALCULATE METRICS
     metrics = []
