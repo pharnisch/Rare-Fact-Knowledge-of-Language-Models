@@ -31,13 +31,13 @@ Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) 
 ```
 python train.py BERT --num-hidden-layers=6 --cuda-index=0
 ```
-Please see ```python train.py --help``` for more options.
+A checkpoint is saved for every epoch. The command searches for identical checkpoints and will continue the latest model state if there is any. Please see ```python train.py --help``` for more options.
 
 
 ### Evaluation
 
 ```
-python eval.py BERT --max-questions-per-file=-1
+python eval.py BERT-6-1-16-0.0001-20-2.503282-checkpoint.pth --max-questions-per-file=-1
 ```
 Please see ```python eval.py --help``` for more options.
 
