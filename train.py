@@ -28,17 +28,21 @@ def train():
     # TODO: SEED
 
     if not args.fresh_start:
-        # Example for checkpoint name: BERT-16-4-1.068896-checkpoint.pth
+        # {model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(loss.item(), 6)}
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
         path_splits = [f_name.split("-") for f_name in paths]
         checkpoints = [
             {
                 "path": paths[idx],
-                "epoch": int(s[2]),
-                "loss": float(s[3])
+                "epoch": int(s[5])
             }
-            for idx, s in enumerate(path_splits) if args.model_name in s[0] and int(s[1]) == args.batch_size
+            for idx, s in enumerate(path_splits)
+            if args.model_name in s[0]
+               and int(s[1]) == args.num_hidden_layers
+               and float(s[2]) == args.training_data_rate
+               and int(s[3]) == args.batch_size
+               and float(s[4]) == args.learning_rate
         ]
         last_checkpoint = None
         for checkpoint in checkpoints:
@@ -52,20 +56,17 @@ def train():
             model = checkpoint["model_state_dict"]
             optim = checkpoint["optimizer_state_dict"]
 
-            #optimizer.load_state_dict(torch.load("optimizer.pth.tar"))
-            #scheduler.load_state_dict(torch.load("scheduler.pth.tar"))
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
-                               args.batch_size, already_trained_epochs)
+                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate)
             return
 
     # make fresh start: instantiate model, optimizer, scheduler
-    # tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"),max_len=512)
     transformer = Transformer.get_transformer(TransformerType[args.model_name], args.num_hidden_layers)
     model = transformer.model
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
-    # SCHEDULER = transformers.get_
+    # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
-    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs)
+    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate)
 
 
 if __name__ == "__main__":

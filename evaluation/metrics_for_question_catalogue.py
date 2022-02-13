@@ -40,7 +40,7 @@ class MetricCalculator(abc.ABC):
                 metric["p_at_k"] = 0
 
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
-                output = model(**inputs)
+                output = model(**inputs, return_dict=True)
                 logits = output.logits
                 softmax = torch.nn.functional.softmax(logits, dim=-1)
                 mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used

@@ -13,7 +13,8 @@ base_path = Path(__file__).parent
 def evaluate():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
-    parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model folder within /models.')
+    # parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model folder within /models.')
+    parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     parser.add_argument('-k', "--k",
                         default=10,
                         action='store',
@@ -38,7 +39,10 @@ def evaluate():
     #    max_len=512, top_k=100)
     #)
     tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"), max_len=512)
-    model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
+    #model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
+    absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
+    checkpoint = torch.load(absolute_path)
+    model = checkpoint["model_state_dict"]
 
     # CALCULATE METRICS
     metrics = []

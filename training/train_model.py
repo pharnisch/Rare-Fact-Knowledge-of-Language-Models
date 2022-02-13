@@ -6,7 +6,7 @@ from pathlib import Path
 mod_path = Path(__file__).parent.parent
 
 
-def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs):
+def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
@@ -16,7 +16,6 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     for i in range(epochs):
         epoch = i + already_trained_epochs
-        print(f"now beginning with epoch {epoch}")
         loop = tqdm(loader, leave=True)
         for batch in loop:
             optimizer.zero_grad()
@@ -42,5 +41,5 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "optimizer_state_dict": optimizer,
             "loss": loss
             # scheduler
-        }, f"{mod_path}/models/{model_name}-{batch_size}-{epoch}-{round(loss.item(), 6)}-checkpoint.pth")
+        }, f"{mod_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(loss.item(), 6)}-checkpoint.pth")
         print(f"SAVED for epoch {epoch}")
