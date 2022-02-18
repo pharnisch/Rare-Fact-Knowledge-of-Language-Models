@@ -68,22 +68,6 @@ def evaluate():
         "max_questions": mq,
         "file": "date_of_birth"
     }))
-    metrics.append(googleRE.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "place_of_birth"
-    }))
-    metrics.append(googleRE.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "place_of_death"
-    }))
 
     trex = TRExMetricCalculator(base_path)
     metrics.append(trex.get_metrics({

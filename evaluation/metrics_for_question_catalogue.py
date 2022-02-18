@@ -3,6 +3,7 @@ import jsonlines
 import torch
 import os
 
+
 class MetricCalculator(abc.ABC):
     def get_metrics(self, arg_dict: dict):
         base_path = arg_dict["base_path"]
@@ -77,6 +78,7 @@ class MetricCalculator(abc.ABC):
 
         pred_conf_avg = prediction_confidence_sum/cnt
         freq_avg = frequency_sum/cnt
+        print()
         print(f"average prediction confidence: {pred_conf_avg}")
         print(f"average frequency: {freq_avg}")
         pred_conf_diff_times_freq_diff_sum = 0
@@ -88,6 +90,19 @@ class MetricCalculator(abc.ABC):
             freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
         r = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
         print(f"r: {r}")
+
+        # analyze in frequency buckets
+        bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
+        buckets = [[] for i in bucket_borders]
+        for idx, borders in enumerate(bucket_borders):
+            for metric in metrics:
+                if metric["frequency"] > borders[0] and metric["frequency"] < borders[1]:
+                    buckets[idx].append(metric["prediction_confidence"])
+
+            avg = sum(buckets[idx])/len(buckets[idx])
+            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}")
+
+
         return metrics
 
     @abc.abstractmethod
