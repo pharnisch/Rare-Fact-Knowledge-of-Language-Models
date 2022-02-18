@@ -17,7 +17,7 @@ def train():
     parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model to train (BERT, ROBERTA).')
     parser.add_argument('-fs', "--fresh-start", default=False, action='store_true', help='')
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-e', "--epochs", default=10, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-e', "--epochs", default=20, action='store', nargs='?', type=int, help='')
     parser.add_argument('-lr', "--learning-rate", default=0.0001, action='store', nargs='?', type=float, help='')
     parser.add_argument('-ci', "--cuda-index", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-bs', "--batch_size", default=16, action='store', nargs='?', type=int, help='')
@@ -25,7 +25,12 @@ def train():
     parser.add_argument('-tdr', "--training-data-rate", default=1, action='store', nargs='?', type=float, help='')
     args = parser.parse_args()
 
-    # TODO: SEED
+    # for reproducability
+    seed = args.seed
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
     if not args.fresh_start:
         # {model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(loss.item(), 6)}
