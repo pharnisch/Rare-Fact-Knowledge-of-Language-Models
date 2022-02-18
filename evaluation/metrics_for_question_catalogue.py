@@ -99,8 +99,8 @@ class MetricCalculator(abc.ABC):
                 if metric["frequency"] > borders[0] and metric["frequency"] < borders[1]:
                     buckets[idx].append(metric["prediction_confidence"])
 
-            avg = sum(buckets[idx])/len(buckets[idx])
-            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}")
+            avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
+            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}, amount: {len(buckets[idx])}")
 
 
         return metrics
