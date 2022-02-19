@@ -137,7 +137,7 @@ class MetricCalculator(abc.ABC):
             #print(f"The avg for ({borders[0]}, {borders[1]}) is {avg} (confidence)/ {avg_2} (reciprocal rank), amount: {len(buckets[idx])}")
             print(f"({borders[0]}, {avg_2})")
         print(f"({bucket_borders[-1][1]}, 0)")
-        print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])}}},")
+        print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
         return metrics
 
     @abc.abstractmethod
