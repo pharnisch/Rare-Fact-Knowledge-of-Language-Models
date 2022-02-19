@@ -18,6 +18,7 @@ class MetricCalculator(abc.ABC):
 
             frequency_sum = 0
             prediction_confidence_sum = 0
+            reciprocal_rank_sum = 0
             cnt = 0
             for line in f.iter():
                 if cnt % 100 == 0:
@@ -71,25 +72,35 @@ class MetricCalculator(abc.ABC):
                 metrics.append(metric)
 
                 prediction_confidence_sum += metric["prediction_confidence"]
+                reciprocal_rank_sum += metric["reciprocal_rank"]
                 frequency_sum += metric["frequency"]
                 cnt += 1
                 if cnt == max_questions:
                     break
 
         pred_conf_avg = prediction_confidence_sum/cnt
+        reciprocal_rank_avg = reciprocal_rank_sum/cnt
         freq_avg = frequency_sum/cnt
         print()
         print(f"average prediction confidence: {pred_conf_avg}")
+        print(f"average reciprocal rank: {reciprocal_rank_avg}")
         print(f"average frequency: {freq_avg}")
         pred_conf_diff_times_freq_diff_sum = 0
-        pred_conf_diff_sum_squared = 0
+        pred_conf_diff_squared_sum = 0
+        reciprocal_rank_diff_times_freq_diff_sum = 0
+        reciprocal_rank_diff_squared_sum = 0
         freq_diff_sum_squared = 0
         for m in metrics:
             pred_conf_diff_times_freq_diff_sum += (m["prediction_confidence"] - pred_conf_avg) * (m["frequency"] - freq_avg)
-            pred_conf_diff_sum_squared += (m["prediction_confidence"] - pred_conf_avg)**2
+            pred_conf_diff_squared_sum += (m["prediction_confidence"] - pred_conf_avg)**2
+
+            reciprocal_rank_diff_times_freq_diff_sum += (m["reciprocal_rank"] - reciprocal_rank_avg) * (m["frequency"] - freq_avg)
+            reciprocal_rank_diff_squared_sum += (m["reciprocal_rank"] - reciprocal_rank_avg) ** 2
+
             freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
-        r = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_sum_squared * freq_diff_sum_squared)**(1/2))
-        print(f"r: {r}")
+        r = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_squared_sum * freq_diff_sum_squared)**(1/2))
+        r_2 = reciprocal_rank_diff_times_freq_diff_sum/((reciprocal_rank_diff_squared_sum * freq_diff_sum_squared)**(1/2))
+        print(f"r: {r} (confidence), {r_2} (reciprocal rank)")
 
         # analyze in frequency buckets
         # bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
@@ -118,10 +129,12 @@ class MetricCalculator(abc.ABC):
         for idx, bucket in enumerate(buckets):
             borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
             bucket_borders.append(borders)
+        buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
         buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
         for idx, borders in enumerate(bucket_borders):
             avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
-            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}, amount: {len(buckets[idx])}")
+            avg_2 = sum(buckets_2[idx])/len(buckets_2[idx]) if len(buckets_2[idx]) > 0 else -1
+            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg} (confidence)/ {avg_2} (reciprocal rank), amount: {len(buckets[idx])}")
 
         return metrics
 
