@@ -134,8 +134,10 @@ class MetricCalculator(abc.ABC):
         for idx, borders in enumerate(bucket_borders):
             avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
             avg_2 = sum(buckets_2[idx])/len(buckets_2[idx]) if len(buckets_2[idx]) > 0 else -1
-            print(f"The avg for ({borders[0]}, {borders[1]}) is {avg} (confidence)/ {avg_2} (reciprocal rank), amount: {len(buckets[idx])}")
-
+            #print(f"The avg for ({borders[0]}, {borders[1]}) is {avg} (confidence)/ {avg_2} (reciprocal rank), amount: {len(buckets[idx])}")
+            print(f"({borders[0]}, {avg_2})")
+        print(f"({bucket_borders[-1][1]}, 0)")
+        print(f"symbolic x coords={{{}},")
         return metrics
 
     @abc.abstractmethod
