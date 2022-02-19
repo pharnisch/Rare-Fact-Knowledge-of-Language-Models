@@ -92,16 +92,36 @@ class MetricCalculator(abc.ABC):
         print(f"r: {r}")
 
         # analyze in frequency buckets
-        bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
-        buckets = [[] for i in bucket_borders]
-        for idx, borders in enumerate(bucket_borders):
-            for metric in metrics:
-                if metric["frequency"] > borders[0] and metric["frequency"] < borders[1]:
-                    buckets[idx].append(metric["prediction_confidence"])
+        # bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
+        # buckets = [[] for i in bucket_borders]
+        # for idx, borders in enumerate(bucket_borders):
+        #     for metric in metrics:
+        #         if metric["frequency"] > borders[0] and metric["frequency"] < borders[1]:
+        #             buckets[idx].append(metric["prediction_confidence"])
+        #
+        #     avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
+        #     print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}, amount: {len(buckets[idx])}")
 
+        # dynamic buckets
+        bucket_amount = 10
+        buckets = [[] for i in range(bucket_amount)]
+        item_amount = len(metrics)
+
+        def take_frequency(m):
+            return m["frequency"]
+        metrics.sort(key=take_frequency)
+
+        for idx, metric in enumerate(metrics):
+            bucket_idx = int((idx/item_amount)*bucket_amount)
+            buckets[bucket_idx].append(metric)
+        bucket_borders = []
+        for idx, bucket in enumerate(buckets):
+            borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
+            bucket_borders.append(borders)
+        buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
+        for idx, borders in enumerate(bucket_borders):
             avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
             print(f"The avg for ({borders[0]}, {borders[1]}) is {avg}, amount: {len(buckets[idx])}")
-
 
         return metrics
 
