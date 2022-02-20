@@ -16,6 +16,7 @@ class MetricCalculator(abc.ABC):
         metrics = []
         with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
 
+            rel_frequency_sum = 0
             frequency_sum = 0
             prediction_confidence_sum = 0
             reciprocal_rank_sum = 0
@@ -25,7 +26,10 @@ class MetricCalculator(abc.ABC):
                     frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
                     if os.path.exists(frequency_dict_path):
                         with jsonlines.open(frequency_dict_path) as f:
-                            frequency_dict = f.read()
+                            tmp_arr = f.read()
+                            frequency_dict = tmp_arr[0]
+                            sub_frequency_dict = tmp_arr[1]
+                            obj_frequency_dict = tmp_arr[2]
                     else:
                         print(f"frequency dict for file {file} and line {cnt} does not exist!")
                         quit()
@@ -68,12 +72,16 @@ class MetricCalculator(abc.ABC):
                     continue  # skip facts with objects that are not within the vocabulary (TODO: does this make sense?)
 
                 metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
+                metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
+                metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
+                metric["relative_frequency"] = metric["frequency"]/(metric["sub_frequency"]*metric["obj_frequency"])
 
                 metrics.append(metric)
 
                 prediction_confidence_sum += metric["prediction_confidence"]
                 reciprocal_rank_sum += metric["reciprocal_rank"]
                 frequency_sum += metric["frequency"]
+                rel_frequency_sum += metric["relative_frequency"]
                 cnt += 1
                 if cnt == max_questions:
                     break
@@ -81,26 +89,42 @@ class MetricCalculator(abc.ABC):
         pred_conf_avg = prediction_confidence_sum/cnt
         reciprocal_rank_avg = reciprocal_rank_sum/cnt
         freq_avg = frequency_sum/cnt
+        rel_freq_avg = rel_frequency_sum/cnt
         print()
         print(f"average prediction confidence: {pred_conf_avg}")
         print(f"average reciprocal rank: {reciprocal_rank_avg}")
         print(f"average frequency: {freq_avg}")
+        print(f"average relative frequency: {rel_freq_avg}")
         pred_conf_diff_times_freq_diff_sum = 0
         pred_conf_diff_squared_sum = 0
+        pred_conf_diff_times_rel_freq_diff_sum = 0
+
         reciprocal_rank_diff_times_freq_diff_sum = 0
         reciprocal_rank_diff_squared_sum = 0
+        reciprocal_rank_diff_times_rel_freq_diff_sum = 0
+
         freq_diff_sum_squared = 0
+        rel_freq_diff_sum_squared = 0
         for m in metrics:
             pred_conf_diff_times_freq_diff_sum += (m["prediction_confidence"] - pred_conf_avg) * (m["frequency"] - freq_avg)
             pred_conf_diff_squared_sum += (m["prediction_confidence"] - pred_conf_avg)**2
+            pred_conf_diff_times_rel_freq_diff_sum += (m["prediction_confidence"] - pred_conf_avg) * (
+                        m["relative_frequency"] - rel_freq_avg)
 
             reciprocal_rank_diff_times_freq_diff_sum += (m["reciprocal_rank"] - reciprocal_rank_avg) * (m["frequency"] - freq_avg)
             reciprocal_rank_diff_squared_sum += (m["reciprocal_rank"] - reciprocal_rank_avg) ** 2
+            reciprocal_rank_diff_times_rel_freq_diff_sum += (m["reciprocal_rank"] - reciprocal_rank_avg) * (
+                    m["relative_frequency"] - rel_freq_avg)
 
             freq_diff_sum_squared += (m["frequency"] - freq_avg)**2
-        r = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_squared_sum * freq_diff_sum_squared)**(1/2))
-        r_2 = reciprocal_rank_diff_times_freq_diff_sum/((reciprocal_rank_diff_squared_sum * freq_diff_sum_squared)**(1/2))
-        print(f"r: {r} (confidence), {r_2} (reciprocal rank)")
+            rel_freq_diff_sum_squared += (m["relative_frequency"] - rel_freq_avg)**2
+
+        r_freq_pc = pred_conf_diff_times_freq_diff_sum/((pred_conf_diff_squared_sum * freq_diff_sum_squared)**(1/2))
+        r_freq_rr = reciprocal_rank_diff_times_freq_diff_sum/((reciprocal_rank_diff_squared_sum * freq_diff_sum_squared)**(1/2))
+        r_rel_freq_pc = pred_conf_diff_times_rel_freq_diff_sum/((pred_conf_diff_squared_sum * rel_freq_diff_sum_squared)**(1/2))
+        r_rel_freq_rr = reciprocal_rank_diff_times_rel_freq_diff_sum/((reciprocal_rank_diff_squared_sum * rel_freq_diff_sum_squared)**(1/2))
+
+        print(f"r: {r_freq_pc} (freq/pc), {r_freq_rr} (freq/rr), {r_rel_freq_pc} (rel_freq/pc), {r_rel_freq_rr} (rel_freq/rr)")
 
         # analyze in frequency buckets
         # bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
@@ -119,7 +143,7 @@ class MetricCalculator(abc.ABC):
         item_amount = len(metrics)
 
         def take_frequency(m):
-            return m["frequency"]
+            return m["relative_frequency"]
         metrics.sort(key=take_frequency)
 
         for idx, metric in enumerate(metrics):
@@ -127,7 +151,7 @@ class MetricCalculator(abc.ABC):
             buckets[bucket_idx].append(metric)
         bucket_borders = []
         for idx, bucket in enumerate(buckets):
-            borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
+            borders = (bucket[0]["relative_frequency"], bucket[-1]["relative_frequency"])
             bucket_borders.append(borders)
         buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
         buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
