@@ -149,7 +149,7 @@ def precalculate_frequencies_partial(args):
                                     print(
                                         f"{fact_identifier}: {file_fact_frequencies[fact_identifier]}")
                             if sentence_contains_subject(sentence, sub_labels):
-                                if fact_identifier in file_fact_frequencies.keys():
+                                if fact_identifier in file_fact_subject_frequencies.keys():
                                     file_fact_subject_frequencies[fact_identifier] += 1
                                 else:
                                     file_fact_subject_frequencies[fact_identifier] = 1
@@ -157,7 +157,7 @@ def precalculate_frequencies_partial(args):
                                     print(
                                         f"{str(sub_labels)}: {file_fact_subject_frequencies[fact_identifier]}")
                             if sentence_contains_object(sentence, obj_labels):
-                                if fact_identifier in file_fact_frequencies.keys():
+                                if fact_identifier in file_fact_object_frequencies.keys():
                                     file_fact_object_frequencies[fact_identifier] += 1
                                 else:
                                     file_fact_object_frequencies[fact_identifier] = 1
