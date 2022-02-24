@@ -15,6 +15,7 @@ def evaluate():
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     # parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model folder within /models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
+    parser.add_argument('relation-file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
     parser.add_argument('-k', "--k",
                         default=10,
                         action='store',
@@ -30,6 +31,7 @@ def evaluate():
     args = parser.parse_args()
     k = args.k
     mq = args.max_questions_per_file if args.max_questions_per_file is not None else -1
+    relation_file = args.relation_file
 
     # INSTANTIATE MODELS
     #fill = pipeline(
@@ -49,35 +51,23 @@ def evaluate():
     # CALCULATE METRICS
     metrics = []
 
-    conceptNet = ConceptNetMetricCalculator()
-    metrics.append(conceptNet.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "test"
-    }))
+    metric_calculators = [
+        ConceptNetMetricCalculator(),
+        GoogleREMetricCalculator(),
+        TRExMetricCalculator(base_path)
+    ]
+    for metric_calculator in metric_calculators:
+        all_file_names = metric_calculator.get_all_file_names()
+        if relation_file in all_file_names:
+            metrics.append(metric_calculator.get_metrics({
+                "base_path": base_path,
+                "tokenizer": tokenizer,
+                "model": model,
+                "k": k,
+                "max_questions": mq,
+                "file": relation_file
+            }))
 
-    googleRE = GoogleREMetricCalculator()
-    metrics.append(googleRE.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "date_of_birth"
-    }))
-
-    trex = TRExMetricCalculator(base_path)
-    metrics.append(trex.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "P17"
-    }))
 
     # VISUALIZE AND SAVE RESULTS
     #print("metrics:")

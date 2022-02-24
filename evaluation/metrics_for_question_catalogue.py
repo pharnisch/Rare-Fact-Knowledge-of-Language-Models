@@ -74,7 +74,8 @@ class MetricCalculator(abc.ABC):
                 metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
                 metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
                 metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
-                metric["relative_frequency"] = metric["frequency"]/(metric["sub_frequency"]*metric["obj_frequency"])
+                tmp_prod = metric["sub_frequency"]*metric["obj_frequency"]
+                metric["relative_frequency"] = metric["frequency"]/tmp_prod if tmp_prod != 0 else 0
 
                 metrics.append(metric)
 
