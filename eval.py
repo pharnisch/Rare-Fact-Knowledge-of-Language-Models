@@ -15,7 +15,7 @@ def evaluate():
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     # parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model folder within /models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
-    parser.add_argument('relation-file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
+    parser.add_argument('relation_file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
     parser.add_argument('-k', "--k",
                         default=10,
                         action='store',
