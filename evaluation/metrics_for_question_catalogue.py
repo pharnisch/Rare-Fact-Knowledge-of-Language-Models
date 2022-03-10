@@ -156,6 +156,7 @@ class MetricCalculator(abc.ABC):
             bucket_borders.append(borders)
         buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
         buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
+        print(buckets_2)
         for idx, borders in enumerate(bucket_borders):
             avg = sum(buckets[idx])/len(buckets[idx]) if len(buckets[idx]) > 0 else -1
             avg_2 = sum(buckets_2[idx])/len(buckets_2[idx]) if len(buckets_2[idx]) > 0 else -1
