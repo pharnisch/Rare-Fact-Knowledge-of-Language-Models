@@ -36,6 +36,7 @@ class MetricCalculator(abc.ABC):
                         quit()
 
                 sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
+                print(f"{sub_label} -- {relation} -> {obj_label} :")
                 obj_labels = [obj_alias for obj_alias in obj_aliases]
                 obj_labels.append(obj_label)
                 metric = {}
@@ -58,6 +59,8 @@ class MetricCalculator(abc.ABC):
                 top_30522_values = top_30522[0][0]
                 top_30522_indices = top_30522[1][0]
 
+                print(top_30522[:10])
+
                 for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
                     token = tokenizer.decode([token_index])
                     for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
@@ -77,6 +80,9 @@ class MetricCalculator(abc.ABC):
                 metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
                 tmp_prod = metric["sub_frequency"]*metric["obj_frequency"]
                 metric["relative_frequency"] = metric["frequency"]/tmp_prod if tmp_prod != 0 else 0
+
+                print(f"rank: {metric['rank']}, frequency: {metric['frequency']}")
+                print("----------------")
 
                 metrics.append(metric)
 
@@ -165,7 +171,7 @@ class MetricCalculator(abc.ABC):
         item_amount = len(metrics)
 
         def take_frequency(m):
-            return m["relative_frequency"]
+            return m["frequency"]
         metrics.sort(key=take_frequency)
 
         for idx, metric in enumerate(metrics):
@@ -173,7 +179,7 @@ class MetricCalculator(abc.ABC):
             buckets[bucket_idx].append(metric)
         bucket_borders = []
         for idx, bucket in enumerate(buckets):
-            borders = (bucket[0]["relative_frequency"], bucket[-1]["relative_frequency"])
+            borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
             bucket_borders.append(borders)
         buckets_3 = [[m["rank"] for m in bucket] for bucket in buckets]
         buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
