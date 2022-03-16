@@ -59,7 +59,7 @@ class MetricCalculator(abc.ABC):
                 top_30522_values = top_30522[0][0]
                 top_30522_indices = top_30522[1][0]
 
-                print(top_30522[:10])
+                print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
 
                 for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
                     token = tokenizer.decode([token_index])
