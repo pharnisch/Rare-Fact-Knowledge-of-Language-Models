@@ -13,6 +13,9 @@ class MetricCalculator(abc.ABC):
         max_questions = arg_dict["max_questions"]
         file = arg_dict["file"]
 
+        from transformers import FillMaskPipeline
+        nlp_fill = FillMaskPipeline(model, tokenizer, top_k=10)
+
         metrics = []
         with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
 
@@ -60,6 +63,7 @@ class MetricCalculator(abc.ABC):
                 top_30522_indices = top_30522[1][0]
 
                 print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
+                print(nlp_fill(masked_sent))
 
                 for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
                     token = tokenizer.decode([token_index])
@@ -157,11 +161,11 @@ class MetricCalculator(abc.ABC):
         print(f"r: {r_freq_rank} (freq/rank)")
         print(f"r: {r_rel_freq_rank} (rel_freq/rank)")
 
-        print(f"r: {r_freq_rr} (freq/reciprocal_rank)")
-        print(f"r: {r_rel_freq_rr} (rel_freq/reciprocal_rank)")
+        #print(f"r: {r_freq_rr} (freq/reciprocal_rank)")
+        #print(f"r: {r_rel_freq_rr} (rel_freq/reciprocal_rank)")
 
-        print(f"r: {r_freq_pc} (freq/softmax)")
-        print(f"r: {r_rel_freq_pc} (rel_freq/softmax)")
+        #print(f"r: {r_freq_pc} (freq/softmax)")
+        #print(f"r: {r_rel_freq_pc} (rel_freq/softmax)")
 
         # analyze in frequency buckets
         # bucket_borders = [(0, 49), (50, 99), (100, 149), (150, 199), (200, 249), (250, 299), (300, 349), (350, 399), (400, 449), (450, 499)]
