@@ -40,11 +40,17 @@ def evaluate():
     #    tokenizer=BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"),
     #    max_len=512, top_k=100)
     #)
-    tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"), max_len=512)
-    #model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
-    absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
-    checkpoint = torch.load(absolute_path)
-    model = checkpoint["model_state_dict"]
+
+    if args.checkpoint == "roberta_pretrained":
+        from transformers import AutoTokenizer, AutoModelForMaskedLM
+        tokenizer = AutoTokenizer.from_pretrained("roberta-large")
+        model = AutoModelForMaskedLM.from_pretrained("roberta-large")
+    else:
+        tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"), max_len=512)
+        #model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
+        absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
+        checkpoint = torch.load(absolute_path)
+        model = checkpoint["model_state_dict"]
     model.to('cpu')
     model.eval()
 
