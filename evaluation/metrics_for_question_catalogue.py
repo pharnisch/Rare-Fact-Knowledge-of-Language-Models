@@ -64,7 +64,7 @@ class MetricCalculator(abc.ABC):
                 top_30522_indices = top_30522[1][0]
 
                 print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
-                print(nlp_fill(masked_sent))
+                #print(nlp_fill(masked_sent))
 
                 for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
                     token = tokenizer.decode([token_index]).lower().replace(" ", "")

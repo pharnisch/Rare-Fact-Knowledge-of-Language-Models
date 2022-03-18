@@ -45,6 +45,10 @@ def evaluate():
         from transformers import AutoTokenizer, AutoModelForMaskedLM
         tokenizer = AutoTokenizer.from_pretrained("roberta-large")
         model = AutoModelForMaskedLM.from_pretrained("roberta-large")
+    elif args.checkpoint == "bert_pretrained":
+        from transformers import AutoTokenizer, AutoModelForMaskedLM
+        tokenizer = AutoTokenizer.from_pretrained("bert-large-uncased")
+        model = AutoModelForMaskedLM.from_pretrained("bert-large-uncased")
     else:
         tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"), max_len=512)
         #model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
