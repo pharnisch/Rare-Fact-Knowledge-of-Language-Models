@@ -14,7 +14,7 @@ class MetricCalculator(abc.ABC):
         file = arg_dict["file"]
 
         from transformers import FillMaskPipeline
-        nlp_fill = FillMaskPipeline(model, tokenizer, top_k=10)
+        nlp_fill = FillMaskPipeline(model, tokenizer)
 
         metrics = []
         with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
@@ -296,12 +296,15 @@ class TRExMetricCalculator(MetricCalculator):
     #relation_dict = {}  # e.g. P17 -> country
 
     def __init__(self, base_path):
-        self.relation_dict = {}
+        self.relation_to_label = {}
+        self.relation_to_template = {}
         with jsonlines.open(os.path.join(f"{base_path}", "evaluation", "question_catalogue", "relations.jsonl")) as f:
             for line in f.iter():
                 relation = line["relation"]
                 label = line["label"]
-                self.relation_dict[relation] = label
+                template = line["template"]
+                self.relation_to_label[relation] = label
+                self.relation_to_template[relation] = template
 
     def get_path_to_file(self, base_path, file):
         self.relation_key = file
@@ -317,12 +320,15 @@ class TRExMetricCalculator(MetricCalculator):
         sub_aliases = []
         obj_label = evidences[0]["obj_surface"]
         obj_aliases = []
+
         if file == "":
-            relation = self.relation_dict[self.relation_key]
-        else:
-            relation = self.relation_dict[file]
-        masked_sentences = [evidence["masked_sentence"] for evidence in evidences]
-        masked_sent = "".join(masked_sentences)  # TODO:DOCUMENTATION, sentences are joined
+            file = self.relation_key
+
+        relation = self.relation_to_label[file]
+        masked_sent = self.relation_to_template[file].replace("[X]", sub_label).replace("[Y]", "[MASK]")
+
+        # masked_sentences = [evidence["masked_sentence"] for evidence in evidences]
+        # masked_sent = "".join(masked_sentences)  # TODO:DOCUMENTATION, sentences are joined
         return sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent
 
     def get_all_file_names(self):
