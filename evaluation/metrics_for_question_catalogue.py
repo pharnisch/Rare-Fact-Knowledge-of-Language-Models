@@ -50,6 +50,7 @@ class MetricCalculator(abc.ABC):
                 metric["relation"] = relation
                 metric["p_at_k"] = 0
 
+                masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs, return_dict=True)
                 logits = output.logits
@@ -66,8 +67,9 @@ class MetricCalculator(abc.ABC):
                 print(nlp_fill(masked_sent))
 
                 for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
-                    token = tokenizer.decode([token_index])
+                    token = tokenizer.decode([token_index]).lower().replace(" ", "")
                     for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
+                        obj_l = obj_l.lower().replace(" ", "")
                         if token == obj_l and rank < k:
                             metric["p_at_k"] = 1
                         if token == obj_l:
