@@ -79,7 +79,7 @@ def evaluate():
             }))
     if len(metrics) == 0:  # if relation_file just contains a masked sent
         while True:
-            masked_sent = input("Please enter a sentence, containing one [MASK].")
+            masked_sent = input("Please enter a sentence, containing one [MASK].\n")
             if masked_sent == "quit":
                 break
             if "[MASK]" not in masked_sent:
