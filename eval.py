@@ -77,13 +77,24 @@ def evaluate():
                 "max_questions": mq,
                 "file": relation_file
             }))
+    if len(metrics) == 0:  # if relation_file just contains a masked sent
+        masked_sent = relation_file
+        masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
+        inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
+        output = model(**inputs, return_dict=True)
+        logits = output.logits
+        softmax = torch.nn.functional.softmax(logits, dim=-1)
+        mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[
+            0]  # TODO:DOCUMENTATION, only first [MASK] used
+        mask_word = softmax[0, mask_index, :]
 
+        # take all token predictions (30522 is the vocab_size for all transformers)
+        top_30522 = torch.topk(mask_word, 30522, dim=1)
+        top_30522_values = top_30522[0][0]
+        top_30522_indices = top_30522[1][0]
 
-    # VISUALIZE AND SAVE RESULTS
-    #print("metrics:")
-    #for catalogue_metrics in metrics:
-        #for metric in catalogue_metrics:
-            #print(metric)
+        print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
+
 
 if __name__ == "__main__":
     evaluate()
