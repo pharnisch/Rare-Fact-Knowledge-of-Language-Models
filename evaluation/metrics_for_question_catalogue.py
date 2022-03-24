@@ -39,6 +39,10 @@ class MetricCalculator(abc.ABC):
                         quit()
 
                 sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
+                tokenized_obj_label = tokenizer.encode_plus(obj_label, return_tensors="pt")
+                print(tokenized_obj_label)
+                print(len(tokenized_obj_label))
+                quit()
                 print(f"{sub_label} -- {relation} -> {obj_label} :")
                 obj_labels = [obj_alias for obj_alias in obj_aliases]
                 obj_labels.append(obj_label)
