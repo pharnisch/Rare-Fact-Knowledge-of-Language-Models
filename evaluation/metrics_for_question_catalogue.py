@@ -225,8 +225,6 @@ class MetricCalculator(abc.ABC):
                     if idx == len(metrics) - 1:
                         buckets.append(new_bucket)
 
-        buckets_3 = buckets
-
         bucket_borders = []
         for idx, bucket in enumerate(buckets):
             borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
