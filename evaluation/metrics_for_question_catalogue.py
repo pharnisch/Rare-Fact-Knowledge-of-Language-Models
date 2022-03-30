@@ -184,21 +184,51 @@ class MetricCalculator(abc.ABC):
 
         # dynamic buckets
         bucket_amount = 10
-        buckets = [[] for i in range(bucket_amount)]
-        item_amount = len(metrics)
+
 
         def take_frequency(m):
             return m["frequency"]
         metrics.sort(key=take_frequency)
 
+        item_amount = len(metrics)
+
+        #buckets = [[] for i in range(bucket_amount)]
+        #for idx, metric in enumerate(metrics):
+        #    bucket_idx = int((idx/item_amount)*bucket_amount)
+        #    buckets[bucket_idx].append(metric)
+
+        buckets = []
+        last_key = -1
+        new_bucket = []
         for idx, metric in enumerate(metrics):
-            bucket_idx = int((idx/item_amount)*bucket_amount)
-            buckets[bucket_idx].append(metric)
+            if len(buckets) == bucket_amount - 1:
+                if idx < len(metrics) - 1:
+                    new_bucket.append(metric)
+                else:
+                    buckets.append(new_bucket)
+
+            if len(buckets) == bucket_amount:
+                break
+
+            if metric["frequency"] == last_key:
+                new_bucket.append(metric)
+            else:
+                # close bucket if size over threshold
+                if len(new_bucket) >= int(item_amount/bucket_amount):
+                    buckets.append(new_bucket)
+                    new_bucket = []
+                    last_key = -1
+                else:
+                    new_bucket.append(metric)
+
+
+
         bucket_borders = []
         for idx, bucket in enumerate(buckets):
             borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
             bucket_borders.append(borders)
         buckets_3 = [[m["rank"] for m in bucket] for bucket in buckets]
+
         buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
         buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
         for idx, borders in enumerate(bucket_borders):
