@@ -201,25 +201,29 @@ class MetricCalculator(abc.ABC):
         last_key = -1
         new_bucket = []
         for idx, metric in enumerate(metrics):
-            if len(buckets) == bucket_amount - 1:
-                if idx < len(metrics) - 1:
-                    new_bucket.append(metric)
-                else:
-                    buckets.append(new_bucket)
-
             if len(buckets) == bucket_amount:
                 break
 
+            if len(buckets) == bucket_amount - 1:
+                new_bucket.append(metric)
+                if idx == len(metrics) - 1:
+                    buckets.append(new_bucket)
+
             if metric["frequency"] == last_key:
                 new_bucket.append(metric)
+                if idx == len(metrics) - 1:
+                    buckets.append(new_bucket)
             else:
                 # close bucket if size over threshold
                 if len(new_bucket) >= int(item_amount/bucket_amount):
                     buckets.append(new_bucket)
-                    new_bucket = []
-                    last_key = -1
+                    new_bucket = [metric]
+                    last_key = metric["frequency"]
                 else:
                     new_bucket.append(metric)
+                    last_key = metric["frequency"]
+                    if idx == len(metrics) - 1:
+                        buckets.append(new_bucket)
 
 
 
