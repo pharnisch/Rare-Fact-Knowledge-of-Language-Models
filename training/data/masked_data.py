@@ -47,7 +47,15 @@ def get_data(transformer_type: TransformerType, training_data_rate: float):
                 # get indices of mask positions from mask array
                 selection = torch.flatten(mask_arr[i].nonzero()).tolist()
                 # mask input_ids
-                input_ids[i, selection] = 4  # MASK token of BOTH tokenizers are currently at index 4
+                rand_i = torch.rand([1]).item()
+                if rand_i < 0.8:
+                    replacement = 4  # MASK token of BOTH tokenizers are currently at index 4
+                elif rand_i < 0.9:
+                    replacement = torch.randint(5, tokenizer.vocab_size, [1]).item()
+                else:
+                    replacement = input_ids[i, selection]  # do nothing, remain the token that was there
+
+                input_ids[i, selection] = replacement
 
             all_input_ids.append(input_ids)
             all_mask.append(mask)

@@ -11,6 +11,7 @@ class TransformerType(Enum):
     BERT = 1
     ROBERTA = 2
     ELECTRA = 3
+    BERT_PRETRAIN = 4
 
 class Transformer:
     tokenizer: transformers.PreTrainedTokenizer = None
@@ -39,26 +40,40 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", max_len=512),
+                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
                 conf=conf,
                 model=transformers.BertForMaskedLM(conf)
             )
         elif transformer_type == TransformerType.ELECTRA:
             conf = transformers.ElectraConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
-                max_position_embeddings=512,  # 513?
+                max_position_embeddings=512,
                 hidden_size=256,
                 num_attention_heads=4,
                 num_hidden_layers=num_hidden_layers,
                 type_vocab_size=1  # this change makes sense (?) because we only insert one input (no SEP and more content)
             )
             return Transformer(
-                tokenizer=transformers.ElectraTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", max_len=512),
+                tokenizer=transformers.ElectraTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
                 conf=conf,
                 model=transformers.ElectraForMaskedLM(conf)
             )
         elif transformer_type == TransformerType.ROBERTA:
             conf = transformers.RobertaConfig(
+                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                max_position_embeddings=514,   # braucht scheinbar 2 mehr!!! sonst error
+                hidden_size=768,
+                num_attention_heads=12,
+                num_hidden_layers=num_hidden_layers,
+                type_vocab_size=1
+            )
+            return Transformer(
+                tokenizer=transformers.RobertaTokenizer.from_pretrained(f"{absolute_path}/byte_level_bpe_tokenizer", model_max_length=512),
+                conf=conf,
+                model=transformers.RobertaForMaskedLM(conf)
+            )
+        elif transformer_type == TransformerType.BERT_PRETRAIN:
+            conf = transformers.BertConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=768,
@@ -67,12 +82,14 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.RobertaTokenizer.from_pretrained(f"{absolute_path}/byte_level_bpe_tokenizer", max_len=512),
+                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer",
+                                                                     model_max_length=512),
                 conf=conf,
-                model=transformers.RobertaForMaskedLM(conf)
+                model=transformers.BertForPreTraining(conf)
             )
         else:
             raise Exception(f"TransformerType {type} not implemented!")
+
 
 #class BertTransformer(Transformer):
 
