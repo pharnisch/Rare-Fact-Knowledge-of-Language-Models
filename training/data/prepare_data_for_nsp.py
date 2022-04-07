@@ -36,7 +36,6 @@ def load_and_clean_for_nsp():
         sample = re.sub(" +", " ", sample)  # " ", "  ", ... -> " "
 
         sents = [span.sent.text for span in list(sentence_segmentation(sample).sents)]
-        print(sents)
         documents.append("\n".join(sents))
     with open(f'{path}/text_for_nsp.txt', 'w', encoding='utf-8') as fp:
         fp.write('\n\n'.join(documents))
