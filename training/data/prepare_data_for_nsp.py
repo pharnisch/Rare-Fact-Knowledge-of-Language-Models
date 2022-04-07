@@ -18,6 +18,7 @@ def load_and_clean_for_nsp():
     Path(path).mkdir(parents=True, exist_ok=True)
 
     documents = []
+    file_count = 0
     for sample in tqdm(dataset['train']):
         sample = sample['text'].replace('\n', ' ')  # "\n" -> " "
 
@@ -37,7 +38,14 @@ def load_and_clean_for_nsp():
 
         sents = [span.sent.text for span in list(sentence_segmentation(sample).sents)]
         documents.append("\n".join(sents))
-    with open(f'{path}/text_for_nsp.txt', 'w', encoding='utf-8') as fp:
+
+        if len(documents) == 10_000:
+            # once we git the 10K mark, save to file
+            with open(f'{path}/text_for_nsp.txt_{file_count}', 'w', encoding='utf-8') as fp:
+                fp.write('\n\n'.join(documents))
+            documents = []
+            file_count += 1
+    with open(f'{path}/text_for_nsp_{file_count}.txt', 'w', encoding='utf-8') as fp:
         fp.write('\n\n'.join(documents))
 
 
