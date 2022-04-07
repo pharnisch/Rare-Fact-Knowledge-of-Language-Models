@@ -16,7 +16,7 @@ def setup():
     # 1. Download and persist cleaned Wikipedia data
     if action == "load-and-clean":
         print("load and clean ...")
-        load_and_clean()
+        load_and_clean_setup(remaining_args)
     # 2. Calculate and persist frequencies of facts
     elif action == "calc-freqs":
         print("calculate frequencies ...")
@@ -51,7 +51,6 @@ def load_and_clean_setup(remaining_args):
         load_and_clean_for_nsp()
     else:
         load_and_clean()
-
 
 
 def precalculate_frequencies_setup(remaining_args):
