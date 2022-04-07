@@ -6,7 +6,7 @@ from pathlib import Path
 import training
 
 
-def load_and_clean():
+def load_and_clean_for_nsp():
     sentence_segmentation = spacy.load("en_core_web_trf")
 
     dataset_name = "wikipedia"
@@ -43,4 +43,4 @@ def load_and_clean():
 
 
 if __name__ == "__main__":
-    load_and_clean()
+    load_and_clean_for_nsp()

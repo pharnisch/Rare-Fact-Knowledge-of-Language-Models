@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 from evaluation.precalculate_frequencies import precalculate_frequencies
+from training.data.prepare_data_for_nsp import load_and_clean_for_nsp
+from training.data.load_and_clean_data import load_and_clean
 base_path = Path(__file__).parent
 
 
@@ -46,10 +48,10 @@ def load_and_clean_setup(remaining_args):
     parser.add_argument('-nsp', "--nsp", default=False, action='store_true',help='')
     name_space, _ = parser.parse_known_args(remaining_args)
     if name_space.nsp:
-        from training.data.prepare_data_for_nsp import load_and_clean
+        load_and_clean_for_nsp()
     else:
-        from training.data.load_and_clean_data import load_and_clean
-    load_and_clean()
+        load_and_clean()
+
 
 
 def precalculate_frequencies_setup(remaining_args):
