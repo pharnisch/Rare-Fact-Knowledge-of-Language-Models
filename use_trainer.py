@@ -28,7 +28,7 @@ args = TrainingArguments(
     per_device_train_batch_size=32,  # TODO: what does this?
     save_steps=100,
     save_total_limit=3,
-    data_seed=1337,
+    seed=1337,
 )
 trainer = Trainer(
     model=model,
