@@ -51,7 +51,7 @@ def evaluate():
         model = AutoModelForMaskedLM.from_pretrained("bert-large-uncased")
     elif args.checkpoint == "distil_pretrained":
         from transformers import AutoTokenizer, AutoModelForMaskedLM, DistilBertForMaskedLM, DistilBertTokenizer
-        tokenizer = DistilBertTokenizer.from_pretrained("distilgpt2")
+        tokenizer = DistilBertTokenizer.from_pretrained("gpt2")
         model = DistilBertForMaskedLM.from_pretrained("distilgpt2")
     elif "_pretrained" in args.checkpoint:
         from transformers import AutoTokenizer, AutoModelForMaskedLM
