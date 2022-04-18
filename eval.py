@@ -50,9 +50,10 @@ def evaluate():
         tokenizer = AutoTokenizer.from_pretrained("bert-large-uncased")
         model = AutoModelForMaskedLM.from_pretrained("bert-large-uncased")
     elif args.checkpoint == "distil_pretrained":
-        from transformers import AutoTokenizer, AutoModelForMaskedLM, DistilBertForMaskedLM, DistilBertTokenizer
-        tokenizer = AutoTokenizer.from_pretrained("bert-large-uncased")
-        model = DistilBertForMaskedLM.from_pretrained("distilgpt2")
+        # distilbert-base-uncased
+        from transformers import AutoTokenizer, AutoModelForMaskedLM
+        tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        model = AutoModelForMaskedLM.from_pretrained("distilbert-base-uncased")
     elif "_pretrained" in args.checkpoint:
         from transformers import AutoTokenizer, AutoModelForMaskedLM
         identifier = args.checkpoint[:-11]

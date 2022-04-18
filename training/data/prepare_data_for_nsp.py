@@ -42,10 +42,12 @@ def load_and_clean_for_nsp():
         if len(documents) == 10_000:
             # once we git the 10K mark, save to file
             with open(f'{path}/text_for_nsp.txt_{file_count}', 'w', encoding='utf-8') as fp:
+                print(f"writing to file {path}/text_for_nsp.txt_{file_count} ...")
                 fp.write('\n\n'.join(documents))
             documents = []
             file_count += 1
     with open(f'{path}/text_for_nsp_{file_count}.txt', 'w', encoding='utf-8') as fp:
+        print(f"writing to file {path}/text_for_nsp.txt_{file_count} ...")
         fp.write('\n\n'.join(documents))
 
 
