@@ -105,6 +105,16 @@ class MetricCalculator(abc.ABC):
                     break
         print(f"N={cnt}")
 
+        # SPEARMAN
+        from scipy import stats
+        var_x = [m["frequency"] for m in metrics]
+        var_y = [m["rank"] for m in metrics]
+        spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
+        print(spearman_correlation_coefficient)
+
+        ##########
+
+
         pred_conf_avg = prediction_confidence_sum/cnt
         reciprocal_rank_avg = reciprocal_rank_sum/cnt
         rank_avg = rank_sum/cnt
@@ -230,6 +240,7 @@ class MetricCalculator(abc.ABC):
             borders = (bucket[0]["frequency"], bucket[-1]["frequency"])
             bucket_borders.append(borders)
         buckets_3 = [[m["rank"] for m in bucket] for bucket in buckets]
+        print(buckets_3)
 
         buckets_2 = [[m["reciprocal_rank"] for m in bucket] for bucket in buckets]
         buckets = [[m["prediction_confidence"] for m in bucket] for bucket in buckets]
