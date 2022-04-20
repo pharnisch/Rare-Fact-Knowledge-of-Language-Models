@@ -14,7 +14,7 @@ data_collator = DataCollatorForLanguageModeling(
 
 dataset = TextDatasetForNextSentencePrediction(
     tokenizer=tokenizer,
-    file_path="./training/data/test/text_0.txt",
+    file_path="./training/data/nsp/wikipedia/20200501.en/text_for_nsp.txt_0",
     block_size=512,  # TODO: what does this, what number is suitable for me?
     overwrite_cache=False,
     short_seq_probability=0.1,
