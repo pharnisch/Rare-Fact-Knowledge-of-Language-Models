@@ -2,15 +2,12 @@ from transformers import BertModel, BertConfig, BertTokenizer, BertForPreTrainin
 from transformers import DataCollatorForLanguageModeling
 from transformers.data.datasets.language_modeling import TextDatasetForNextSentencePrediction
 from transformers import Trainer, TrainingArguments
+import transformers
 
+transformers.set_seed(1337)
 
 model = BertForPreTraining(BertConfig())
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-
-data_collator = DataCollatorForLanguageModeling(
-    tokenizer=tokenizer,
-    mlm=True
-)
 
 dataset = TextDatasetForNextSentencePrediction(
     tokenizer=tokenizer,
@@ -19,6 +16,11 @@ dataset = TextDatasetForNextSentencePrediction(
     overwrite_cache=False,
     short_seq_probability=0.1,
     nsp_probability=0.5
+)
+
+data_collator = DataCollatorForLanguageModeling(
+    tokenizer=tokenizer,
+    mlm=True
 )
 
 args = TrainingArguments(
