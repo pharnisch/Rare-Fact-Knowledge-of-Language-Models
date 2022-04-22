@@ -61,14 +61,15 @@ class MetricCalculator(abc.ABC):
                 mask_word = softmax[0, mask_index, :]
 
                 # take all token predictions (30522 is the vocab_size for all transformers)
-                top_30522 = torch.topk(mask_word, 30522, dim=1)
-                top_30522_values = top_30522[0][0]
-                top_30522_indices = top_30522[1][0]
+                vs = tokenizer.vocab_size
+                top_vs = torch.topk(mask_word, vs, dim=1)
+                top_vs_values = top_vs[0][0]
+                top_vs_indices = top_vs[1][0]
 
-                print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
+                print([tokenizer.decode([i]) for i in top_vs_indices[:10]])
                 #print(nlp_fill(masked_sent))
 
-                for rank, (token_index, value) in enumerate(zip(top_30522_indices, top_30522_values)):
+                for rank, (token_index, value) in enumerate(zip(top_vs_indices, top_vs_values)):
                     token = tokenizer.decode([token_index]).lower().replace(" ", "")
                     for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
                         obj_l = obj_l.lower().replace(" ", "")
@@ -88,7 +89,6 @@ class MetricCalculator(abc.ABC):
                 metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
                 tmp_prod = metric["sub_frequency"]*metric["obj_frequency"]
                 metric["relative_frequency"] = metric["frequency"]/tmp_prod if tmp_prod != 0 else 0
-
                 print(f"rank: {metric['rank']}, frequency: {metric['frequency']}")
                 print("----------------")
 
