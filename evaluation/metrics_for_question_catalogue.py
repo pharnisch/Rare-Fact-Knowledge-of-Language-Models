@@ -2,7 +2,7 @@ import abc
 import jsonlines
 import torch
 import os
-
+from alive_progress import alive_bar
 
 class MetricCalculator(abc.ABC):
     def show_metrics(self, arg_dict: dict):
@@ -14,73 +14,75 @@ class MetricCalculator(abc.ABC):
         file = arg_dict["file"]
 
         metrics = []
-        with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
-            cnt = 0
-            for line in f.iter():
-                if cnt % 100 == 0:
-                    frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
-                    if os.path.exists(frequency_dict_path):
-                        with jsonlines.open(frequency_dict_path) as f:
-                            tmp_arr = f.read()
-                            frequency_dict = tmp_arr[0]
-                            sub_frequency_dict = tmp_arr[1]
-                            obj_frequency_dict = tmp_arr[2]
-                    else:
-                        print(f"frequency dict for file {file} and line {cnt} does not exist!")
-                        quit()
 
-                sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
+        with alive_bar(max_questions, title=f"file") as bar:
+            with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
+                cnt = 0
+                for line in f.iter():
+                    if cnt % 100 == 0:
+                        frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
+                        if os.path.exists(frequency_dict_path):
+                            with jsonlines.open(frequency_dict_path) as f:
+                                tmp_arr = f.read()
+                                frequency_dict = tmp_arr[0]
+                                sub_frequency_dict = tmp_arr[1]
+                                obj_frequency_dict = tmp_arr[2]
+                        else:
+                            print(f"frequency dict for file {file} and line {cnt} does not exist!")
+                            quit()
 
-                print(f"{sub_label} -- {relation} -> {obj_label} :")
-                obj_labels = [obj_alias for obj_alias in obj_aliases]
-                obj_labels.append(obj_label)
-                metric = {}
-                metric["sub_label"] = sub_label
-                metric["sub_aliases"] = sub_aliases
-                metric["obj_label"] = obj_label
-                metric["obj_aliases"] = obj_aliases
-                metric["relation"] = relation
-                metric["p_at_k"] = 0
+                    sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
 
-                masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
-                inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
-                output = model(**inputs, return_dict=True)
-                logits = output.logits
-                softmax = torch.nn.functional.softmax(logits, dim=-1)
-                mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
-                mask_word = softmax[0, mask_index, :]
+                    obj_labels = [obj_alias for obj_alias in obj_aliases]
+                    obj_labels.append(obj_label)
+                    metric = {}
+                    metric["sub_label"] = sub_label
+                    metric["sub_aliases"] = sub_aliases
+                    metric["obj_label"] = obj_label
+                    metric["obj_aliases"] = obj_aliases
+                    metric["relation"] = relation
+                    metric["p_at_k"] = 0
 
-                vs = tokenizer.vocab_size
-                top_vs = torch.topk(mask_word, vs, dim=1)
-                top_vs_values = top_vs[0][0]
-                top_vs_indices = top_vs[1][0]
+                    masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
+                    inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
+                    output = model(**inputs, return_dict=True)
+                    logits = output.logits
+                    softmax = torch.nn.functional.softmax(logits, dim=-1)
+                    mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
+                    mask_word = softmax[0, mask_index, :]
 
-                for rank, (token_index, value) in enumerate(zip(top_vs_indices, top_vs_values)):
-                    token = tokenizer.decode([token_index]).lower().replace(" ", "")
-                    for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
-                        obj_l = obj_l.lower().replace(" ", "")
-                        if token == obj_l and rank < k:
-                            metric["p_at_k"] = 1
-                        if token == obj_l:
-                            # is better than previous scores?
-                            if "prediction_confidence" not in metric.keys() or metric["prediction_confidence"] < value.item():
-                                metric["prediction_confidence"] = value.item()
-                                metric["reciprocal_rank"] = 1 / (rank + 1)
-                                metric["rank"] = rank + 1
-                if "prediction_confidence" not in metric.keys():
-                    continue  # skip facts with objects that are not within the vocabulary (TODO: document in thesis)
+                    vs = tokenizer.vocab_size
+                    top_vs = torch.topk(mask_word, vs, dim=1)
+                    top_vs_values = top_vs[0][0]
+                    top_vs_indices = top_vs[1][0]
 
-                metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
-                metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
-                metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
-                tmp_prod = metric["sub_frequency"] * metric["obj_frequency"]
-                metric["relative_frequency"] = metric["frequency"] / tmp_prod if tmp_prod != 0 else 0
+                    for rank, (token_index, value) in enumerate(zip(top_vs_indices, top_vs_values)):
+                        token = tokenizer.decode([token_index]).lower().replace(" ", "")
+                        for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
+                            obj_l = obj_l.lower().replace(" ", "")
+                            if token == obj_l and rank < k:
+                                metric["p_at_k"] = 1
+                            if token == obj_l:
+                                # is better than previous scores?
+                                if "prediction_confidence" not in metric.keys() or metric["prediction_confidence"] < value.item():
+                                    metric["prediction_confidence"] = value.item()
+                                    metric["reciprocal_rank"] = 1 / (rank + 1)
+                                    metric["rank"] = rank + 1
+                    if "prediction_confidence" not in metric.keys():
+                        continue  # skip facts with objects that are not within the vocabulary (TODO: document in thesis)
 
-                metrics.append(metric)
+                    metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
+                    metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
+                    metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
+                    tmp_prod = metric["sub_frequency"] * metric["obj_frequency"]
+                    metric["relative_frequency"] = metric["frequency"] / tmp_prod if tmp_prod != 0 else 0
 
-                cnt += 1
-                if cnt == max_questions:
-                    break
+                    metrics.append(metric)
+
+                    cnt += 1
+                    bar()
+                    if cnt == max_questions:
+                        break
 
         from scipy import stats
         var_x = [m["frequency"] for m in metrics]
