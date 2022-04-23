@@ -57,6 +57,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 batch_count += 1
 
         epoch_relative_loss = epoch_loss / batch_count
+        print(f"epoch_relative_loss: {epoch_relative_loss}")
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
