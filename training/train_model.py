@@ -11,6 +11,7 @@ gremc = GoogleREMetricCalculator()
 trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
 
+
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
@@ -25,7 +26,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     mod_path = Path(__file__).parent.parent
     absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
-    data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
+    data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt') if not "nsp" in x]
 
     for i in range(epochs):
         epoch_loss = 0
@@ -42,7 +43,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 #for batch in batches:
 
                 remaining_for_path = lines_amount
-                with open(path, 'r', encoding='utf-8') as fp:
+                with open(path, 'rc', encoding='utf-8') as fp:
                     batch_cnt = 0
                     while True:
                         batch_cnt += 1

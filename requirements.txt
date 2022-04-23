@@ -10,3 +10,4 @@ torch==1.8.1
 tqdm==4.62.3
 transformers==4.17.0
 spacy==3.2.4
+alive-progress==2.4.1
