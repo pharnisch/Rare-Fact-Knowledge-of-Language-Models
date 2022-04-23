@@ -128,22 +128,38 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             # scheduler
         }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
-    model.to('cpu')
-    model.eval()
+        model.to('cpu')
+        model.eval()
 
-    k = 10
-    mq = 100
-    cnmc.get_metrics({
-        "base_path": base_path,
-        "tokenizer": tokenizer,
-        "model": model,
-        "k": k,
-        "max_questions": mq,
-        "file": "test"
-    })
+        k = 10
+        mq = 100
+        cnmc.show_metrics({
+            "base_path": base_path,
+            "tokenizer": tokenizer,
+            "model": model,
+            "k": k,
+            "max_questions": mq,
+            "file": "test"
+        })
+        gremc.show_metrics({
+            "base_path": base_path,
+            "tokenizer": tokenizer,
+            "model": model,
+            "k": k,
+            "max_questions": mq,
+            "file": "date_of_birth"
+        })
+        trmc.show_metrics({
+            "base_path": base_path,
+            "tokenizer": tokenizer,
+            "model": model,
+            "k": k,
+            "max_questions": mq,
+            "file": "P1376"
+        })
 
-    model.to(device)
-    model.train()
+        model.to(device)
+        model.train()
 
 
 def get_batch_from_lines(lines, tokenizer):
