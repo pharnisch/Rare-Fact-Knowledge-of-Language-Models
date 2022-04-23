@@ -24,19 +24,19 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     mod_path = Path(__file__).parent.parent
     absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
-    paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
+    data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt')]
 
     for i in range(epochs):
+        epoch_loss = 0
+        batch_count = 0
         epoch = i + already_trained_epochs
+        print(f"epoch {epoch} (of {epochs}) begins ...")
         #loop = tqdm(loader, leave=True)
         #for batch in loop:
-        for path in paths:
+        for idx, path in enumerate(data_paths):
+            print(f"path {idx+1} of {len(data_paths)} ...")
             batches = make_batches_from_path(path, lines_amount, tokenizer, batch_size)
             for batch in batches:
-                print(len(batch))
-                print("---")
-                quit()
-
                 optimizer.zero_grad()
 
                 # pull all tensor batches required for training
@@ -53,10 +53,10 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 # print relevant info to progress bar
                 #loop.set_description("Epoch " + str(epoch))
                 #loop.set_postfix(loss=loss.item())
-                print("Epoch " + str(epoch))
-                print(f"loss: {loss.item()}")
-                print("-------------------")
+                epoch_loss += loss.item()
+                batch_count += 1
 
+        epoch_relative_loss = epoch_loss / batch_count
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
@@ -84,7 +84,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         for checkpoint in checkpoints:
             # delete best previous epoch checkpoint only if it is worse than last epoch
             if checkpoint["epoch"] == best_score_checkpoint["epoch"]:
-                if checkpoint["score"] > loss.item():
+                if checkpoint["score"] > epoch_relative_loss:
                     os.remove(checkpoint["path"])
             # delete all other epochs anyway
             else:
@@ -97,7 +97,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "optimizer_state_dict": optimizer,
             "loss": loss
             # scheduler
-        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(loss.item(), 6)}-checkpoint.pth")
+        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
     model.to('cpu')
     model.eval()
