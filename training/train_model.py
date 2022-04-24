@@ -34,7 +34,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         epoch = i + already_trained_epochs
         #print(f"epoch {epoch+1} (of {epochs}) begins ...")
         #epoch_total_batches = len(data_paths) * (int(lines_amount / batch_size) + 1)
-        with alive_bar(len(data_paths), dual_line=True, title=f"Epoch {epoch + 1}") as bar:
+        with alive_bar(len(data_paths), title=f"Epoch {epoch + 1}") as bar:
             #loop = tqdm(loader, leave=True)
             #for batch in loop:
             for idx, path in enumerate(data_paths):
@@ -47,10 +47,10 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     remaining_encodings = {"input_ids":[],"attention_mask":[]}
                     batch_cnt = 0
                     while True:
-                        bar.text = f" -> File {idx + 1}: Documents finished {lines_amount - remaining_for_path}/{lines_amount}"
+                        bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                         batch_cnt += 1
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
-                            bar.text = f" -> File {idx + 1}: Documents finished {lines_amount - remaining_for_path}/{lines_amount}"
+                            bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                             break
                         #print(f"    batch {batch_cnt} of {int(lines_amount / batch_size) + 1} ...")
                         amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
