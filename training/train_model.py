@@ -33,8 +33,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         batch_count = 0
         epoch = i + already_trained_epochs
         #print(f"epoch {epoch+1} (of {epochs}) begins ...")
-        epoch_total_batches = len(data_paths) * (int(lines_amount / batch_size) + 1)
-        with alive_bar(epoch_total_batches, title=f"Epoch {epoch + 1}") as bar:
+        #epoch_total_batches = len(data_paths) * (int(lines_amount / batch_size) + 1)
+        with alive_bar(len(data_paths), title=f"Epoch {epoch + 1}") as bar:
             #loop = tqdm(loader, leave=True)
             #for batch in loop:
             for idx, path in enumerate(data_paths):
@@ -44,24 +44,26 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                 remaining_for_path = lines_amount
                 with open(path, 'r', encoding='utf-8') as fp:
+                    remaining_encodings = {"input_ids":[],"attention_mask":[]}
                     batch_cnt = 0
                     while True:
                         batch_cnt += 1
-                        if remaining_for_path == 0:
+                        if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                             break
                         #print(f"    batch {batch_cnt} of {int(lines_amount / batch_size) + 1} ...")
-                        amount = batch_size if remaining_for_path >= batch_size else remaining_for_path
+                        amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
                         #lines = [next(fp).replace("\n", "") for _ in range(amount)]
                         lines = []
-                        for _ in range(amount):
-                            next_line = next(fp, None)
-                            if next_line is not None:
-                                lines.append(next_line.replace("\n", ""))
-                                remaining_for_path -= 1
-                            else:
-                                remaining_for_path = 0
-                                break
-                        batch = get_batch_from_lines(lines, tokenizer)
+                        if amount > 0:
+                            for _ in range(amount):
+                                next_line = next(fp, None)
+                                if next_line is not None:
+                                    lines.append(next_line.replace("\n", ""))
+                                    remaining_for_path -= 1
+                                else:
+                                    remaining_for_path = 0
+                                    break
+                        batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings)
 
                         optimizer.zero_grad()
 
@@ -82,7 +84,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         epoch_loss += loss.item()
                         batch_count += 1
 
-                        bar()  # indicate that one of the epoch_total_batches is finished!
+                bar()  # indicate that one of the epoch total paths is finished!
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
@@ -162,11 +164,53 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         model.train()
 
 
-def get_batch_from_lines(lines, tokenizer):
-    encoded = tokenizer(lines, add_special_tokens=True, max_length=512, padding='max_length', truncation=True)
+def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
 
-    labels = torch.tensor(encoded["input_ids"])
-    mask = torch.tensor(encoded["attention_mask"])
+    # ENCODE
+    if len(lines) > 0:
+        encoded = tokenizer(lines, add_special_tokens=False)
+
+    # SPLIT THE ENCODINGS TO MAX 512 CHUNKS
+    split_encoded = {  # len >= batch_size !!!
+        "input_ids": remaining_encodings["input_ids"],
+        "attention_mask": remaining_encodings["attention_mask"]
+    }
+    if len(lines) > 0:
+        stride = 20
+        for _input_ids, _attention_mask in zip(encoded["input_ids"], encoded["attention_mask"]):
+            if len(_input_ids) <= tokenizer.max_len_single_sentence:
+                split_encoded["input_ids"].append(_input_ids)
+                split_encoded["attention_mask"].append(_attention_mask)
+            else:  # split as many times as required, using stride
+                tokens_left = len(_input_ids)
+                idx_from = 0
+                while idx_from < tokens_left:
+                    split_encoded["input_ids"].append(_input_ids[idx_from:idx_from+tokenizer.max_len_single_sentence])
+                    split_encoded["attention_mask"].append(_attention_mask[idx_from:idx_from+tokenizer.max_len_single_sentence])
+                    idx_from += tokenizer.max_len_single_sentence - stride
+
+    # SEPERATE REMAINING ENCODINGS FROM BATCH ENCODINGS
+    batch_encoded = {
+        "input_ids": split_encoded["input_ids"][:batch_size],
+        "attention_mask": split_encoded["attention_mask"][:batch_size]
+    }
+    remaining_encoded = {
+        "input_ids": split_encoded["input_ids"][batch_size:],
+        "attention_mask": split_encoded["attention_mask"][batch_size:]
+    }
+
+    # ADDING SPECIAL TOKENS AND PADDING FOR BATCH
+    max_seq_len = max([len(ii)+2 for ii in batch_encoded["input_ids"]])
+    for idx, (_input_ids, _attention_mask) in enumerate(zip(batch_encoded["input_ids"], batch_encoded["attention_mask"])):
+        difference = max_seq_len - (len(_input_ids) + 2)
+        batch_encoded["input_ids"][idx] = tokenizer.build_inputs_with_special_tokens(_input_ids) + [tokenizer.pad_token_id] * difference
+        batch_encoded["attention_mask"][idx] = [1] + _attention_mask + [1] + [0] * difference
+
+    #encoded = tokenizer(lines, add_special_tokens=True, max_length=512, padding=True, truncation=True)  # padding="max_length"
+
+    # MASKING
+    labels = torch.tensor(batch_encoded["input_ids"])
+    mask = torch.tensor(batch_encoded["attention_mask"])
 
     input_ids = labels.detach().clone()
     # create random array of floats with equal dims to input_ids
@@ -193,7 +237,7 @@ def get_batch_from_lines(lines, tokenizer):
         "attention_mask": mask,
         "labels": labels
     }
-    return batch
+    return batch, remaining_encoded
 
 
 def make_batches_from_path(path, lines_amount, tokenizer, batch_size):

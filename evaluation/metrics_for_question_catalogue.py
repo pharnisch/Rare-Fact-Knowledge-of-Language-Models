@@ -15,7 +15,7 @@ class MetricCalculator(abc.ABC):
 
         metrics = []
 
-        with alive_bar(max_questions, title=f"file") as bar:
+        with alive_bar(max_questions, title=f"{file}") as bar:
             with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
                 cnt = 0
                 for line in f.iter():
