@@ -97,7 +97,7 @@ class MetricCalculator(abc.ABC):
             "rank_avg": round(rank_avg, 2),
             "rank_max": max(var_y),
             "rank_min": min(var_y),
-            "confidence_avg": round(sum(var_z) / len(var_z), 2),
+            "confidence_avg": sum(var_z) / len(var_z),
             "confidence_max": max(var_z),
             "confidence_min": min(var_z),
             "pearson": round(pearson_correlation_coefficient[0], 2),
