@@ -137,30 +137,40 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
         k = 10
         mq = 1000
-        cnmc.show_metrics({
-            "base_path": base_path,
-            "tokenizer": tokenizer,
-            "model": model,
-            "k": k,
-            "max_questions": mq,
-            "file": "test"
-        })
-        gremc.show_metrics({
-            "base_path": base_path,
-            "tokenizer": tokenizer,
-            "model": model,
-            "k": k,
-            "max_questions": mq,
-            "file": "date_of_birth"
-        })
-        trmc.show_metrics({
-            "base_path": base_path,
-            "tokenizer": tokenizer,
-            "model": model,
-            "k": k,
-            "max_questions": mq,
-            "file": "P1376"
-        })
+        metrics = []
+        metrics.append(
+            cnmc.get_metrics({
+                "base_path": base_path,
+                "tokenizer": tokenizer,
+                "model": model,
+                "k": k,
+                "max_questions": mq,
+                "file": "test"
+            })
+        )
+        metrics.append(
+            gremc.get_metrics({
+                "base_path": base_path,
+                "tokenizer": tokenizer,
+                "model": model,
+                "k": k,
+                "max_questions": mq,
+                "file": "date_of_birth"
+            })
+        )
+        metrics.append(
+            trmc.get_metrics({
+                "base_path": base_path,
+                "tokenizer": tokenizer,
+                "model": model,
+                "k": k,
+                "max_questions": mq,
+                "file": "P1376"
+            })
+        )
+        metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}"
+        with open(metrics_file_name, "x") as f:
+            f.write(metrics)
 
         model.to(device)
         model.train()

@@ -5,7 +5,7 @@ import os
 from alive_progress import alive_bar
 
 class MetricCalculator(abc.ABC):
-    def show_metrics(self, arg_dict: dict):
+    def get_metrics(self, arg_dict: dict):
         base_path = arg_dict["base_path"]
         tokenizer = arg_dict["tokenizer"]
         model = arg_dict["model"]
@@ -87,10 +87,17 @@ class MetricCalculator(abc.ABC):
         from scipy import stats
         var_x = [m["frequency"] for m in metrics]
         var_y = [m["rank"] for m in metrics]
+        rank_avg = sum(var_y) / len(var_y)
         spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
         pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
 
-        print(f"{file} (N={cnt}): Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
+        print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
+        return {
+            "rank_avg": round(rank_avg,2),
+            "pearson": round(pearson_correlation_coefficient[0],2),
+            "spearman": round(spearman_correlation_coefficient[0],2),
+            "file": file
+        }
 
     def get_metrics(self, arg_dict: dict):
         base_path = arg_dict["base_path"]
