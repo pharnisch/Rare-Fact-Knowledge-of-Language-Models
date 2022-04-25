@@ -5,7 +5,7 @@ import os
 from alive_progress import alive_bar
 
 class MetricCalculator(abc.ABC):
-    def get_metrics(self, arg_dict: dict):
+    def get_metrics_for_epoch(self, arg_dict: dict):
         base_path = arg_dict["base_path"]
         tokenizer = arg_dict["tokenizer"]
         model = arg_dict["model"]

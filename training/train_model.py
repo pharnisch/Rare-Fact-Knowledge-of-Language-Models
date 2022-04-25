@@ -139,7 +139,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         mq = 1000
         metrics = []
         metrics.append(
-            cnmc.get_metrics({
+            cnmc.get_metrics_for_epoch({
                 "base_path": base_path,
                 "tokenizer": tokenizer,
                 "model": model,
@@ -149,7 +149,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             })
         )
         metrics.append(
-            gremc.get_metrics({
+            gremc.get_metrics_for_epoch({
                 "base_path": base_path,
                 "tokenizer": tokenizer,
                 "model": model,
@@ -159,7 +159,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             })
         )
         metrics.append(
-            trmc.get_metrics({
+            trmc.get_metrics_for_epoch({
                 "base_path": base_path,
                 "tokenizer": tokenizer,
                 "model": model,
