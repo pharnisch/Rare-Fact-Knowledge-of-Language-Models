@@ -101,7 +101,9 @@ class MetricCalculator(abc.ABC):
             "confidence_max": max(var_z),
             "confidence_min": min(var_z),
             "pearson": round(pearson_correlation_coefficient[0], 4),
+            "pearson_p": round(pearson_correlation_coefficient[1], 4),
             "spearman": round(spearman_correlation_coefficient[0], 4),
+            "spearman_p": round(spearman_correlation_coefficient[1], 4),
             "file": file
         }
 
