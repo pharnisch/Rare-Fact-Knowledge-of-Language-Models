@@ -40,7 +40,7 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
+                tokenizer=transformers.BertTokenizerFast.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
                 conf=conf,
                 model=transformers.BertForMaskedLM(conf)
             )
@@ -54,7 +54,7 @@ class Transformer:
                 type_vocab_size=1  # this change makes sense (?) because we only insert one input (no SEP and more content)
             )
             return Transformer(
-                tokenizer=transformers.ElectraTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
+                tokenizer=transformers.ElectraTokenizerFast.from_pretrained(f"{absolute_path}/word_piece_tokenizer", model_max_length=512),
                 conf=conf,
                 model=transformers.ElectraForMaskedLM(conf)
             )
@@ -68,7 +68,7 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.RobertaTokenizer.from_pretrained(f"{absolute_path}/byte_level_bpe_tokenizer", model_max_length=512),
+                tokenizer=transformers.RobertaTokenizerFast.from_pretrained(f"{absolute_path}/byte_level_bpe_tokenizer", model_max_length=512),
                 conf=conf,
                 model=transformers.RobertaForMaskedLM(conf)
             )
@@ -82,7 +82,7 @@ class Transformer:
                 type_vocab_size=1
             )
             return Transformer(
-                tokenizer=transformers.BertTokenizer.from_pretrained(f"{absolute_path}/word_piece_tokenizer",
+                tokenizer=transformers.BertTokenizerFast.from_pretrained(f"{absolute_path}/word_piece_tokenizer",
                                                                      model_max_length=512),
                 conf=conf,
                 model=transformers.BertForPreTraining(conf)
