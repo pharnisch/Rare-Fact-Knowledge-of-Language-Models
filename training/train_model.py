@@ -10,7 +10,7 @@ cnmc = ConceptNetMetricCalculator()
 gremc = GoogleREMetricCalculator()
 trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
-
+import json
 
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
@@ -170,7 +170,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         )
         metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
         with open(metrics_file_name, "x") as f:
-            f.write(metrics)
+            f.write(json.dumps(metrics) + "\n")
 
         model.to(device)
         model.train()
