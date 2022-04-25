@@ -170,7 +170,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         )
         metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
         with open(metrics_file_name, "x") as f:
-            f.write(json.dumps(metrics) + "\n")
+            f.write(json.dumps({
+                "metrics": metrics,
+                "epoch": epoch + 1,
+                "epoch_loss": round(epoch_loss, 6),
+                "epoch_loss_relative": round(epoch_relative_loss, 6)
+            }) + "\n")
 
         model.to(device)
         model.train()

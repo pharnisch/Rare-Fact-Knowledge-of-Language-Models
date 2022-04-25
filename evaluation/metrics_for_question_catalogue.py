@@ -16,14 +16,14 @@ class MetricCalculator(abc.ABC):
         metrics = []
 
         with alive_bar(max_questions, title=f"{file}") as bar:
-            with jsonlines.open(self.get_path_to_file(base_path, file)) as f:
+            with jsonlines.open(self.get_path_to_file(base_path, file)) as f1:
                 cnt = 0
-                for line in f.iter():
+                for line in f1.iter():
                     if cnt % 100 == 0:
                         frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
                         if os.path.exists(frequency_dict_path):
-                            with jsonlines.open(frequency_dict_path) as f:
-                                tmp_arr = f.read()
+                            with jsonlines.open(frequency_dict_path) as f2:
+                                tmp_arr = f2.read()
                                 frequency_dict = tmp_arr[0]
                                 sub_frequency_dict = tmp_arr[1]
                                 obj_frequency_dict = tmp_arr[2]
@@ -87,15 +87,21 @@ class MetricCalculator(abc.ABC):
         from scipy import stats
         var_x = [m["frequency"] for m in metrics]
         var_y = [m["rank"] for m in metrics]
+        var_z = [m["prediction_confidence"] for m in metrics]
         rank_avg = sum(var_y) / len(var_y)
         spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
         pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
 
         print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
         return {
-            "rank_avg": round(rank_avg,2),
-            "pearson": round(pearson_correlation_coefficient[0],2),
-            "spearman": round(spearman_correlation_coefficient[0],2),
+            "rank_avg": round(rank_avg, 2),
+            "rank_max": max(var_y),
+            "rank_min": min(var_y),
+            "confidence_avg": round(sum(var_z) / len(var_z), 2),
+            "confidence_max": max(var_z),
+            "confidence_min": min(var_z),
+            "pearson": round(pearson_correlation_coefficient[0], 2),
+            "spearman": round(spearman_correlation_coefficient[0], 2),
             "file": file
         }
 
