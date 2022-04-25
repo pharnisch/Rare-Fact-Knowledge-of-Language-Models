@@ -94,14 +94,14 @@ class MetricCalculator(abc.ABC):
 
         print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
         return {
-            "rank_avg": round(rank_avg, 2),
+            "rank_avg": round(rank_avg, 4),
             "rank_max": max(var_y),
             "rank_min": min(var_y),
             "confidence_avg": sum(var_z) / len(var_z),
             "confidence_max": max(var_z),
             "confidence_min": min(var_z),
-            "pearson": round(pearson_correlation_coefficient[0], 2),
-            "spearman": round(spearman_correlation_coefficient[0], 2),
+            "pearson": round(pearson_correlation_coefficient[0], 4),
+            "spearman": round(spearman_correlation_coefficient[0], 4),
             "file": file
         }
 
