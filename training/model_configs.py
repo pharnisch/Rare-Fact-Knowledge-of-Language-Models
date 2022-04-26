@@ -12,6 +12,7 @@ class TransformerType(Enum):
     ROBERTA = 2
     ELECTRA = 3
     BERT_PRETRAIN = 4
+    DISTIL_BERT = 5
 
 class Transformer:
     tokenizer: transformers.PreTrainedTokenizer = None
@@ -86,6 +87,21 @@ class Transformer:
                                                                      model_max_length=512),
                 conf=conf,
                 model=transformers.BertForPreTraining(conf)
+            )
+        elif transformer_type == TransformerType.DISTIL_BERT:
+            conf = transformers.DistilBertConfig(
+                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                max_position_embeddings=512,
+                hidden_size=768,
+                n_heads=12,
+                n_layers=6,
+                type_vocab_size=1
+            )
+            return Transformer(
+                tokenizer=transformers.DistilBertTokenizerFast.from_pretrained(f"{absolute_path}/word_piece_tokenizer",
+                                                                     model_max_length=512),
+                conf=conf,
+                model=transformers.DistilBertForMaskedLM(conf)
             )
         else:
             raise Exception(f"TransformerType {type} not implemented!")
