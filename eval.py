@@ -16,6 +16,7 @@ def evaluate():
     # parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model folder within /models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     parser.add_argument('relation_file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
+    parser.add_argument('-be', "--by-example", default=False, action='store_true', help='Query by example')
     parser.add_argument('-k', "--k",
                         default=10,
                         action='store',
@@ -85,7 +86,8 @@ def evaluate():
                 "model": model,
                 "k": k,
                 "max_questions": mq,
-                "file": relation_file
+                "file": relation_file,
+                "by_example": args.by_example
             }))
     if len(metrics) == 0:  # if relation_file just contains a masked sent
         while True:

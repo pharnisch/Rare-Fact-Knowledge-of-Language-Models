@@ -114,6 +114,7 @@ class MetricCalculator(abc.ABC):
         k = arg_dict["k"]
         max_questions = arg_dict["max_questions"]
         file = arg_dict["file"]
+        by_example = arg_dict["by_example"]
 
         from transformers import FillMaskPipeline
         nlp_fill = FillMaskPipeline(model, tokenizer)
@@ -131,8 +132,8 @@ class MetricCalculator(abc.ABC):
                 if cnt % 100 == 0:
                     frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
                     if os.path.exists(frequency_dict_path):
-                        with jsonlines.open(frequency_dict_path) as f:
-                            tmp_arr = f.read()
+                        with jsonlines.open(frequency_dict_path) as f2:
+                            tmp_arr = f2.read()
                             frequency_dict = tmp_arr[0]
                             sub_frequency_dict = tmp_arr[1]
                             obj_frequency_dict = tmp_arr[2]
@@ -155,6 +156,22 @@ class MetricCalculator(abc.ABC):
                 metric["p_at_k"] = 0
 
                 masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
+                if by_example:
+                    with jsonlines.open(self.get_path_to_file(base_path, file)) as f3:
+                        example_count = 0
+                        examples = ""
+                        for example_line in f3.iter():
+                            if cnt == example_count:
+                                continue  # do not use solution as an example!
+                            if example_count == 10:
+                                break  # use 10 examples!
+                            _, _, example_obj, _, _, example_masked_sent = self.parse_line(example_line, file)
+                            example = example_masked_sent.replace("[MASK]", example_obj)
+                            examples += example + " "
+                            example_count += 1
+
+                        masked_sent = examples + "[SEP]" + masked_sent
+
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs, return_dict=True)
                 logits = output.logits
