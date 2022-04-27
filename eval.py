@@ -17,6 +17,9 @@ def evaluate():
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     parser.add_argument('relation_file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
     parser.add_argument('-be', "--by-example", default=False, action='store_true', help='Query by example')
+    parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-minf', "--min-freq", default=0, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-maxf', "--max-freq", default=100_000_000, action='store', nargs='?', type=int, help='')
     parser.add_argument('-k', "--k",
                         default=10,
                         action='store',
@@ -87,7 +90,10 @@ def evaluate():
                 "k": k,
                 "max_questions": mq,
                 "file": relation_file,
-                "by_example": args.by_example
+                "by_example": args.by_example,
+                "seed": args.seed,
+                "min_freq": args.min_freq,
+                "max_freq": args.max_freq
             }))
     if len(metrics) == 0:  # if relation_file just contains a masked sent
         while True:

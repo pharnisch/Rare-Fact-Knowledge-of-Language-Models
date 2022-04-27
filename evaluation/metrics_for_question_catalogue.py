@@ -115,6 +115,7 @@ class MetricCalculator(abc.ABC):
         max_questions = arg_dict["max_questions"]
         file = arg_dict["file"]
         by_example = arg_dict["by_example"]
+        seed = arg_dict["seed"]
 
         from transformers import FillMaskPipeline
         nlp_fill = FillMaskPipeline(model, tokenizer)
@@ -157,7 +158,8 @@ class MetricCalculator(abc.ABC):
 
                 masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
                 if by_example:
-                    masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file)
+
+                    masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file, seed, arg_dict["min_freq"], arg_dict["max_freq"])
 
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs, return_dict=True)
@@ -362,39 +364,54 @@ class MetricCalculator(abc.ABC):
         print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
         return metrics
 
-    def prepend_examples(self, masked_sent, n, current_index, base_path, file):
+    def prepend_examples(self, masked_sent, n, current_index, base_path, file, seed, min_freq, max_freq):
+        import random
+        random.seed(seed)
+
+        all_candidates = []
+
         with jsonlines.open(self.get_path_to_file(base_path, file)) as qc:
-            example_count = 0
             iteration_count = 0
-            examples = ""
 
             for example_line in qc.iter():
 
-                if example_count == n:
-                    break  # use 10 examples!
-
-                if iteration_count == current_index:
-                    iteration_count += 1
-                    continue  # do not use solution as an example!
-
-                frequency_dict_path = self.get_path_to_frequencies(base_path, file, example_count)
-                if os.path.exists(frequency_dict_path):
-                    with jsonlines.open(frequency_dict_path) as freq:
-                        tmp_arr = freq.read()
-                        frequency_dict = tmp_arr[0]
+                if iteration_count % 100 == 0:
+                    frequency_dict_path = self.get_path_to_frequencies(base_path, file, iteration_count)
+                    if os.path.exists(frequency_dict_path):
+                        with jsonlines.open(frequency_dict_path) as freq:
+                            tmp_arr = freq.read()
+                            frequency_dict = tmp_arr[0]
 
                 example_sub, _, example_obj, _, example_rel, example_masked_sent = self.parse_line(example_line, file)
-                if self.get_frequency(frequency_dict, example_sub, example_obj, example_rel) > 5:
-                    iteration_count += 1
-                    continue
-
-                example = example_masked_sent.replace("[MASK]", example_obj)
-                examples += example + " "
-                example_count += 1
+                freq = self.get_frequency(frequency_dict, example_sub, example_obj, example_rel)
+                all_candidates.append(
+                    {
+                        "example": example_masked_sent.replace("[MASK]", example_obj),
+                        "frequency": freq
+                    }
+                )
                 iteration_count += 1
 
-            masked_sent = examples + "[SEP]" + masked_sent
-            return masked_sent
+        example_count = 0
+        examples = ""
+        forbidden_idx = [current_index]
+        while example_count < n:
+            random_idx = int(random.random() * len(all_candidates))
+            print(f"rndidx {random_idx}")
+            if random_idx in forbidden_idx:
+                continue
+
+            if all_candidates[random_idx]["frequency"] < min_freq or all_candidates[random_idx]["frequency"] > max_freq:
+                print(f"not suitable")
+                continue
+
+            random_example = all_candidates[random_idx]["example"]
+            examples += random_example + " "
+            forbidden_idx.append(random_idx)
+            example_count += 1
+
+        masked_sent = examples + "[SEP]" + masked_sent
+        return masked_sent
 
     @abc.abstractmethod
     def parse_line(self, line: str, file: str):
