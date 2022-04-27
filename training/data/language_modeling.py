@@ -28,7 +28,7 @@ class TextDatasetForNextSentencePrediction(Dataset):
     def __init__(
         self,
         tokenizer: PreTrainedTokenizer,
-        file_path: str,
+        file_paths: List[str],
         block_size: int,
         overwrite_cache=False,
         short_seq_probability=0.1,
@@ -40,19 +40,29 @@ class TextDatasetForNextSentencePrediction(Dataset):
             ),
             FutureWarning,
         )
-        if not os.path.isfile(file_path):
-            raise ValueError(f"Input file path {file_path} not found")
+        if len(file_paths) == 0:
+            raise ValueError(f"Input file paths is an empty list")
+        #if not os.path.isfile(file_path):
+        #    raise ValueError(f"Input file path {file_path} not found")
+
+        self.file_paths = file_paths
 
         self.short_seq_probability = short_seq_probability
         self.nsp_probability = nsp_probability
+        self.tokenizer = tokenizer
+        self.block_size = block_size
+        self.overwrite_cache = overwrite_cache
 
+        self.documents = [[]]
+        self.examples = []
+        self.length = 6078422
+
+    def cache_next_file(self, file_path):
         directory, filename = os.path.split(file_path)
         cached_features_file = os.path.join(
             directory,
-            f"cached_nsp_{tokenizer.__class__.__name__}_{block_size}_{filename}",
+            f"cached_nsp_{self.tokenizer.__class__.__name__}_{self.block_size}_{filename}",
         )
-
-        self.tokenizer = tokenizer
 
         # Make sure only the first process in distributed training processes the dataset,
         # and the others will use the cache.
@@ -72,7 +82,7 @@ class TextDatasetForNextSentencePrediction(Dataset):
         # A new document.
 
         with FileLock(lock_path):
-            if os.path.exists(cached_features_file) and not overwrite_cache:
+            if os.path.exists(cached_features_file) and not self.overwrite_cache:
                 start = time.time()
                 with open(cached_features_file, "rb") as handle:
                     self.examples = pickle.load(handle)
@@ -93,15 +103,15 @@ class TextDatasetForNextSentencePrediction(Dataset):
                         # Empty lines are used as document delimiters
                         if not line and len(self.documents[-1]) != 0:
                             self.documents.append([])
-                        tokens = tokenizer.tokenize(line)
-                        tokens = tokenizer.convert_tokens_to_ids(tokens)
+                        tokens = self.tokenizer.tokenize(line)
+                        tokens = self.tokenizer.convert_tokens_to_ids(tokens)
                         if tokens:
                             self.documents[-1].append(tokens)
 
                 logger.info(f"Creating examples from {len(self.documents)} documents.")
                 self.examples = []
                 for doc_index, document in enumerate(self.documents):
-                    self.create_examples_from_document(document, doc_index, block_size)
+                    self.create_examples_from_document(document, doc_index, self.block_size)
 
                 start = time.time()
                 with open(cached_features_file, "wb") as handle:
@@ -207,7 +217,15 @@ class TextDatasetForNextSentencePrediction(Dataset):
             i += 1
 
     def __len__(self):
-        return len(self.examples)
+        return 6
 
     def __getitem__(self, i):
-        return self.examples[i]
+        file_idx = int(i/3)
+        row_idx = i % 3
+        print(f"i {i}")
+        print(f"f {file_idx}")
+        print(f"r {row_idx}")
+        if row_idx == 0: # beginning of file
+            self.cache_next_file(self.file_paths[file_idx])
+
+        return self.examples[row_idx]

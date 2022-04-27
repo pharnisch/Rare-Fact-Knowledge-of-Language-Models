@@ -157,20 +157,7 @@ class MetricCalculator(abc.ABC):
 
                 masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
                 if by_example:
-                    with jsonlines.open(self.get_path_to_file(base_path, file)) as f3:
-                        example_count = 0
-                        examples = ""
-                        for example_line in f3.iter():
-                            if cnt == example_count:
-                                continue  # do not use solution as an example!
-                            if example_count == 10:
-                                break  # use 10 examples!
-                            _, _, example_obj, _, _, example_masked_sent = self.parse_line(example_line, file)
-                            example = example_masked_sent.replace("[MASK]", example_obj)
-                            examples += example + " "
-                            example_count += 1
-
-                        masked_sent = examples + "[SEP]" + masked_sent
+                    masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file)
 
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs, return_dict=True)
@@ -228,6 +215,8 @@ class MetricCalculator(abc.ABC):
         from scipy import stats
         var_x = [m["frequency"] for m in metrics]
         var_y = [m["rank"] for m in metrics]
+        print(f"P@{k}: {sum([m['p_at_k'] for m in metrics]) / len(metrics)}")
+
         spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
         print(spearman_correlation_coefficient)
         pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
@@ -316,7 +305,6 @@ class MetricCalculator(abc.ABC):
         # dynamic buckets
         bucket_amount = 10
 
-
         def take_frequency(m):
             return m["frequency"]
         metrics.sort(key=take_frequency)
@@ -373,6 +361,40 @@ class MetricCalculator(abc.ABC):
         print(f"({bucket_borders[-1][1]}, 0)")
         print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
         return metrics
+
+    def prepend_examples(self, masked_sent, n, current_index, base_path, file):
+        with jsonlines.open(self.get_path_to_file(base_path, file)) as qc:
+            example_count = 0
+            iteration_count = 0
+            examples = ""
+
+            for example_line in qc.iter():
+
+                if example_count == n:
+                    break  # use 10 examples!
+
+                if iteration_count == current_index:
+                    iteration_count += 1
+                    continue  # do not use solution as an example!
+
+                frequency_dict_path = self.get_path_to_frequencies(base_path, file, example_count)
+                if os.path.exists(frequency_dict_path):
+                    with jsonlines.open(frequency_dict_path) as freq:
+                        tmp_arr = freq.read()
+                        frequency_dict = tmp_arr[0]
+
+                example_sub, _, example_obj, _, example_rel, example_masked_sent = self.parse_line(example_line, file)
+                if self.get_frequency(frequency_dict, example_sub, example_obj, example_rel) > 5:
+                    iteration_count += 1
+                    continue
+
+                example = example_masked_sent.replace("[MASK]", example_obj)
+                examples += example + " "
+                example_count += 1
+                iteration_count += 1
+
+            masked_sent = examples + "[SEP]" + masked_sent
+            return masked_sent
 
     @abc.abstractmethod
     def parse_line(self, line: str, file: str):
