@@ -116,6 +116,8 @@ class MetricCalculator(abc.ABC):
         file = arg_dict["file"]
         by_example = arg_dict["by_example"]
         seed = arg_dict["seed"]
+        import random
+        random.seed(seed)
 
         from transformers import FillMaskPipeline
         nlp_fill = FillMaskPipeline(model, tokenizer)
@@ -159,7 +161,7 @@ class MetricCalculator(abc.ABC):
                 masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
                 if by_example:
 
-                    masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file, seed, arg_dict["min_freq"], arg_dict["max_freq"])
+                    masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file, arg_dict["min_freq"], arg_dict["max_freq"])
 
                 inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                 output = model(**inputs, return_dict=True)
@@ -364,10 +366,7 @@ class MetricCalculator(abc.ABC):
         print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
         return metrics
 
-    def prepend_examples(self, masked_sent, n, current_index, base_path, file, seed, min_freq, max_freq):
-        import random
-        random.seed(seed)
-
+    def prepend_examples(self, masked_sent, n, current_index, base_path, file, min_freq, max_freq):
         all_candidates = []
 
         with jsonlines.open(self.get_path_to_file(base_path, file)) as qc:
