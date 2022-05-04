@@ -19,19 +19,19 @@ def evaluate():
     parser.add_argument('-be', "--by-example", default=False, action='store_true', help='Query by example')
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minf', "--min-freq", default=0, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-maxf', "--max-freq", default=100_000_000, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-maxf', "--max-freq", default=100000000, action='store', nargs='?', type=int, help='')
     parser.add_argument('-k', "--k",
-                        default=10,
+                        default=1,
                         action='store',
                         nargs='?',
                         type=int,
-                        help='Param for P@k metric (default 10).')
+                        help='Param for P@k metric (default 1).')
     parser.add_argument('-mq', "--max-questions-per-file",
-                        default=3,
+                        default=100,
                         action='store',
                         nargs='?',
                         type=int,
-                        help='Maximal amount of questions per file (default 3). Set to -1 for no limitation.')
+                        help='Maximal amount of questions per file (default 100). Set to -1 for no limitation.')
     args = parser.parse_args()
     k = args.k
     mq = args.max_questions_per_file if args.max_questions_per_file is not None else -1
