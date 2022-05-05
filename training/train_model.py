@@ -101,7 +101,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 "score": float(s[6])
             }
             for idx, s in enumerate(path_splits)
-            if model_name in s[0]
+            if model_name == s[0]
                and int(s[1]) == num_hidden_layers
                and float(s[2]) == training_data_rate
                and int(s[3]) == batch_size
@@ -130,7 +130,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "optimizer_state_dict": optimizer,
             "loss": loss
             # scheduler
-        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
+        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
         if no_eval:
             continue
@@ -171,7 +171,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "file": "P1376"
                 })
             )
-            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
+            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
             with open(metrics_file_name, "x") as f:
                 f.write(json.dumps({
                     "metrics": metrics,
