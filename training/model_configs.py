@@ -8,11 +8,11 @@ mod_path = Path(__file__).parent.parent
 absolute_path = str(os.path.join(str(mod_path), "models"))
 
 class TransformerType(Enum):
-    BERT = 1
-    ROBERTA = 2
-    ELECTRA = 3
-    BERT_PRETRAIN = 4
-    DISTIL_BERT = 5
+    CorBert = 1
+    CorRoberta = 2
+    CorElectra = 3
+    CorBertPretrain = 4
+    CorDistilBert = 5
 
 class Transformer:
     tokenizer: transformers.PreTrainedTokenizer = None

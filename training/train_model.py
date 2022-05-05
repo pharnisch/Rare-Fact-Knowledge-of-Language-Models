@@ -101,7 +101,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 "score": float(s[6])
             }
             for idx, s in enumerate(path_splits)
-            if model_name == s[0]
+            if model_name in s[0]
                and int(s[1]) == num_hidden_layers
                and float(s[2]) == training_data_rate
                and int(s[3]) == batch_size
