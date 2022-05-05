@@ -16,6 +16,7 @@ def train():
     parser = argparse.ArgumentParser(description='Pretraining of Language Models.')
     parser.add_argument('model_name', metavar="model-name", type=str, help='Name of model to train (BERT, ROBERTA).')
     parser.add_argument('-fs', "--fresh-start", default=False, action='store_true', help='')
+    parser.add_argument('-ne', "--no-eval", default=False, action='store_true', help='')
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
     parser.add_argument('-e', "--epochs", default=20, action='store', nargs='?', type=int, help='')
     parser.add_argument('-lr', "--learning-rate", default=0.0001, action='store', nargs='?', type=float, help='')
@@ -71,7 +72,7 @@ def train():
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
-    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate)
+    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval)
 
 
 if __name__ == "__main__":

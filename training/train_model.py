@@ -12,7 +12,7 @@ trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
 import json
 
-def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate):
+def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
@@ -132,55 +132,58 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             # scheduler
         }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
-        model.to('cpu')
-        model.eval()
+        if no_eval:
+            continue
+        else:
+            model.to('cpu')
+            model.eval()
 
-        k = 10
-        mq = 1000
-        metrics = []
-        metrics.append(
-            cnmc.get_metrics_for_epoch({
-                "base_path": base_path,
-                "tokenizer": tokenizer,
-                "model": model,
-                "k": k,
-                "max_questions": mq,
-                "file": "test"
-            })
-        )
-        metrics.append(
-            gremc.get_metrics_for_epoch({
-                "base_path": base_path,
-                "tokenizer": tokenizer,
-                "model": model,
-                "k": k,
-                "max_questions": mq,
-                "file": "date_of_birth"
-            })
-        )
-        metrics.append(
-            trmc.get_metrics_for_epoch({
-                "base_path": base_path,
-                "tokenizer": tokenizer,
-                "model": model,
-                "k": k,
-                "max_questions": mq,
-                "file": "P1376"
-            })
-        )
-        metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
-        with open(metrics_file_name, "x") as f:
-            f.write(json.dumps({
-                "metrics": metrics,
-                "epoch": epoch + 1,
-                "epoch_loss": round(epoch_loss, 6),
-                "epoch_loss_relative": round(epoch_relative_loss, 6),
-                "epoch_batch_count": batch_count,
-                "batch_size": batch_size
-            }) + "\n")
+            k = 10
+            mq = 1000
+            metrics = []
+            metrics.append(
+                cnmc.get_metrics_for_epoch({
+                    "base_path": base_path,
+                    "tokenizer": tokenizer,
+                    "model": model,
+                    "k": k,
+                    "max_questions": mq,
+                    "file": "test"
+                })
+            )
+            metrics.append(
+                gremc.get_metrics_for_epoch({
+                    "base_path": base_path,
+                    "tokenizer": tokenizer,
+                    "model": model,
+                    "k": k,
+                    "max_questions": mq,
+                    "file": "date_of_birth"
+                })
+            )
+            metrics.append(
+                trmc.get_metrics_for_epoch({
+                    "base_path": base_path,
+                    "tokenizer": tokenizer,
+                    "model": model,
+                    "k": k,
+                    "max_questions": mq,
+                    "file": "P1376"
+                })
+            )
+            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
+            with open(metrics_file_name, "x") as f:
+                f.write(json.dumps({
+                    "metrics": metrics,
+                    "epoch": epoch + 1,
+                    "epoch_loss": round(epoch_loss, 6),
+                    "epoch_loss_relative": round(epoch_relative_loss, 6),
+                    "epoch_batch_count": batch_count,
+                    "batch_size": batch_size
+                }) + "\n")
 
-        model.to(device)
-        model.train()
+            model.to(device)
+            model.train()
 
 
 def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
