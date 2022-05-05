@@ -63,7 +63,7 @@ def train():
             optim = checkpoint["optimizer_state_dict"]
 
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
-                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate)
+                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval)
             return
 
     # make fresh start: instantiate model, optimizer, scheduler
