@@ -31,7 +31,7 @@ class Transformer:
 
     @staticmethod
     def get_transformer(transformer_type: TransformerType, num_hidden_layers=12):
-        if transformer_type == TransformerType.BERT:
+        if transformer_type == TransformerType.CorBert:
             conf = transformers.BertConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
@@ -45,7 +45,7 @@ class Transformer:
                 conf=conf,
                 model=transformers.BertForMaskedLM(conf)
             )
-        elif transformer_type == TransformerType.ELECTRA:
+        elif transformer_type == TransformerType.CorElectra:
             conf = transformers.ElectraConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
@@ -59,7 +59,7 @@ class Transformer:
                 conf=conf,
                 model=transformers.ElectraForMaskedLM(conf)
             )
-        elif transformer_type == TransformerType.ROBERTA:
+        elif transformer_type == TransformerType.CorRoberta:
             conf = transformers.RobertaConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=514,   # braucht scheinbar 2 mehr!!! sonst error
@@ -73,7 +73,7 @@ class Transformer:
                 conf=conf,
                 model=transformers.RobertaForMaskedLM(conf)
             )
-        elif transformer_type == TransformerType.BERT_PRETRAIN:
+        elif transformer_type == TransformerType.CorBertPretrain:
             conf = transformers.BertConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
@@ -88,7 +88,7 @@ class Transformer:
                 conf=conf,
                 model=transformers.BertForPreTraining(conf)
             )
-        elif transformer_type == TransformerType.DISTIL_BERT:
+        elif transformer_type == TransformerType.CorDistilBert:
             conf = transformers.DistilBertConfig(
                 vocab_size=30_522,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
