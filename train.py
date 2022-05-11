@@ -24,6 +24,7 @@ def train():
     parser.add_argument('-bs', "--batch_size", default=16, action='store', nargs='?', type=int, help='')
     parser.add_argument('-hl', "--num-hidden-layers", default=12, action='store', nargs='?', type=int, help='')
     parser.add_argument('-tdr', "--training-data-rate", default=1, action='store', nargs='?', type=float, help='')
+    parser.add_argument('-ab', "--accumulated_batches", default=1, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
 
     # for reproducability
@@ -63,7 +64,7 @@ def train():
             optim = checkpoint["optimizer_state_dict"]
 
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
-                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval)
+                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
             return
 
     # make fresh start: instantiate model, optimizer, scheduler
@@ -72,7 +73,7 @@ def train():
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
-    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval)
+    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
 
 
 if __name__ == "__main__":

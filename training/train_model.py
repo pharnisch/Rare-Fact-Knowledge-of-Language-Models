@@ -12,7 +12,7 @@ trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
 import json
 
-def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval):
+def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
@@ -29,6 +29,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt') if "nsp" not in str(x)]
 
     for i in range(epochs):
+        loss_store = None
         epoch_loss = 0
         batch_count = 0
         epoch = i + already_trained_epochs
@@ -49,6 +50,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     while True:
                         #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                         batch_cnt += 1
+                        batch_count += 1
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                             #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                             break
@@ -77,16 +79,29 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         loss = outputs[0]  # extract loss
-                        loss.backward()
-                        optimizer.step()
+                        if loss_store is None:
+                            loss_store = loss
+                        else:
+                            loss_store += loss
+
+                        if batch_count % accumulated_batches == 0:
+                            loss.backward()
+                            optimizer.step()
+                            loss_store = None
+
 
                         # print relevant info to progress bar
                         # loop.set_description("Epoch " + str(epoch))
                         # loop.set_postfix(loss=loss.item())
                         epoch_loss += loss.item()
-                        batch_count += 1
+
 
                 bar()  # indicate that one of the epoch total paths is finished!
+
+        if loss_store is not None:  # if last accumulated_batch did not get complete, backprop the rest loss
+            loss.backward()
+            optimizer.step()
+            loss_store = None
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
