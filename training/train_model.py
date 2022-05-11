@@ -11,11 +11,14 @@ gremc = GoogleREMetricCalculator()
 trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
 import json
+import transformers
 
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
+
+    lr_scheduler = transformers.get_linear_schedule_with_warmup(optimizer, num_warmup_steps=1, num_training_steps=epochs+already_trained_epochs+1, last_epoch=already_trained_epochs)
 
     #data = get_data(TransformerType[model_name], training_data_rate)
     #loader = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True)
@@ -98,6 +101,9 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         if loss_stored:  # if last accumulated_batch did not get complete, backprop the rest loss
             optimizer.step()
             loss_stored = False
+
+        lr_scheduler.step()
+        print(f"learning rate of this epoch was {optimizer.lr}")
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
