@@ -70,7 +70,7 @@ def train():
     # make fresh start: instantiate model, optimizer, scheduler
     transformer = Transformer.get_transformer(TransformerType[args.model_name], args.num_hidden_layers)
     model = transformer.model
-    optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
+    optim = AdamW(model.parameters(), lr=args.learning_rate, initial_lr=args.learning_rate)  # initialize optimizer
     # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
     training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
