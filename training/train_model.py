@@ -119,7 +119,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             if model_name in s[0]
                and int(s[1]) == num_hidden_layers
                and float(s[2]) == training_data_rate
-               and int(s[3]) == batch_size
+               and int(s[3]) == batch_size*accumulated_batches
                and float(s[4]) == learning_rate
         ]
         # find best previous epoch
@@ -138,6 +138,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             else:
                 os.remove(checkpoint["path"])
 
+
         # SAVE LAST EPOCH
         torch.save({
             "epoch": epoch,
@@ -145,7 +146,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "optimizer_state_dict": optimizer,
             "loss": loss
             # scheduler
-        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
+        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
         if no_eval:
             continue
@@ -186,7 +187,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "file": "P1376"
                 })
             )
-            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
+            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
             with open(metrics_file_name, "x") as f:
                 f.write(json.dumps({
                     "metrics": metrics,
@@ -194,7 +195,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "epoch_loss": round(epoch_loss, 6),
                     "epoch_loss_relative": round(epoch_relative_loss, 6),
                     "epoch_batch_count": batch_count,
-                    "batch_size": batch_size
+                    "batch_size": batch_size,
+                    "accumulated_batches": accumulated_batches
                 }) + "\n")
 
             model.to(device)

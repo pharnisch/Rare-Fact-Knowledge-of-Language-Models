@@ -48,7 +48,7 @@ def train():
             if args.model_name in s[0]
                and int(s[1]) == args.num_hidden_layers
                and float(s[2]) == args.training_data_rate
-               and int(s[3]) == args.batch_size
+               and int(s[3]) == args.batch_size*args.accumulated_batches
                and float(s[4]) == args.learning_rate
         ]
         last_checkpoint = None
