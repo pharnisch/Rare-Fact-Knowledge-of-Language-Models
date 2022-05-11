@@ -20,8 +20,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     lr_scheduler = transformers.get_linear_schedule_with_warmup(
         optimizer, num_warmup_steps=1,
-        num_training_steps=epochs+already_trained_epochs+1,
-        last_epoch=already_trained_epochs
+        num_training_steps=epochs+already_trained_epochs,
+        last_epoch=already_trained_epochs-1
     )
 
     #data = get_data(TransformerType[model_name], training_data_rate)
