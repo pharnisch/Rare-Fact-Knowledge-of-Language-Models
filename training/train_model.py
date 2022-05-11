@@ -107,7 +107,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             loss_stored = False
 
         lr_scheduler.step()
-        print(f"learning rate of this epoch was {optimizer.lr}")
+        print(optimizer)
+        print(lr_scheduler)
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
