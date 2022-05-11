@@ -29,7 +29,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt') if "nsp" not in str(x)]
 
     for i in range(epochs):
-        loss_store = None
+        loss_stored = False
         epoch_loss = 0
         batch_count = 0
         epoch = i + already_trained_epochs
@@ -69,7 +69,6 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                                     break
                         batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings)
 
-                        optimizer.zero_grad()
 
                         # pull all tensor batches required for training
                         input_ids = batch['input_ids'].to(device)
@@ -79,16 +78,14 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         loss = outputs[0]  # extract loss
-                        if loss_store is None:
-                            loss_store = loss
-                        else:
-                            loss_store += loss
+                        a_b_loss = loss / accumulated_batches
+                        a_b_loss.backward()
+                        loss_stored = True
 
                         if batch_count % accumulated_batches == 0:
-                            loss_store.backward()
                             optimizer.step()
-                            loss_store = None
-
+                            optimizer.zero_grad()
+                            loss_stored = False
 
                         # print relevant info to progress bar
                         # loop.set_description("Epoch " + str(epoch))
@@ -98,10 +95,9 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                 bar()  # indicate that one of the epoch total paths is finished!
 
-        if loss_store is not None:  # if last accumulated_batch did not get complete, backprop the rest loss
-            loss_store.backward()
+        if loss_stored:  # if last accumulated_batch did not get complete, backprop the rest loss
             optimizer.step()
-            loss_store = None
+            loss_stored = False
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
