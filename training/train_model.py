@@ -85,7 +85,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             loss_store += loss
 
                         if batch_count % accumulated_batches == 0:
-                            loss.backward()
+                            loss_store.backward()
                             optimizer.step()
                             loss_store = None
 
@@ -99,7 +99,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 bar()  # indicate that one of the epoch total paths is finished!
 
         if loss_store is not None:  # if last accumulated_batch did not get complete, backprop the rest loss
-            loss.backward()
+            loss_store.backward()
             optimizer.step()
             loss_store = None
 
