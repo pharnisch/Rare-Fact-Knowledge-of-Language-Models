@@ -18,11 +18,11 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     model.to(device)
     model.train()
 
-    lr_scheduler = transformers.get_linear_schedule_with_warmup(
-        optimizer, num_warmup_steps=1,
-        num_training_steps=epochs+already_trained_epochs,
-        last_epoch=already_trained_epochs-1
-    )
+    #lr_scheduler = transformers.get_linear_schedule_with_warmup(
+    #    optimizer, num_warmup_steps=0,
+    #    num_training_steps=epochs+already_trained_epochs,
+    #    last_epoch=already_trained_epochs-1
+    #)
 
     #data = get_data(TransformerType[model_name], training_data_rate)
     #loader = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True)
@@ -106,9 +106,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             optimizer.step()
             loss_stored = False
 
-        lr_scheduler.step()
-        print(optimizer)
-        print(lr_scheduler)
+        #lr_scheduler.step()
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
