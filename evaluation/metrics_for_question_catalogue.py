@@ -409,7 +409,7 @@ class MetricCalculator(abc.ABC):
             forbidden_idx.append(random_idx)
             example_count += 1
 
-        masked_sent = examples + "[SEP]" + masked_sent
+        masked_sent = examples + "[SEP] " + masked_sent
         return masked_sent
 
     @abc.abstractmethod
