@@ -409,12 +409,10 @@ class MetricCalculator(abc.ABC):
         forbidden_idx = [current_index]
         while example_count < n:
             random_idx = int(random.random() * len(all_candidates))
-            print(f"rndidx {random_idx}")
             if random_idx in forbidden_idx:
                 continue
 
             if all_candidates[random_idx]["frequency"] < min_quantile_freq or all_candidates[random_idx]["frequency"] > max_quantile_freq:
-                print(f"not suitable")
                 continue
 
             random_example = all_candidates[random_idx]["example"]
@@ -455,12 +453,10 @@ class MetricCalculator(abc.ABC):
         forbidden_idx = [current_index]
         while example_count < n:
             random_idx = int(random.random() * len(all_candidates))
-            print(f"rndidx {random_idx}")
             if random_idx in forbidden_idx:
                 continue
 
             if all_candidates[random_idx]["frequency"] < min_freq or all_candidates[random_idx]["frequency"] > max_freq:
-                print(f"not suitable")
                 continue
 
             random_example = all_candidates[random_idx]["example"]
