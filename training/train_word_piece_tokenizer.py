@@ -15,12 +15,13 @@ def train():
         lowercase=False
     )
 
-    tokenizer.train(files=paths, vocab_size=30_522, min_frequency=2,
+    vocab_size = 30_000
+    tokenizer.train(files=paths, vocab_size=vocab_size, min_frequency=2,
                     limit_alphabet=1000, wordpieces_prefix='##',
                     special_tokens=[
                         '[PAD]', '[UNK]', '[CLS]', '[SEP]', '[MASK]'])
 
-    name = str(os.path.join(str(mod_path), "models", "word_piece_tokenizer"))
+    name = str(os.path.join(str(mod_path), "models", f"word_piece_tokenizer_{vocab_size}"))
     os.makedirs(name)
     tokenizer.save_model(name)
 
