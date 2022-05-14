@@ -118,11 +118,11 @@ def evaluate():
             mask_word = softmax[0, mask_index, :]
 
             # take all token predictions (30522 is the vocab_size for all transformers)
-            top_30522 = torch.topk(mask_word, 30522, dim=1)
-            top_30522_values = top_30522[0][0]
-            top_30522_indices = top_30522[1][0]
+            top = torch.topk(mask_word, tokenizer.vocab_size, dim=1)
+            top_values = top[0][0]
+            top_indices = top[1][0]
 
-            print([tokenizer.decode([i]) for i in top_30522_indices[:10]])
+            print([tokenizer.decode([i]) for i in top_indices[:10]])
 
 
 if __name__ == "__main__":
