@@ -96,7 +96,10 @@ def evaluate():
                 "by_example": args.by_example,
                 "seed": args.seed,
                 "min_freq": args.min_freq,
-                "max_freq": args.max_freq
+                "max_freq": args.max_freq,
+                "min_quantile": args.min_quantile,
+                "max_quantile": args.max_quantile,
+                "relative_examples": args.relative_examples
             }))
     if len(metrics) == 0:  # if relation_file just contains a masked sent
         while True:
