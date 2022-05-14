@@ -12,7 +12,10 @@ tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 dataset = TextDatasetForNextSentencePrediction(
     tokenizer=tokenizer,
-    file_path="./training/data/wikipedia/20200501.en/nsp/text_for_nsp.txt",
+    file_paths=[
+        "./training/data/wikipedia/20200501.en/nsp/text_for_nsp.txt",
+        "./training/data/wikipedia/20200501.en/nsp/text_for_nsp_2.txt",
+    ],
     block_size=512,
     overwrite_cache=False,
     short_seq_probability=0.1,

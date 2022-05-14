@@ -1,4 +1,4 @@
-from transformers import BertConfig, BertTokenizer, BertForMaskedLM
+from transformers import BertConfig, BertTokenizerFast, BertForMaskedLM
 from transformers import DataCollatorForLanguageModeling
 from transformers import Trainer, TrainingArguments
 import transformers
@@ -15,7 +15,7 @@ dataset_version = "20200501.en"
 dataset = load_dataset(dataset_name, dataset_version)
 
 model = BertForMaskedLM(BertConfig())
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
