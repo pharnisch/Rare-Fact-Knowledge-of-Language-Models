@@ -33,7 +33,7 @@ class Transformer:
     def get_transformer(transformer_type: TransformerType, num_hidden_layers=12):
         if transformer_type == TransformerType.CorBert:
             conf = transformers.BertConfig(
-                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                vocab_size=30_000,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
@@ -47,7 +47,7 @@ class Transformer:
             )
         elif transformer_type == TransformerType.CorElectra:
             conf = transformers.ElectraConfig(
-                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                vocab_size=30_000,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=256,
                 num_attention_heads=4,
@@ -61,7 +61,7 @@ class Transformer:
             )
         elif transformer_type == TransformerType.CorRoberta:
             conf = transformers.RobertaConfig(
-                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                vocab_size=30_000,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=514,   # braucht scheinbar 2 mehr!!! sonst error
                 hidden_size=768,
                 num_attention_heads=12,
@@ -75,7 +75,7 @@ class Transformer:
             )
         elif transformer_type == TransformerType.CorBertPretrain:
             conf = transformers.BertConfig(
-                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                vocab_size=30_000,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=768,
                 num_attention_heads=12,
@@ -90,7 +90,7 @@ class Transformer:
             )
         elif transformer_type == TransformerType.CorDistilBert:
             conf = transformers.DistilBertConfig(
-                vocab_size=30_522,  # we align this to the tokenizer vocab_size
+                vocab_size=30_000,  # we align this to the tokenizer vocab_size
                 max_position_embeddings=512,
                 hidden_size=768,
                 n_heads=12,
