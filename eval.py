@@ -17,7 +17,7 @@ def evaluate():
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     parser.add_argument('relation_file', metavar="relation-file", type=str, help='Relation file within subfolder of /question_dialogue.')
     parser.add_argument('-be', "--by-example", default=False, action='store_true', help='Query by example')
-    parser.add_argument('-re', "--relative-examples", default=True, action='store_true', help='If quantiles should be used rather than hard boundaries.')
+    parser.add_argument('-ae', "--absolute-examples", default=False, action='store_true', help='If quantiles should be used rather than hard boundaries.')
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minf', "--min-freq", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-maxf', "--max-freq", default=100000000, action='store', nargs='?', type=int, help='')
