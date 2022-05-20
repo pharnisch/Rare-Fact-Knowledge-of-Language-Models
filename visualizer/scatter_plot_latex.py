@@ -37,7 +37,6 @@ def scatter():
     """
     mid = ""
     for p in metrics_dict["metrics"]["data_points"]:
-        print(p)
         mid += f"{p['frequency']} {p['rank']} a\n"
     p2 = r"""
     
@@ -51,7 +50,7 @@ def scatter():
     \end{figure}
     """
 
-    return p1 + mid + p2
+    print(p1 + mid + p2)
 
 
 if __name__ == "__main__":
