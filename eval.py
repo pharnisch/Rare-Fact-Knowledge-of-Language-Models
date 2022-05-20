@@ -21,6 +21,7 @@ def evaluate():
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minf', "--min-freq", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-maxf', "--max-freq", default=100000000, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-sa', "--seed-amount", default=1, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minq', "--min-quantile", default=0, action='store', nargs='?', type=float, help='')
     parser.add_argument('-maxq', "--max-quantile", default=1, action='store', nargs='?', type=float, help='')
     parser.add_argument('-k', "--k",
@@ -77,31 +78,32 @@ def evaluate():
 
     # CALCULATE METRICS
     metrics = []
-
-    metric_calculators = [
-        ConceptNetMetricCalculator(),
-        GoogleREMetricCalculator(),
-        TRExMetricCalculator(base_path)
-    ]
-    for metric_calculator in metric_calculators:
-        all_file_names = metric_calculator.get_all_file_names()
-        if relation_file in all_file_names:
-            metrics.append(metric_calculator.get_metrics({
-                "base_path": base_path,
-                "tokenizer": tokenizer,
-                "model": model,
-                "k": k,
-                "max_questions": mq,
-                "file": relation_file,
-                "by_example": args.by_example,
-                "seed": args.seed,
-                "min_freq": args.min_freq,
-                "max_freq": args.max_freq,
-                "min_quantile": args.min_quantile,
-                "max_quantile": args.max_quantile,
-                "relative_examples": args.relative_examples
-            }))
-    if len(metrics) == 0:  # if relation_file just contains a masked sent
+    for idx, s in enumerate(range(args.seed_amount)):
+        metrics.append([])
+        metric_calculators = [
+            ConceptNetMetricCalculator(),
+            GoogleREMetricCalculator(),
+            TRExMetricCalculator(base_path)
+        ]
+        for metric_calculator in metric_calculators:
+            all_file_names = metric_calculator.get_all_file_names()
+            if relation_file in all_file_names:
+                metrics[idx].append(metric_calculator.get_metrics({
+                    "base_path": base_path,
+                    "tokenizer": tokenizer,
+                    "model": model,
+                    "k": k,
+                    "max_questions": mq,
+                    "file": relation_file,
+                    "by_example": args.by_example,
+                    "seed": args.seed if args.seed_amount == 1 else s,
+                    "min_freq": args.min_freq,
+                    "max_freq": args.max_freq,
+                    "min_quantile": args.min_quantile,
+                    "max_quantile": args.max_quantile,
+                    "relative_examples": args.relative_examples
+                }))
+    if len(metrics[0]) == 0:  # if relation_file just contains a masked sent
         while True:
             masked_sent = input("Please enter a sentence, containing one [MASK].\n")
             if masked_sent == "quit":
