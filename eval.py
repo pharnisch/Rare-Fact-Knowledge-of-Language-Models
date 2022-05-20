@@ -96,7 +96,6 @@ def evaluate():
                 }))
 
         save_obj = {
-            "metrics": metrics[0],
             "k": k,
             "max_questions": mq,
             "file": relation_file,
@@ -108,10 +107,9 @@ def evaluate():
             "max_quantile": args.max_quantile,
             "relative_examples": not args.absolute_examples
         }
+        print(save_obj)
 
-        _metrics = metrics[0]
-        _metrics.metrics = None
-        print(_metrics)
+        save_obj["metrics"] = metrics[0]
         filename = f"{base_path}/metrics/standard/{args.checkpoint}_{args.relation_file}_{args.by_example}" \
                    f"_{args.absolute_examples}_{args.min_freq}_{args.max_freq}_{args.min_quantile}_{args.max_quantile}"
         os.makedirs(os.path.dirname(filename), exist_ok=True)
