@@ -33,14 +33,11 @@ def scatter():
         scatter src=explicit symbolic]%
     table[meta=label] {
     x y label
-    
     """
     mid = ""
     for p in metrics_dict["metrics"]["data_points"]:
         mid += f"{p['frequency']} {p['rank']} a\n"
     p2 = r"""
-    
-    1 4.3 a
         };
     \end{axis}
     \end{tikzpicture}
