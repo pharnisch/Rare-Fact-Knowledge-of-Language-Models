@@ -11,7 +11,7 @@ import json
 base_path = Path(__file__).parent
 
 
-def get_metrics(model, tokenizer, args, by_example: bool, min_quintile: float = 0, max_quintile: float = 1):
+def get_metrics(model, tokenizer, args, by_example: bool, min_quantile: float = 0, max_quantile: float = 1):
     metrics = []
     seed_amount = 10
     if not by_example:
@@ -34,8 +34,8 @@ def get_metrics(model, tokenizer, args, by_example: bool, min_quintile: float = 
                     "file": args.relation_file,
                     "by_example": by_example,
                     "seed": s,
-                    "min_quantile": min_quintile,
-                    "max_quantile": max_quintile,
+                    "min_quantile": min_quantile,
+                    "max_quantile": max_quantile,
                     "relative_examples": True
                 }))
 
@@ -106,8 +106,8 @@ def evaluate():
     # 1. BASELINE, 2. RANDOM(0-1), 3. RARE, 4. COMMON
     baseline = get_metrics(model, tokenizer, args, by_example=False)
     random = get_metrics(model, tokenizer, args, by_example=True)
-    rare = get_metrics(model, tokenizer, args, by_example=True, max_quintile=args.max_quintile)
-    common = get_metrics(model, tokenizer, args, by_example=True, min_quintile=args.min_quintile)
+    rare = get_metrics(model, tokenizer, args, by_example=True, max_quantile=args.max_quantile)
+    common = get_metrics(model, tokenizer, args, by_example=True, min_quantile=args.min_quantile)
 
     mq = args.max_questions_per_file if args.max_questions_per_file is not None else -1
     metrics_summarization = {
