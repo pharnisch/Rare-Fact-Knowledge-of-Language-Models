@@ -15,7 +15,7 @@ def get_metrics(model, tokenizer, args, by_example: bool, min_quintile: float = 
     metrics = []
     if not by_example:
         args.seed_amount = 1
-    for idx, s in enumerate(range(args.seed_amount)):
+    for idx, s in enumerate(range(10)):
         metric_calculators = [
             ConceptNetMetricCalculator(),
             GoogleREMetricCalculator(),
