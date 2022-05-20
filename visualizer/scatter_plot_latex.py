@@ -1,14 +1,9 @@
 import argparse
-from transformers import pipeline
-from transformers import BertTokenizer, BertForMaskedLM
-from enum import Enum
-import torch
 from pathlib import Path
 import os
-from evaluation.metrics_for_question_catalogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
 import json
 
-base_path = Path(__file__).parent
+base_path = Path(__file__).parent.parent
 
 
 def scatter():
