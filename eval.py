@@ -70,30 +70,29 @@ def evaluate():
 
     # CALCULATE METRICS
     metrics = []
-    for idx, s in enumerate(range(args.seed_amount)):
-        metric_calculators = [
-            ConceptNetMetricCalculator(),
-            GoogleREMetricCalculator(),
-            TRExMetricCalculator(base_path)
-        ]
-        for metric_calculator in metric_calculators:
-            all_file_names = metric_calculator.get_all_file_names()
-            if relation_file in all_file_names:
-                metrics.append(metric_calculator.get_metrics_for_epoch({
-                    "base_path": base_path,
-                    "tokenizer": tokenizer,
-                    "model": model,
-                    "k": k,
-                    "max_questions": mq,
-                    "file": relation_file,
-                    "by_example": args.by_example,
-                    "seed": args.seed if args.seed_amount == 1 else s,
-                    "min_freq": args.min_freq,
-                    "max_freq": args.max_freq,
-                    "min_quantile": args.min_quantile,
-                    "max_quantile": args.max_quantile,
-                    "relative_examples": not args.absolute_examples
-                }))
+    metric_calculators = [
+        ConceptNetMetricCalculator(),
+        GoogleREMetricCalculator(),
+        TRExMetricCalculator(base_path)
+    ]
+    for metric_calculator in metric_calculators:
+        all_file_names = metric_calculator.get_all_file_names()
+        if relation_file in all_file_names:
+            metrics.append(metric_calculator.get_metrics_for_epoch({
+                "base_path": base_path,
+                "tokenizer": tokenizer,
+                "model": model,
+                "k": k,
+                "max_questions": mq,
+                "file": relation_file,
+                "by_example": args.by_example,
+                "seed": args.seed,
+                "min_freq": args.min_freq,
+                "max_freq": args.max_freq,
+                "min_quantile": args.min_quantile,
+                "max_quantile": args.max_quantile,
+                "relative_examples": not args.absolute_examples
+            }))
 
         save_obj = {
             "metrics": metrics[0],
