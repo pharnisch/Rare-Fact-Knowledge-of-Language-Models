@@ -44,13 +44,13 @@ def get_metrics(model, tokenizer, args, by_example: bool, min_quintile: float = 
         seed_sums = {identifier: 0 for identifier in identifiers}
         for m in metrics:
             seed_sums = {identifier: seed_sums[identifier] + m[identifier] for identifier in identifiers}
-        seed_avgs = {identifier: seed_sums[identifier]/args.seed_amount for identifier in identifiers}
-        seed_variances = {identifier: (sum((x[identifier] - seed_avgs[identifier])**2 for x in metrics) / (args.seed_amount - 1)) for identifier in identifiers}
+        seed_avgs = {identifier: seed_sums[identifier]/seed_amount for identifier in identifiers}
+        seed_variances = {identifier: (sum((x[identifier] - seed_avgs[identifier])**2 for x in metrics) / (seed_amount - 1)) for identifier in identifiers}
         seed_stddevs = {identifier: (seed_variances[identifier])**0.5 for identifier in identifiers}
         summarization_obj = {
             "metric_avgs": seed_avgs,
             "metric_stddvs": seed_stddevs,
-            "seed_amount": args.seed_amount,
+            "seed_amount": seed_amount,
         }
     else:
         direct_values = {identifier: metrics[0][identifier] for identifier in identifiers}
