@@ -32,6 +32,9 @@ def scatter():
         xlabel={frequency $|R|$},
         xlabel near ticks,
         ylabel={rank},
+axis y line*=left,
+xlabel=x-axis,
+ylabel=y-axis 1,
         scatter/classes={%
         a={mark=x,draw=black}}]
     \addplot[scatter,only marks,%
@@ -45,6 +48,25 @@ def scatter():
     p5 = r"""
         };
     \end{axis}
+    
+    \begin{axis}[
+  axis y line*=right,
+  axis x line=none,
+  ylabel=y-axis 2,
+  scatter/classes={%
+        b={mark=o,draw=red}}
+]
+    \addplot[scatter,only marks,%
+        scatter src=explicit symbolic]%
+    table[meta=label] {
+    x y label
+    """
+    p6 = ""
+    for p in metrics_dict["metrics"]["data_points"]:
+        p6 += f"{p['relative_frequency']} {p['rank']} b\n"
+    p7 = r"""
+   };
+    \end{axis}
     \end{tikzpicture}
     
     \caption{Scatter plot.}
@@ -52,7 +74,7 @@ def scatter():
     \end{figure}
     """
 
-    print(p1 + p2 + p3 + p4 + p5)
+    print(p1 + p2 + p3 + p4 + p5 + p6 + p7)
 
 
 if __name__ == "__main__":
