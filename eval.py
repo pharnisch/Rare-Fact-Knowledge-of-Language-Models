@@ -68,32 +68,33 @@ def evaluate():
     model.to('cpu')
     model.eval()
 
-    # CALCULATE METRICS
-    metrics = []
-    metric_calculators = [
-        ConceptNetMetricCalculator(),
-        GoogleREMetricCalculator(),
-        TRExMetricCalculator(base_path)
-    ]
-    for metric_calculator in metric_calculators:
-        all_file_names = metric_calculator.get_all_file_names()
-        if relation_file in all_file_names:
-            metrics.append(metric_calculator.get_metrics_for_epoch({
-                "base_path": base_path,
-                "tokenizer": tokenizer,
-                "model": model,
-                "k": k,
-                "max_questions": mq,
-                "file": relation_file,
-                "by_example": args.by_example,
-                "seed": args.seed,
-                "min_freq": args.min_freq,
-                "max_freq": args.max_freq,
-                "min_quantile": args.min_quantile,
-                "max_quantile": args.max_quantile,
-                "relative_examples": not args.absolute_examples
-            }))
-    if len(metrics[0]) != 0:
+    if args.relation_file != "custom":
+        # CALCULATE METRICS
+        metrics = []
+        metric_calculators = [
+            ConceptNetMetricCalculator(),
+            GoogleREMetricCalculator(),
+            TRExMetricCalculator(base_path)
+        ]
+        for metric_calculator in metric_calculators:
+            all_file_names = metric_calculator.get_all_file_names()
+            if relation_file in all_file_names:
+                metrics.append(metric_calculator.get_metrics_for_epoch({
+                    "base_path": base_path,
+                    "tokenizer": tokenizer,
+                    "model": model,
+                    "k": k,
+                    "max_questions": mq,
+                    "file": relation_file,
+                    "by_example": args.by_example,
+                    "seed": args.seed,
+                    "min_freq": args.min_freq,
+                    "max_freq": args.max_freq,
+                    "min_quantile": args.min_quantile,
+                    "max_quantile": args.max_quantile,
+                    "relative_examples": not args.absolute_examples
+                }))
+
         save_obj = {
             "metrics": metrics[0],
             "k": k,
@@ -117,7 +118,7 @@ def evaluate():
         with open(filename, "x") as save_file:
             save_file.write(json.dumps(save_obj))
 
-    if len(metrics[0]) == 0:  # if relation_file just contains a masked sent
+    elif args.relation_file == "custom":  # if relation_file just contains a masked sent
         while True:
             masked_sent = input("Please enter a sentence, containing one [MASK].\n")
             if masked_sent == "quit":
