@@ -122,7 +122,9 @@ def evaluate():
         "common": common,
     }
 
-    with open(f"{base_path}/metrics/probing_enhancement/{args.checkpoint}_{args.relation_file}_{args.min_quantile}_{args.max_quantile}_{mq}", "x") as save_file:
+    filename = f"{base_path}/metrics/probing_enhancement/{args.checkpoint}_{args.relation_file}_{args.min_quantile}_{args.max_quantile}_{mq}"
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, "x") as save_file:
         save_file.write(json.dumps(metrics_summarization))
 
 
