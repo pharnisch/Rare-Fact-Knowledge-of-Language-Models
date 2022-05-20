@@ -41,7 +41,7 @@ def scatter():
     """
     p4 = ""
     for p in metrics_dict["metrics"]["data_points"]:
-        mid += f"{p['frequency']} {p['rank']} a\n"
+        p4 += f"{p['frequency']} {p['rank']} a\n"
     p5 = r"""
         };
     \end{axis}
