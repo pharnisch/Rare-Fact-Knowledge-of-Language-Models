@@ -100,7 +100,7 @@ def evaluate():
             "max_questions": mq,
             "file": relation_file,
             "by_example": args.by_example,
-            "seed": args.seed if args.seed_amount == 1 else s,
+            "seed": args.seed,
             "min_freq": args.min_freq,
             "max_freq": args.max_freq,
             "min_quantile": args.min_quantile,
