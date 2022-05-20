@@ -79,7 +79,6 @@ def evaluate():
     # CALCULATE METRICS
     metrics = []
     for idx, s in enumerate(range(args.seed_amount)):
-        metrics.append([])
         metric_calculators = [
             ConceptNetMetricCalculator(),
             GoogleREMetricCalculator(),
@@ -88,7 +87,7 @@ def evaluate():
         for metric_calculator in metric_calculators:
             all_file_names = metric_calculator.get_all_file_names()
             if relation_file in all_file_names:
-                metrics[idx].append(metric_calculator.get_metrics_for_epoch({
+                metrics.append(metric_calculator.get_metrics_for_epoch({
                     "base_path": base_path,
                     "tokenizer": tokenizer,
                     "model": model,
