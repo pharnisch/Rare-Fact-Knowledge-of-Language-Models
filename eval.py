@@ -88,7 +88,7 @@ def evaluate():
         for metric_calculator in metric_calculators:
             all_file_names = metric_calculator.get_all_file_names()
             if relation_file in all_file_names:
-                metrics[idx].append(metric_calculator.get_metrics({
+                metrics[idx].append(metric_calculator.get_metrics_for_epoch({
                     "base_path": base_path,
                     "tokenizer": tokenizer,
                     "model": model,
@@ -103,6 +103,20 @@ def evaluate():
                     "max_quantile": args.max_quantile,
                     "relative_examples": args.relative_examples
                 }))
+    if args.seed_amount != 1:  # calculate avg and stddev in the case of multiple seeds
+        identifiers = ["rank_avg", "p_at_1", "pearson", "pearson_p", "spearman", "spearman_p"]
+        seed_sums = {identifier: 0 for identifier in identifiers}
+        for m in metrics:
+            seed_sums = {identifier: seed_sums[identifier] + m[identifier] for identifier in identifiers}
+        seed_avgs = {identifier: seed_sums[identifier]/args.seed_amount for identifier in identifiers}
+        seed_variances = {identifier: (sum((x[identifier] - seed_avgs[identifier])**2 for x in metrics) / (args.seed_amount - 1)) for identifier in identifiers}
+        seed_stddevs = {identifier: (seed_variances[identifier])**0.5 for identifier in identifiers}
+        print(f"Averages and standard deviations for {args.seed_amount} seeds, starting with 0:")
+        print(seed_avgs)
+        print(seed_stddevs)
+    else:
+        print(metrics[0])
+
     if len(metrics[0]) == 0:  # if relation_file just contains a masked sent
         while True:
             masked_sent = input("Please enter a sentence, containing one [MASK].\n")

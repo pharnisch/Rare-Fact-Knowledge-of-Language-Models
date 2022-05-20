@@ -12,6 +12,10 @@ class MetricCalculator(abc.ABC):
         k = arg_dict["k"]
         max_questions = arg_dict["max_questions"]
         file = arg_dict["file"]
+        by_example = arg_dict["by_example"]
+        seed = arg_dict["seed"]
+        import random
+        random.seed(seed)
 
         metrics = []
 
@@ -44,6 +48,17 @@ class MetricCalculator(abc.ABC):
                     metric["p_at_k"] = 0
 
                     masked_sent = masked_sent.replace("[MASK]", tokenizer.mask_token)
+                    if by_example:
+
+                        if arg_dict["relative_examples"]:
+                            masked_sent = self.prepend_examples_relative(masked_sent, 10, cnt, base_path, file,
+                                                                         arg_dict["min_quantile"],
+                                                                         arg_dict["max_quantile"],
+                                                                         random)
+                        else:
+                            masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file,
+                                                                arg_dict["min_freq"], arg_dict["max_freq"], random)
+
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                     output = model(**inputs, return_dict=True)
                     logits = output.logits
@@ -91,6 +106,7 @@ class MetricCalculator(abc.ABC):
         rank_avg = sum(var_y) / len(var_y)
         spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
         pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
+        p_at_1 = sum([m['p_at_k'] for m in metrics]) / len(metrics)
 
         print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
         return {
@@ -100,6 +116,7 @@ class MetricCalculator(abc.ABC):
             "confidence_avg": sum(var_z) / len(var_z),
             "confidence_max": max(var_z),
             "confidence_min": min(var_z),
+            "p_at_1": p_at_1,
             "pearson": round(pearson_correlation_coefficient[0], 4),
             "pearson_p": round(pearson_correlation_coefficient[1], 4),
             "spearman": round(spearman_correlation_coefficient[0], 4),
