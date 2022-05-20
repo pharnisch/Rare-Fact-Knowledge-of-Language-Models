@@ -93,7 +93,7 @@ def evaluate():
                 "max_quantile": args.max_quantile,
                 "relative_examples": not args.absolute_examples
             }))
-
+    if len(metrics[0]) != 0:
         save_obj = {
             "metrics": metrics[0],
             "k": k,
