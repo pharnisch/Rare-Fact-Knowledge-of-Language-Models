@@ -13,9 +13,10 @@ base_path = Path(__file__).parent
 
 def get_metrics(model, tokenizer, args, by_example: bool, min_quintile: float = 0, max_quintile: float = 1):
     metrics = []
+    seed_amount = 10
     if not by_example:
-        args.seed_amount = 1
-    for idx, s in enumerate(range(10)):
+        seed_amount = 1
+    for idx, s in enumerate(range(seed_amount)):
         metric_calculators = [
             ConceptNetMetricCalculator(),
             GoogleREMetricCalculator(),
