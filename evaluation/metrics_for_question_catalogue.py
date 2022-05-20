@@ -3,6 +3,8 @@ import jsonlines
 import torch
 import os
 from alive_progress import alive_bar
+import json
+
 
 class MetricCalculator(abc.ABC):
     def get_metrics_for_epoch(self, arg_dict: dict):
@@ -110,6 +112,7 @@ class MetricCalculator(abc.ABC):
 
         print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
         return {
+            "metrics": metrics,
             "rank_avg": round(rank_avg, 4),
             "rank_max": max(var_y),
             "rank_min": min(var_y),

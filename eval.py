@@ -6,6 +6,7 @@ import torch
 from pathlib import Path
 import os
 from evaluation.metrics_for_question_catalogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
+import json
 
 base_path = Path(__file__).parent
 
@@ -21,7 +22,6 @@ def evaluate():
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minf', "--min-freq", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-maxf', "--max-freq", default=100000000, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-sa', "--seed-amount", default=1, action='store', nargs='?', type=int, help='')
     parser.add_argument('-minq', "--min-quantile", default=0, action='store', nargs='?', type=float, help='')
     parser.add_argument('-maxq', "--max-quantile", default=1, action='store', nargs='?', type=float, help='')
     parser.add_argument('-k', "--k",
@@ -40,14 +40,6 @@ def evaluate():
     k = args.k
     mq = args.max_questions_per_file if args.max_questions_per_file is not None else -1
     relation_file = args.relation_file
-
-    # INSTANTIATE MODELS
-    #fill = pipeline(
-    #    'fill-mask',
-    #    model=BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.modelname)),  # "BERT"
-    #    tokenizer=BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer"),
-    #    max_len=512, top_k=100)
-    #)
 
     if args.checkpoint == "roberta_pretrained":
         from transformers import AutoTokenizer, AutoModelForMaskedLM
@@ -102,19 +94,29 @@ def evaluate():
                     "max_quantile": args.max_quantile,
                     "relative_examples": not args.absolute_examples
                 }))
-    if args.seed_amount != 1:  # calculate avg and stddev in the case of multiple seeds
-        identifiers = ["rank_avg", "p_at_1", "pearson", "pearson_p", "spearman", "spearman_p"]
-        seed_sums = {identifier: 0 for identifier in identifiers}
-        for m in metrics:
-            seed_sums = {identifier: seed_sums[identifier] + m[identifier] for identifier in identifiers}
-        seed_avgs = {identifier: seed_sums[identifier]/args.seed_amount for identifier in identifiers}
-        seed_variances = {identifier: (sum((x[identifier] - seed_avgs[identifier])**2 for x in metrics) / (args.seed_amount - 1)) for identifier in identifiers}
-        seed_stddevs = {identifier: (seed_variances[identifier])**0.5 for identifier in identifiers}
-        print(f"Averages and standard deviations for {args.seed_amount} seeds, starting with 0:")
-        print(seed_avgs)
-        print(seed_stddevs)
-    else:
-        print(metrics[0])
+
+        save_obj = {
+            "metrics": metrics[0],
+            "k": k,
+            "max_questions": mq,
+            "file": relation_file,
+            "by_example": args.by_example,
+            "seed": args.seed if args.seed_amount == 1 else s,
+            "min_freq": args.min_freq,
+            "max_freq": args.max_freq,
+            "min_quantile": args.min_quantile,
+            "max_quantile": args.max_quantile,
+            "relative_examples": not args.absolute_examples
+        }
+
+        _metrics = metrics[0]
+        _metrics.metrics = None
+        print(_metrics)
+        filename = f"{base_path}/metrics/standard/{args.checkpoint}_{args.relation_file}_{args.by_example}" \
+                   f"_{args.absolute_examples}_{args.min_freq}_{args.max_freq}_{args.min_quantile}_{args.max_quantile}"
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, "x") as save_file:
+            save_file.write(json.dumps(save_obj))
 
     if len(metrics[0]) == 0:  # if relation_file just contains a masked sent
         while True:
