@@ -101,7 +101,7 @@ def evaluate():
                     "max_freq": args.max_freq,
                     "min_quantile": args.min_quantile,
                     "max_quantile": args.max_quantile,
-                    "relative_examples": args.relative_examples
+                    "relative_examples": not args.absolute_examples
                 }))
     if args.seed_amount != 1:  # calculate avg and stddev in the case of multiple seeds
         identifiers = ["rank_avg", "p_at_1", "pearson", "pearson_p", "spearman", "spearman_p"]
