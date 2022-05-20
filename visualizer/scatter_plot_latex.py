@@ -15,6 +15,7 @@ def scatter():
     with open(f"{base_path}/metrics/standard/{args.checkpoint}", "r") as f:
         json_text = f.read()
         metrics_dict = json.loads(json_text)
+        n = len(metrics_dict["metrics"]["data_points"])
 
     p1 = r"""   
     \begin{figure}[htb]
@@ -22,7 +23,11 @@ def scatter():
     
     \begin{tikzpicture}
     \begin{axis}[%
-        title={DistilBERT (base, uncased) from HuggingFace, $N=202$ \vspace{1em}},
+    title={DistilBERT (base, uncased) from HuggingFace,
+    """
+    p2 = f"$N={n}$"
+    p3 = r"""
+        \vspace{1em}},
         xticklabel style={rotate=-60},
         xlabel={frequency $|R|$},
         xlabel near ticks,
@@ -34,10 +39,10 @@ def scatter():
     table[meta=label] {
     x y label
     """
-    mid = ""
+    p4 = ""
     for p in metrics_dict["metrics"]["data_points"]:
         mid += f"{p['frequency']} {p['rank']} a\n"
-    p2 = r"""
+    p5 = r"""
         };
     \end{axis}
     \end{tikzpicture}
@@ -47,7 +52,7 @@ def scatter():
     \end{figure}
     """
 
-    print(p1 + mid + p2)
+    print(p1 + p2 + p3 + p4 + p5)
 
 
 if __name__ == "__main__":
