@@ -15,7 +15,7 @@ class MetricCalculator(abc.ABC):
         max_questions = arg_dict["max_questions"]
         file = arg_dict["file"]
         by_example = arg_dict["by_example"]
-        seed = arg_dict["seed"]
+        seed = arg_dict["seed"] if "seed" in arg_dict else 1337
         import random
         random.seed(seed)
 

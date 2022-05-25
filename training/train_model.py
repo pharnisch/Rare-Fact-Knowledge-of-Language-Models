@@ -169,7 +169,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "model": model,
                     "k": k,
                     "max_questions": mq,
-                    "file": "test"
+                    "file": "test",
+                    "by_example": False
                 })
             )
             metrics.append(
@@ -179,7 +180,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "model": model,
                     "k": k,
                     "max_questions": mq,
-                    "file": "date_of_birth"
+                    "file": "date_of_birth",
+                    "by_example": False
                 })
             )
             metrics.append(
@@ -189,7 +191,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "model": model,
                     "k": k,
                     "max_questions": mq,
-                    "file": "P1376"
+                    "file": "P1376",
+                    "by_example": False
                 })
             )
             metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
