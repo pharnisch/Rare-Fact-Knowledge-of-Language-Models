@@ -144,12 +144,12 @@ class MetricCalculator(abc.ABC):
         """
 
         # 1. Find out other valid objects
-        other_valid_objects = []
+        other_valid_objects = set()
         with jsonlines.open(self.get_path_to_file(base_path, file)) as _f:
             for line in _f.iter():
                 line_sub, _, line_obj, _, line_rel, _ = self.parse_line(line, file)
-                if relation == line_rel and subject == line_sub and object != line_obj:
-                    other_valid_objects.append(line_obj)
+                if relation.lower() == line_rel.lower() and subject.lower() == line_sub.lower() and object.lower() != line_obj.lower():
+                    other_valid_objects.add(line_obj.lower())
         if len(other_valid_objects) > 0:
             print(f"For {subject}--{relation}->{object} there are following object alternatives:")
             print(print(other_valid_objects))
@@ -158,12 +158,12 @@ class MetricCalculator(abc.ABC):
         filtered_values, filtered_indices = [], []
         for (top_value, top_index) in zip(top_values, top_indices):
             token = tokenizer.convert_ids_to_tokens([top_index])[0]
-            if token not in other_valid_objects:
+            if token.lower() not in other_valid_objects:
                 filtered_values.append(top_value)
                 filtered_indices.append(top_index)
 
         print(len(filtered_values))
-
+        print(filtered_values[10:])
         return filtered_values, filtered_indices
 
 
