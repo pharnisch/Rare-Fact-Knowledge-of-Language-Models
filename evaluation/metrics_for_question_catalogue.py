@@ -70,6 +70,10 @@ class MetricCalculator(abc.ABC):
 
                     vs = tokenizer.vocab_size
                     print(f"vocab size {vs}")
+                    print(mask_word.shape)
+                    vs = len(mask_word)
+                    print(f"result size is {vs}")
+
                     top_vs = torch.topk(mask_word, vs, dim=1)
                     top_vs_values = top_vs[0][0]
                     top_vs_indices = top_vs[1][0]
