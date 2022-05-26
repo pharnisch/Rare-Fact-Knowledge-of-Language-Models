@@ -35,7 +35,6 @@ def plot():
         $ \vspace
         {1
         em}},
-
         """)
         #ymin = 0, ymax = 50,
         texts.append(r"""
@@ -65,7 +64,7 @@ def plot():
         """)
 
         for b in average_buckets:
-            texts.append(f"({b[0]}, {b[1]})")
+            texts.append(f"({b[0]}, {b[1]})\n")
 
         texts.append(r"""
         };
