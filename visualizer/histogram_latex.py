@@ -30,7 +30,9 @@ def plot():
         texts.append(r"""
         \begin{tikzpicture}
         \begin{axis}[
-            title = {BERT(large, cased)
+            title = {""")
+        texts.append(metrics_dict["metrics"]["file"])
+        texts.append(r"""-- BERT (large, cased)
         from HuggingFace, $N = 
         """)
         texts.append(str(n))
