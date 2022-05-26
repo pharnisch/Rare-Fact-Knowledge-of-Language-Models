@@ -44,25 +44,19 @@ def plot():
         symbolic x coords = {
         """)
 
-        texts.append(f"{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]},")
+        texts.append(f"{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}")
 
 
         texts.append(r"""
         },
         xtick = data,
-        xticklabel
-        style = {rotate = -60},
+        xticklabel style = {rotate = -60},
         xlabel = {frequency $ | R |$},
         xlabel near ticks,
         ylabel = {rank}
         ]
-        \addlegendimage
-        {empty
-        legend}
-        \addplot + [ybar interval, mark = no, fill = yellow, draw = black, empty
-        legend] plot
-        coordinates
-        {
+        \addlegendimage{empty legend}
+        \addplot + [ybar interval, mark = no, fill = yellow, draw = black, empty legend] plot coordinates {
         """)
 
         b_strings = []
