@@ -35,9 +35,7 @@ def plot():
         $ \vspace
         {1
         em}},
-        """)
-        #ymin = 0, ymax = 50,
-        texts.append(r"""
+        %ymin = 0, ymax = 50,
         area style,
         symbolic x coords = {
         """)
@@ -63,8 +61,10 @@ def plot():
         {
         """)
 
+        b_strings = []
         for b in average_buckets:
-            texts.append(f"({b[0]}, {b[1]})\n")
+            b_strings.append(f"({b[0]}, {b[1]})")
+            texts.append("\n".join(b_strings))
 
         texts.append(r"""
         };
