@@ -68,11 +68,8 @@ class MetricCalculator(abc.ABC):
                     mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
                     mask_word = softmax[0, mask_index, :]
 
-                    vs = tokenizer.vocab_size
-                    print(f"vocab size {vs}")
-                    print(mask_word.shape)
-                    vs = len(mask_word)
-                    print(f"result size is {vs}")
+                    # TODO: why is tokenizer.vocab_size always 30522 even if mask_word is only 30.000 long e.g.???
+                    vs = len(mask_word[0])
 
                     top_vs = torch.topk(mask_word, vs, dim=1)
                     top_vs_values = top_vs[0][0]
