@@ -110,6 +110,8 @@ class MetricCalculator(abc.ABC):
         pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
         p_at_1 = sum([m['p_at_k'] for m in metrics]) / len(metrics)
 
+        average_buckets, bucket_borders = self.histogram_helper(metrics)
+
         print(f"{file} (N={cnt}): Avg-Rank={round(rank_avg,2)}, Pearson={round(pearson_correlation_coefficient[0],2)}, Spearman={round(spearman_correlation_coefficient[0],2)}")
         return {
             "data_points": metrics,
@@ -124,7 +126,9 @@ class MetricCalculator(abc.ABC):
             "pearson_p": round(pearson_correlation_coefficient[1], 4),
             "spearman": round(spearman_correlation_coefficient[0], 4),
             "spearman_p": round(spearman_correlation_coefficient[1], 4),
-            "file": file
+            "file": file,
+            "average_buckets": average_buckets,
+            "bucket_borders": bucket_borders
         }
 
     def get_metrics(self, arg_dict: dict):
@@ -391,6 +395,65 @@ class MetricCalculator(abc.ABC):
         print(f"({bucket_borders[-1][1]}, 0)")
         print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
         return metrics
+
+    def histogram_helper(self, metrics, frequency="frequency", score="rank"):
+        """
+        Creates dynamic buckets for histogram
+        """
+        bucket_amount = 10
+        item_amount = len(metrics)
+
+        # sort metrics after frequency
+        def take_frequency(m):
+            return m[frequency]
+        metrics.sort(key=take_frequency)
+
+        buckets = []
+        last_key = -1
+        new_bucket = []
+        for idx, metric in enumerate(metrics):
+            # only create 10 buckets
+            if len(buckets) == bucket_amount:
+                break
+
+            # last buckets gets all the remaining metrics
+            if len(buckets) == bucket_amount - 1:
+                new_bucket.append(metric)
+                # after last metric: bucket is finished
+                if idx == len(metrics) - 1:
+                    buckets.append(new_bucket)
+                continue
+
+            # do not split between metrics with the same frequency
+            if metric[frequency] == last_key:
+                new_bucket.append(metric)
+                if idx == len(metrics) - 1:
+                    buckets.append(new_bucket)
+            else:
+                # close bucket if size over threshold
+                if len(new_bucket) >= int(item_amount / bucket_amount):
+                    buckets.append(new_bucket)
+                    new_bucket = [metric]
+                    last_key = metric[frequency]
+                else:
+                    new_bucket.append(metric)
+                    last_key = metric[frequency]
+                    if idx == len(metrics) - 1:
+                        buckets.append(new_bucket)
+
+        bucket_borders = []
+        for idx, bucket in enumerate(buckets):
+            borders = (bucket[0][frequency], bucket[-1][frequency])
+            bucket_borders.append(borders)
+
+        buckets = [[m[score] for m in bucket] for bucket in buckets]
+        average_buckets = []
+        for idx, borders in enumerate(bucket_borders):
+            avg = sum(buckets[idx]) / len(buckets[idx]) if len(buckets[idx]) > 0 else -1
+            average_buckets.append((borders[0], avg))
+        average_buckets.append((bucket_borders[-1][1], 0))
+        #print(f"symbolic x coords={{{','.join([str(b[0]) for b in bucket_borders])},{bucket_borders[-1][1]}}},")
+        return average_buckets, bucket_borders
 
 
     def prepend_examples_relative(self, masked_sent, n, current_index, base_path, file, min_quantile, max_quantile, random):
