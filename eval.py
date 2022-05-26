@@ -111,7 +111,7 @@ def evaluate():
 
         save_obj["metrics"] = metrics[0]
         filename = f"{base_path}/metrics/standard/{args.checkpoint}_{args.relation_file}_{args.by_example}" \
-                   f"_{args.absolute_examples}_{args.min_freq}_{args.max_freq}_{args.min_quantile}_{args.max_quantile}"
+                   f"_{args.absolute_examples}_{args.min_freq}_{args.max_freq}_{args.min_quantile}_{args.max_quantile}_{mq}"
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "x") as save_file:
             save_file.write(json.dumps(save_obj))
