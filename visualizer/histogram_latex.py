@@ -100,7 +100,7 @@ def plot():
         {tikzpicture}
         """)
 
-        return "\n".join(texts)
+        print("\n".join(texts))
 
 
 if __name__ == "__main__":
