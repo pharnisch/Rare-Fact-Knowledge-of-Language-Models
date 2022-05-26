@@ -68,7 +68,7 @@ def plot():
         b_strings = []
         for b in average_buckets:
             b_strings.append(f"({b[0]}, {b[1]})")
-            texts.append("\n".join(b_strings))
+        texts.append("\n".join(b_strings))
 
         texts.append(r"""
         };
