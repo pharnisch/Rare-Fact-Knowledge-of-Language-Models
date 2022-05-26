@@ -25,10 +25,8 @@ def plot():
 
         texts = []
         texts.append(r"""
-        \begin
-        {tikzpicture}
-        \begin
-        {axis}[
+        \begin{tikzpicture}
+        \begin{axis}[
             title = {BERT(large, cased)
         from HuggingFace, $N = 
         """)
@@ -71,8 +69,7 @@ def plot():
 
         texts.append(r"""
         };
-        \addlegendentry
-        {{Pearson $\rho$ =
+        \addlegendentry{{Pearson $\rho$ =
         """)
         texts.append(str(pearson))
 
@@ -82,8 +79,7 @@ def plot():
         texts.append(str(pearson_p))
         texts.append(r"""
         }}
-        \addlegendentry
-        {{Spearman $\rho$ =
+        \addlegendentry{{Spearman $\rho$ =
         """)
         texts.append(str(spearman))
 
@@ -94,13 +90,11 @@ def plot():
 
         texts.append(r"""
         }}
-        \end
-        {axis}
-        \end
-        {tikzpicture}
+        \end{axis}
+        \end{tikzpicture}
         """)
 
-        print("\n".join(texts))
+        print("".join(texts))
 
 
 if __name__ == "__main__":
