@@ -159,6 +159,8 @@ class MetricCalculator(abc.ABC):
                 filtered_values.append(top_value)
                 filtered_indices.append(top_index)
 
+        print(len(filtered_values))
+
         return filtered_values, filtered_indices
 
 
