@@ -32,9 +32,6 @@ def scatter():
         xlabel={frequency $|R|$},
         xlabel near ticks,
         ylabel={rank},
-axis y line*=left,
-xlabel=x-axis,
-ylabel=y-axis 1,
         scatter/classes={%
         a={mark=x,draw=black}}]
     \addplot[scatter,only marks,%
