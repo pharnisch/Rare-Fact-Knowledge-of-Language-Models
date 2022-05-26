@@ -73,6 +73,8 @@ class MetricCalculator(abc.ABC):
                     top_vs_values = top_vs[0][0]
                     top_vs_indices = top_vs[1][0]
 
+                    top_vs_values, top_vs_indices = self.filter_other_valid_objects(top_vs_values, top_vs_indices, sub_label, relation, obj_label, base_path, file)
+
                     for rank, (token_index, value) in enumerate(zip(top_vs_indices, top_vs_values)):
                         token = tokenizer.decode([token_index]).lower().replace(" ", "")
                         for obj_l in obj_labels:  # take scores for best ranked obj_label or obj_alias
@@ -130,6 +132,36 @@ class MetricCalculator(abc.ABC):
             "average_buckets": average_buckets,
             "bucket_borders": bucket_borders
         }
+
+    def filter_other_valid_objects(self, top_values, top_indices, subject, relation, object, base_path, file):
+        """
+        Removes other valid objects (with same subject and relation) from lists
+        :param top_values: sorted prediction tokens
+        :param top_indices: sorted prediction token indices
+        :return: filtered top_values, top_indices
+        """
+
+        # 1. Find out other valid objects
+        other_valid_objects = []
+        with jsonlines.open(self.get_path_to_file(base_path, file)) as _f:
+            for line in _f.iter():
+                line_sub, _, line_obj, _, line_rel, _ = self.parse_line(line, file)
+                if relation == line_rel and subject == line_sub:
+                    other_valid_objects.append(line_obj)
+        if len(other_valid_objects) > 0:
+            print(f"For {subject}_-{relation}->{object} there are following object alternatives:")
+            print(print(other_valid_objects))
+
+        # 2. Filter other valid objects
+        filtered_values, filtered_indices = [], []
+        for (top_value, top_index) in zip(top_values, top_indices):
+            if top_value not in other_valid_objects:
+                filtered_values.append(top_value)
+                filtered_indices.append(top_index)
+
+        return filtered_values, filtered_indices
+
+
 
     def get_metrics(self, arg_dict: dict):
         base_path = arg_dict["base_path"]
