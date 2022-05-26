@@ -157,7 +157,7 @@ class MetricCalculator(abc.ABC):
         # 2. Filter other valid objects
         filtered_values, filtered_indices = [], []
         for (top_value, top_index) in zip(top_values, top_indices):
-            token = tokenizer.convert_ids_to_tokens(top_index)
+            token = tokenizer.convert_ids_to_tokens([top_index])[0]
             print(token)
             if token not in other_valid_objects:
                 filtered_values.append(top_value)
