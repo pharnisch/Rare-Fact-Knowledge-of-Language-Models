@@ -75,7 +75,7 @@ class MetricCalculator(abc.ABC):
                     top_vs_values = top_vs[0][0]
                     top_vs_indices = top_vs[1][0]
 
-                    top_vs_values, top_vs_indices = self.filter_other_valid_objects(top_vs_values, top_vs_indices, sub_label, relation, obj_label, base_path, file)
+                    top_vs_values, top_vs_indices = self.filter_other_valid_objects(top_vs_values, top_vs_indices, sub_label, relation, obj_label, base_path, file, tokenizer)
 
                     for rank, (token_index, value) in enumerate(zip(top_vs_indices, top_vs_values)):
                         token = tokenizer.decode([token_index]).lower().replace(" ", "")
@@ -135,7 +135,7 @@ class MetricCalculator(abc.ABC):
             "bucket_borders": bucket_borders
         }
 
-    def filter_other_valid_objects(self, top_values, top_indices, subject, relation, object, base_path, file):
+    def filter_other_valid_objects(self, top_values, top_indices, subject, relation, object, base_path, file, tokenizer):
         """
         Removes other valid objects (with same subject and relation) from lists
         :param top_values: sorted prediction tokens
@@ -157,7 +157,9 @@ class MetricCalculator(abc.ABC):
         # 2. Filter other valid objects
         filtered_values, filtered_indices = [], []
         for (top_value, top_index) in zip(top_values, top_indices):
-            if top_value not in other_valid_objects:
+            print(tokenizer.decode(top_index))
+            quit()
+            if top_index not in other_valid_objects:
                 filtered_values.append(top_value)
                 filtered_indices.append(top_index)
 
