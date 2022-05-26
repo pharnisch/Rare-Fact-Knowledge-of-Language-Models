@@ -161,6 +161,8 @@ class MetricCalculator(abc.ABC):
             if token.lower() not in other_valid_objects:
                 filtered_values.append(top_value)
                 filtered_indices.append(top_index)
+            else:
+                print(f"FILTERED: {token}")
 
         print(len(filtered_values))
         return filtered_values, filtered_indices
