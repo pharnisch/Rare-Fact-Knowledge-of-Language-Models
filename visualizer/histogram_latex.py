@@ -10,7 +10,7 @@ def plot():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
-    parser.add_argument('-m', "--,ax", default=50, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-m', "--max", default=50, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
 
     max = args.max
