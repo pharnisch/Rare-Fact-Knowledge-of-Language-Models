@@ -32,7 +32,7 @@ def plot():
             title = {BERT(large, cased)
         from HuggingFace, $N = 
         """)
-        texts.append(n)
+        texts.append(str(n))
         texts.append(r"""
         $ \vspace
         {1
@@ -74,23 +74,23 @@ def plot():
         \addlegendentry
         {{Pearson $\rho$ =
         """)
-        texts.append(pearson)
+        texts.append(str(pearson))
 
         texts.append(r"""
         , $p$ =
         """)
-        texts.append(pearson_p)
+        texts.append(str(pearson_p))
         texts.append(r"""
         }}
         \addlegendentry
         {{Spearman $\rho$ =
         """)
-        texts.append(spearman)
+        texts.append(str(spearman))
 
         texts.append(r"""
         , $p$ = 
         """)
-        texts.append(spearman_p)
+        texts.append(str(spearman_p))
 
         texts.append(r"""
         }}
