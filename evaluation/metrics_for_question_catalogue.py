@@ -163,7 +163,6 @@ class MetricCalculator(abc.ABC):
                 filtered_indices.append(top_index)
 
         print(len(filtered_values))
-        print(filtered_values[10:])
         return filtered_values, filtered_indices
 
 
