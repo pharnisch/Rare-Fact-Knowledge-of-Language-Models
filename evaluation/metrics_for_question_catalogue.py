@@ -146,10 +146,10 @@ class MetricCalculator(abc.ABC):
         with jsonlines.open(self.get_path_to_file(base_path, file)) as _f:
             for line in _f.iter():
                 line_sub, _, line_obj, _, line_rel, _ = self.parse_line(line, file)
-                if relation == line_rel and subject == line_sub:
+                if relation == line_rel and subject == line_sub and object != line_obj:
                     other_valid_objects.append(line_obj)
         if len(other_valid_objects) > 0:
-            print(f"For {subject}_-{relation}->{object} there are following object alternatives:")
+            print(f"For {subject}--{relation}->{object} there are following object alternatives:")
             print(print(other_valid_objects))
 
         # 2. Filter other valid objects
