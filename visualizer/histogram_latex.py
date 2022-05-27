@@ -43,7 +43,7 @@ def plot():
         },
         xtick = data,
         xticklabel style = {rotate = -60},
-        xlabel = {frequency $ | R |$},
+        xlabel = {frequency},
         xlabel near ticks,
         ylabel = {rank}
         ]

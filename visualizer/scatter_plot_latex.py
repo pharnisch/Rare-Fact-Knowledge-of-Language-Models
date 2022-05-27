@@ -24,7 +24,7 @@ def scatter():
     \begin{tikzpicture}
     \begin{axis}[%
         xticklabel style={rotate=-60},
-        xlabel={frequency $|R|$},
+        xlabel={frequency},
         xlabel near ticks,
         xmode = log,
         ylabel={rank},
