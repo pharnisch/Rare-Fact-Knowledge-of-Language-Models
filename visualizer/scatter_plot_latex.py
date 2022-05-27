@@ -31,6 +31,7 @@ def scatter():
         xticklabel style={rotate=-60},
         xlabel={frequency $|R|$},
         xlabel near ticks,
+        xmode = log,
         ylabel={rank},
         scatter/classes={%
         a={mark=x,draw=black}}]
