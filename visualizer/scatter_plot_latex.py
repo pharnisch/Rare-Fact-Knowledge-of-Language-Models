@@ -48,7 +48,7 @@ def scatter():
     \end{figure}
     """
 
-    print(p1 + p2 + p3 + p4 + p5)
+    print(p1 + p4 + p5)
     print(f"N={n}")
 
 
