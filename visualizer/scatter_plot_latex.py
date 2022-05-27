@@ -23,11 +23,6 @@ def scatter():
     
     \begin{tikzpicture}
     \begin{axis}[%
-    title={DistilBERT (base, uncased) from HuggingFace,
-    """
-    p2 = f"$N={n}$"
-    p3 = r"""
-        \vspace{1em}},
         xticklabel style={rotate=-60},
         xlabel={frequency $|R|$},
         xlabel near ticks,
@@ -54,6 +49,7 @@ def scatter():
     """
 
     print(p1 + p2 + p3 + p4 + p5)
+    print(f"N={n}")
 
 
 if __name__ == "__main__":

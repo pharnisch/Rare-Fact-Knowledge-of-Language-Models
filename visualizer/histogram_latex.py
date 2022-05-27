@@ -29,17 +29,7 @@ def plot():
         texts = []
         texts.append(r"""
         \begin{tikzpicture}
-        \begin{axis}[
-            title = {""")
-        texts.append(metrics_dict["metrics"]["file"])
-        texts.append(r"""-- BERT (large, cased)
-        from HuggingFace, $N = 
-        """)
-        texts.append(str(n))
-        texts.append(r"""
-        $ \vspace
-        {1
-        em}},""")
+        \begin{axis}[""")
         texts.append(f"ymin = 0, ymax = {max},")
         texts.append(r"""
         area style,
@@ -94,6 +84,7 @@ def plot():
         """)
 
         print("".join(texts))
+        print(f"N={n}")
 
 
 if __name__ == "__main__":
