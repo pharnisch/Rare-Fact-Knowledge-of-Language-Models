@@ -61,11 +61,9 @@ class MetricCalculator(abc.ABC):
                             masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file,
                                                                 arg_dict["min_freq"], arg_dict["max_freq"], random)
 
-                    model_name = type(model).__name__
-                    print(model_name)
-
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
 
+                    model_name = type(model).__name__
                     if model_name == "DistilBertForMaskedLM":
                         output = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], return_dict=True)#
                     else:
