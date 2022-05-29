@@ -62,6 +62,7 @@ class MetricCalculator(abc.ABC):
                                                                 arg_dict["min_freq"], arg_dict["max_freq"], random)
 
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
+                    print(inputs)
                     output = model(**inputs, return_dict=True)
                     logits = output.logits
                     softmax = torch.nn.functional.softmax(logits, dim=-1)
