@@ -66,7 +66,7 @@ class MetricCalculator(abc.ABC):
 
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
 
-                    if model_name == "transformers.models.distilbert.modeling_distilbert.DistilBertForMaskedLM":
+                    if model_name == "DistilBertForMaskedLM":
                         output = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], return_dict=True)#
                     else:
                         output = model(**inputs, return_dict=True)
