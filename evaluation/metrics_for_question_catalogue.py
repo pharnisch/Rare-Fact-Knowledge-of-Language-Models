@@ -61,7 +61,8 @@ class MetricCalculator(abc.ABC):
                             masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file,
                                                                 arg_dict["min_freq"], arg_dict["max_freq"], random)
 
-                    print(model.model_type)
+                    print(type(model))
+                    print(model.__name__)
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
 
                     output = model(**inputs, return_dict=True)
