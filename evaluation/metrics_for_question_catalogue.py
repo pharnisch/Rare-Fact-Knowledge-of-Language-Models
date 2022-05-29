@@ -61,11 +61,16 @@ class MetricCalculator(abc.ABC):
                             masked_sent = self.prepend_examples(masked_sent, 10, cnt, base_path, file,
                                                                 arg_dict["min_freq"], arg_dict["max_freq"], random)
 
-                    print(type(model))
-                    print(model.__name__)
+                    model_name = type(model).__name__
+                    print(model_name)
+
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
 
-                    output = model(**inputs, return_dict=True)
+                    if model_name == "transformers.models.distilbert.modeling_distilbert.DistilBertForMaskedLM":
+                        output = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], return_dict=True)#
+                    else:
+                        output = model(**inputs, return_dict=True)
+
                     logits = output.logits
                     softmax = torch.nn.functional.softmax(logits, dim=-1)
                     mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
