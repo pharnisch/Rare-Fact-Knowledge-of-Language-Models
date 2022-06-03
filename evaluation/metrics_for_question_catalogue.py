@@ -62,6 +62,7 @@ class MetricCalculator(abc.ABC):
                                                                 arg_dict["min_freq"], arg_dict["max_freq"], random)
 
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
+                    print(inputs.shape)
 
                     model_name = type(model).__name__
                     if model_name == "DistilBertForMaskedLM":
