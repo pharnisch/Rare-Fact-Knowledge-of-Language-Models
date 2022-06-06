@@ -63,12 +63,14 @@ class MetricCalculator(abc.ABC):
 
                     inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
                     print(inputs["input_ids"].shape)
+                    print(inputs["input_ids"])
 
                     model_name = type(model).__name__
                     if model_name == "DistilBertForMaskedLM":
                         output = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], return_dict=True)#
                     else:
-                        output = model(**inputs, return_dict=True)
+                        print(inputs)
+                        output = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], token_type_ids=inputs["token_type_ids"], return_dict=True)  # **inputs, return_dict=True
 
                     logits = output.logits
                     softmax = torch.nn.functional.softmax(logits, dim=-1)
