@@ -58,14 +58,19 @@ def train():
         checkpoint_available = len(checkpoints) > 0
 
         if checkpoint_available:
-            checkpoint = torch.load(last_checkpoint["path"])
+            device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
+
+            checkpoint = torch.load(last_checkpoint["path"], device)
+
             already_trained_epochs = checkpoint["epoch"] + 1
+
             transformer = Transformer.get_transformer(TransformerType[args.model_name], args.num_hidden_layers)
             model = transformer.model
-            model.load_state_dict(checkpoint["model_state_dict"])
-            device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
+            import copy
+            model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
             model.to(device)
             model.train()
+
             optim = AdamW(model.parameters())
             optim.load_state_dict(checkpoint["optimizer_state_dict"])
             for state in optim.state.values():
