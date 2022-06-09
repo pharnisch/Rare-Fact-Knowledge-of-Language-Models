@@ -73,23 +73,16 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         labels = batch['labels'].to(device)
 
                         print(f"BATCH COUNT {batch_count}")
-                        print(model.device)
-                        print(input_ids.device)
-                        print(attention_mask.device)
-                        print(labels.device)
 
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         loss = outputs[0]  # extract loss
-                        print(outputs[1])
-                        print(loss.device)
                         a_b_loss = loss / accumulated_batches
-                        print(a_b_loss.device)
-                        print("----")
                         a_b_loss.backward()
                         loss_stored = True
 
                         if batch_count % accumulated_batches == 0:
+                            print("STEP")
                             optimizer.step()
                             optimizer.zero_grad()
                             loss_stored = False
