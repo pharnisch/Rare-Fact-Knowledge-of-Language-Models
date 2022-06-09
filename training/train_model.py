@@ -49,10 +49,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 with open(path, 'r', encoding='utf-8') as fp:
                     remaining_encodings = {"input_ids":[],"attention_mask":[]}
                     while True:
-                        batch_count += 1
+
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                             break
-                        amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
+                        #amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
+                        amount = min(batch_size - len(remaining_encodings["input_ids"]), remaining_for_path)
+
                         lines = []
                         if amount > 0:
                             for _ in range(amount):
@@ -63,6 +65,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                                 else:
                                     remaining_for_path = 0
                                     break
+
+                        if len(lines) == 0 and len(remaining_encodings["input_ids"]) == 0:
+                            break;
+
+                        batch_count += 1
+
                         batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc)
 
                         # pull all tensor batches required for training
