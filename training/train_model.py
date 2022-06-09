@@ -264,35 +264,34 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc):
 
     #encoded = tokenizer(lines, add_special_tokens=True, max_length=512, padding=True, truncation=True)  # padding="max_length"
 
-    _inputs, _labels = dc.torch_mask_tokens(inputs=torch.tensor(batch_encoded["input_ids"]))
-    print(_inputs, _labels)
-
-
-    # MASKING
-    labels = torch.tensor(batch_encoded["input_ids"])
-    print(labels)
-    quit()
+    input_ids, labels = dc.torch_mask_tokens(inputs=torch.tensor(batch_encoded["input_ids"]))
     mask = torch.tensor(batch_encoded["attention_mask"])
 
-    input_ids = labels.detach().clone()
-    # create random array of floats with equal dims to input_ids
-    rand = torch.rand(input_ids.shape)
-    # mask random 15% where token is not 0 [PAD], 1 [CLS], or 2 [SEP]
-    mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2)
-    # loop through each row in input_ids tensor (cannot do in parallel)
-    for i in range(input_ids.shape[0]):
-        # get indices of mask positions from mask array
-        selection = torch.flatten(mask_arr[i].nonzero()).tolist()
-        # mask input_ids
-        rand_i = torch.rand([1]).item()
-        if rand_i < 0.8:
-            replacement = 4  # MASK token of BOTH tokenizers are currently at index 4
-        elif rand_i < 0.9:
-            replacement = torch.randint(5, tokenizer.vocab_size, [1]).item()
-        else:
-            replacement = input_ids[i, selection]  # do nothing, remain the token that was there
-
-        input_ids[i, selection] = replacement
+    # MASKING
+    # labels = torch.tensor(batch_encoded["input_ids"])
+    # print(labels)
+    # quit()
+    # mask = torch.tensor(batch_encoded["attention_mask"])
+    #
+    # input_ids = labels.detach().clone()
+    # # create random array of floats with equal dims to input_ids
+    # rand = torch.rand(input_ids.shape)
+    # # mask random 15% where token is not 0 [PAD], 1 [CLS], or 2 [SEP]
+    # mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2)
+    # # loop through each row in input_ids tensor (cannot do in parallel)
+    # for i in range(input_ids.shape[0]):
+    #     # get indices of mask positions from mask array
+    #     selection = torch.flatten(mask_arr[i].nonzero()).tolist()
+    #     # mask input_ids
+    #     rand_i = torch.rand([1]).item()
+    #     if rand_i < 0.8:
+    #         replacement = 4  # MASK token of BOTH tokenizers are currently at index 4
+    #     elif rand_i < 0.9:
+    #         replacement = torch.randint(5, tokenizer.vocab_size, [1]).item()
+    #     else:
+    #         replacement = input_ids[i, selection]  # do nothing, remain the token that was there
+    #
+    #     input_ids[i, selection] = replacement
 
     batch = {
         "input_ids": input_ids,
