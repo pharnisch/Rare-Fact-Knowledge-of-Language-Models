@@ -61,6 +61,9 @@ def train():
             checkpoint = torch.load(last_checkpoint["path"])
             already_trained_epochs = checkpoint["epoch"] + 1
             model = checkpoint["model_state_dict"]
+            device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
+            model.to(device)
+            model.train()
             optim = checkpoint["optimizer_state_dict"]
 
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
@@ -70,6 +73,9 @@ def train():
     # make fresh start: instantiate model, optimizer, scheduler
     transformer = Transformer.get_transformer(TransformerType[args.model_name], args.num_hidden_layers)
     model = transformer.model
+    device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
+    model.to(device)
+    model.train()
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
