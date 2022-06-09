@@ -19,21 +19,16 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     model.to(device)
     model.train()
 
-
     #lr_scheduler = transformers.get_linear_schedule_with_warmup(
     #    optimizer, num_warmup_steps=0,
     #    num_training_steps=epochs+already_trained_epochs,
     #    last_epoch=already_trained_epochs-1
     #)
 
-    #data = get_data(TransformerType[model_name], training_data_rate)
-    #loader = torch.utils.data.DataLoader(data, batch_size=batch_size, shuffle=True)
 
     transformer = Transformer.get_transformer(TransformerType[model_name])
     tokenizer = transformer.tokenizer
     lines_amount = int(10000 * training_data_rate)
-
-
 
     dc = DataCollatorForLanguageModeling(
         tokenizer=tokenizer
@@ -48,40 +43,29 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         epoch_loss = 0
         batch_count = 0
         epoch = i + already_trained_epochs
-        #print(f"epoch {epoch+1} (of {epochs}) begins ...")
-        #epoch_total_batches = len(data_paths) * (int(lines_amount / batch_size) + 1)
         with alive_bar(len(data_paths), title=f"Epoch {epoch + 1}") as bar:
-            #loop = tqdm(loader, leave=True)
-            #for batch in loop:
+
             for idx, path in enumerate(data_paths):
-                #print(f"  path {idx+1} of {len(data_paths)} ...")
-                #batches = make_batches_from_path(path, lines_amount, tokenizer, batch_size)
-                #for batch in batches:
 
                 remaining_for_path = lines_amount
                 with open(path, 'r', encoding='utf-8') as fp:
                     remaining_encodings = {"input_ids":[],"attention_mask":[]}
                     while True:
-                        #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
+                        batch_count += 1
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
-                            #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                             break
-                        #print(f"    batch {batch_cnt} of {int(lines_amount / batch_size) + 1} ...")
                         amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
-                        #lines = [next(fp).replace("\n", "") for _ in range(amount)]
                         lines = []
                         if amount > 0:
                             for _ in range(amount):
                                 next_line = next(fp, None)
                                 if next_line is not None:
-                                    batch_count += 1
                                     lines.append(next_line.replace("\n", ""))
                                     remaining_for_path -= 1
                                 else:
                                     remaining_for_path = 0
                                     break
                         batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc)
-
 
                         # pull all tensor batches required for training
                         input_ids = batch['input_ids'].to(device)
@@ -100,21 +84,16 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         print(loss.device)
                         a_b_loss = loss / accumulated_batches
                         print(a_b_loss.device)
+                        print("----")
                         a_b_loss.backward()
                         loss_stored = True
 
                         if batch_count % accumulated_batches == 0:
-                            print(optimizer.device)
-                            print("----")
                             optimizer.step()
                             optimizer.zero_grad()
                             loss_stored = False
 
-                        # print relevant info to progress bar
-                        # loop.set_description("Epoch " + str(epoch))
-                        # loop.set_postfix(loss=loss.item())
                         epoch_loss += loss.item()
-
 
                 bar()  # indicate that one of the epoch total paths is finished!
 
