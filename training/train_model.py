@@ -85,7 +85,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             optimizer.zero_grad()
                             loss_stored = False
                             scheduler.step()
-                            print(f"lr: {scheduler.get_lr()}")
+                            #print(f"lr: {scheduler.get_lr()}")
 
                         epoch_loss += loss.item()
 
