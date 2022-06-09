@@ -90,6 +90,11 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         attention_mask = batch['attention_mask'].to(device)
                         labels = batch['labels'].to(device)
 
+                        print(model.device)
+                        print(input_ids.device)
+                        print(attention_mask.device)
+                        print(labels.device)
+                        print("----")
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         loss = outputs[0]  # extract loss
