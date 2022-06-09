@@ -104,6 +104,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
         if loss_stored:  # if last accumulated_batch did not get complete, backprop the rest loss
             optimizer.step()
+            optimizer.zero_grad()
             loss_stored = False
 
         #lr_scheduler.step()
