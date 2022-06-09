@@ -12,11 +12,13 @@ trmc = TRExMetricCalculator(base_path)
 from alive_progress import alive_bar
 import json
 import transformers
+from transformers import DataCollatorForLanguageModeling
 
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
+
 
     #lr_scheduler = transformers.get_linear_schedule_with_warmup(
     #    optimizer, num_warmup_steps=0,
@@ -30,6 +32,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     transformer = Transformer.get_transformer(TransformerType[model_name])
     tokenizer = transformer.tokenizer
     lines_amount = int(10000 * training_data_rate)
+
+
+
+    dc = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer
+    )
 
     mod_path = Path(__file__).parent.parent
     absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
@@ -74,7 +82,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                                 else:
                                     remaining_for_path = 0
                                     break
-                        batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings)
+                        batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc)
 
 
                         # pull all tensor batches required for training
@@ -212,7 +220,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             model.train()
 
 
-def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
+def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc):
 
     # ENCODE
     if len(lines) > 0:
@@ -256,22 +264,25 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
 
     #encoded = tokenizer(lines, add_special_tokens=True, max_length=512, padding=True, truncation=True)  # padding="max_length"
 
+    _inputs, _labels = dc.torch_mask_tokens(inputs=torch.tensor(batch_encoded["input_ids"]))
+    print(_inputs, _labels)
+
+
     # MASKING
     labels = torch.tensor(batch_encoded["input_ids"])
+    print(labels)
+    quit()
     mask = torch.tensor(batch_encoded["attention_mask"])
 
     input_ids = labels.detach().clone()
-    print(input_ids)
     # create random array of floats with equal dims to input_ids
     rand = torch.rand(input_ids.shape)
     # mask random 15% where token is not 0 [PAD], 1 [CLS], or 2 [SEP]
     mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2)
-    print(mask_arr)
     # loop through each row in input_ids tensor (cannot do in parallel)
     for i in range(input_ids.shape[0]):
         # get indices of mask positions from mask array
         selection = torch.flatten(mask_arr[i].nonzero()).tolist()
-        print(selection)
         # mask input_ids
         rand_i = torch.rand([1]).item()
         if rand_i < 0.8:
@@ -281,9 +292,7 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
         else:
             replacement = input_ids[i, selection]  # do nothing, remain the token that was there
 
-        print(replacement)
         input_ids[i, selection] = replacement
-        print(input_ids[i])
 
     batch = {
         "input_ids": input_ids,
