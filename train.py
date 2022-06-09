@@ -64,7 +64,13 @@ def train():
             device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
             model.to(device)
             model.train()
-            optim = checkpoint["optimizer_state_dict"]
+            optimizer = AdamW(model.parameters())
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+            for state in optimizer.state.values():
+                for k, v in state.items():
+                    if isinstance(v, torch.Tensor):
+                        state[k] = v.to(device)
+            #optim = checkpoint["optimizer_state_dict"]
 
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
                                args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
@@ -76,7 +82,13 @@ def train():
     device = torch.device(f"cuda:{args.cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
     model.to(device)
     model.train()
-    optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
+    optimizer = AdamW(model.parameters())
+    optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+    for state in optimizer.state.values():
+        for k, v in state.items():
+            if isinstance(v, torch.Tensor):
+                state[k] = v.to(device)
+    #optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     # TODO: SCHEDULER = transformers.get_
     already_trained_epochs = 0
     training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
