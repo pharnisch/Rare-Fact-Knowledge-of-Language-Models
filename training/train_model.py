@@ -81,6 +81,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         loss = outputs[0]  # extract loss
+                        print(outputs[1])
                         print(loss.device)
                         a_b_loss = loss / accumulated_batches
                         print(a_b_loss.device)
