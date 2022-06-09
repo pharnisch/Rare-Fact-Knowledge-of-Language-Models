@@ -7,6 +7,7 @@ from training.model_configs import TransformerType, Transformer
 from training.data.masked_data import get_data
 from training.train_model import training_procedure
 import torch
+import transformers
 
 base_path = Path(__file__).parent
 
@@ -79,8 +80,15 @@ def train():
                         state[k] = v.to(device)
             #optim = checkpoint["optimizer_state_dict"]
 
+            lr_scheduler = transformers.get_linear_schedule_with_warmup(
+                optim,
+                num_warmup_steps=10_000,
+                num_training_steps=100_000
+            )
+            lr_scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
+
             training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs,
-                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
+                               args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches, lr_scheduler)
             return
 
     # make fresh start: instantiate model, optimizer, scheduler
@@ -90,9 +98,13 @@ def train():
     model.to(device)
     model.train()
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
-    # TODO: SCHEDULER = transformers.get_
+    lr_scheduler = transformers.get_linear_schedule_with_warmup(
+        optim,
+        num_warmup_steps=10_000,
+        num_training_steps=100_000
+    )
     already_trained_epochs = 0
-    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches)
+    training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches, lr_scheduler)
 
 
 if __name__ == "__main__":

@@ -14,15 +14,8 @@ import json
 import transformers
 from transformers import DataCollatorForLanguageModeling
 
-def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches):
+def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches, scheduler):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
-
-    #lr_scheduler = transformers.get_linear_schedule_with_warmup(
-    #    optimizer, num_warmup_steps=0,
-    #    num_training_steps=epochs+already_trained_epochs,
-    #    last_epoch=already_trained_epochs-1
-    #)
-
 
     transformer = Transformer.get_transformer(TransformerType[model_name])
     tokenizer = transformer.tokenizer
@@ -89,6 +82,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             optimizer.step()
                             optimizer.zero_grad()
                             loss_stored = False
+                            scheduler.step()
 
                         epoch_loss += loss.item()
 
@@ -99,7 +93,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             optimizer.zero_grad()
             loss_stored = False
 
-        #lr_scheduler.step()
+
 
         epoch_relative_loss = epoch_loss / batch_count
         print(f"epoch_relative_loss: {epoch_relative_loss}")
@@ -142,8 +136,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "epoch": epoch,
             "model_state_dict": model.state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler.state_dict(),
             "loss": loss
-            # scheduler
         }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
 
         if no_eval:
