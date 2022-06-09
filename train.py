@@ -83,7 +83,7 @@ def train():
             lr_scheduler = transformers.get_linear_schedule_with_warmup(
                 optim,
                 num_warmup_steps=10_000,
-                num_training_steps=100_000
+                num_training_steps=1_000_000
             )
             lr_scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
 
@@ -101,7 +101,7 @@ def train():
     lr_scheduler = transformers.get_linear_schedule_with_warmup(
         optim,
         num_warmup_steps=10_000,
-        num_training_steps=100_000
+        num_training_steps=1_000_000
     )
     already_trained_epochs = 0
     training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches, lr_scheduler)
