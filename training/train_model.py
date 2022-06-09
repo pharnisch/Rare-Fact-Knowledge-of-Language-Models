@@ -140,8 +140,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         # SAVE LAST EPOCH
         torch.save({
             "epoch": epoch,
-            "model_state_dict": model,
-            "optimizer_state_dict": optimizer,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
             "loss": loss
             # scheduler
         }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
