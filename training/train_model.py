@@ -261,14 +261,17 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
     mask = torch.tensor(batch_encoded["attention_mask"])
 
     input_ids = labels.detach().clone()
+    print(input_ids)
     # create random array of floats with equal dims to input_ids
     rand = torch.rand(input_ids.shape)
     # mask random 15% where token is not 0 [PAD], 1 [CLS], or 2 [SEP]
     mask_arr = (rand < .15) * (input_ids != 0) * (input_ids != 1) * (input_ids != 2)
+    print(mask_arr)
     # loop through each row in input_ids tensor (cannot do in parallel)
     for i in range(input_ids.shape[0]):
         # get indices of mask positions from mask array
         selection = torch.flatten(mask_arr[i].nonzero()).tolist()
+        print(selection)
         # mask input_ids
         rand_i = torch.rand([1]).item()
         if rand_i < 0.8:
@@ -278,7 +281,9 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings):
         else:
             replacement = input_ids[i, selection]  # do nothing, remain the token that was there
 
+        print(replacement)
         input_ids[i, selection] = replacement
+        print(input_ids[i])
 
     batch = {
         "input_ids": input_ids,
