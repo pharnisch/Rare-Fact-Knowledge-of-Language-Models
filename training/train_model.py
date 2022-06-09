@@ -90,6 +90,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         attention_mask = batch['attention_mask'].to(device)
                         labels = batch['labels'].to(device)
 
+                        print(f"BATCH COUNT {batch_count}")
                         print(model.device)
                         print(input_ids.device)
                         print(attention_mask.device)
