@@ -17,6 +17,8 @@ from transformers import DataCollatorForLanguageModeling
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches, scheduler):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
 
+    print(f"lr: {scheduler.get_lr()}")
+
     transformer = Transformer.get_transformer(TransformerType[model_name])
     tokenizer = transformer.tokenizer
     lines_amount = int(10000 * training_data_rate)
@@ -83,6 +85,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             optimizer.zero_grad()
                             loss_stored = False
                             scheduler.step()
+                            print(f"lr: {scheduler.get_lr()}")
 
                         epoch_loss += loss.item()
 
@@ -92,7 +95,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             optimizer.step()
             optimizer.zero_grad()
             loss_stored = False
-
+            scheduler.step()
 
 
         epoch_relative_loss = epoch_loss / batch_count
