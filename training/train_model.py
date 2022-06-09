@@ -61,11 +61,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                 remaining_for_path = lines_amount
                 with open(path, 'r', encoding='utf-8') as fp:
                     remaining_encodings = {"input_ids":[],"attention_mask":[]}
-                    batch_cnt = 0
                     while True:
                         #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
-                        batch_cnt += 1
-                        batch_count += 1
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                             #bar.title = f"Epoch {epoch + 1}, File {idx + 1}/{len(data_paths)}, Document {lines_amount - remaining_for_path}/{lines_amount}"
                             break
@@ -77,6 +74,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             for _ in range(amount):
                                 next_line = next(fp, None)
                                 if next_line is not None:
+                                    batch_count += 1
                                     lines.append(next_line.replace("\n", ""))
                                     remaining_for_path -= 1
                                 else:
