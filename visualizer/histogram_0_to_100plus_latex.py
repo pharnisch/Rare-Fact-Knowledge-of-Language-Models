@@ -12,8 +12,9 @@ def plot():
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     parser.add_argument('-m', "--max", default=50, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-ss', "--step-size", default=1, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
-
+    ss = args.step_size
     max = args.max
 
     with open(f"{base_path}/metrics/standard/{args.checkpoint}", "r") as f:
@@ -33,11 +34,17 @@ def plot():
 
         def criteria(freq, bucket):
             if freq != max_bucket_from:
-                return freq == bucket
+                return int(freq/ss) == int(bucket/ss)
             else:
                 return freq >= max_bucket_from
 
-        buckets = [[dp["rank"] for dp in data_points if criteria(dp["frequency"], i)] for i in range(max_bucket_from+1)]  # 101 buckets
+        bucket_numbers = []
+        current_number = 0
+        while current_number <= 100 - ss:
+            bucket_numbers.append(current_number)
+            current_number += ss
+        bucket_numbers.append(100)
+        buckets = {i:[dp["rank"] for dp in data_points if criteria(dp["frequency"], i)] for i in bucket_numbers}
 
 
         texts = []
@@ -61,8 +68,8 @@ def plot():
 
 
         b_strings = []
-        for idx, b in enumerate(buckets):
-            b_strings.append(f"({idx}, {mean(b)})")
+        for idx, (start, b) in enumerate(buckets):
+            b_strings.append(f"({start}, {mean(b)})")
         b_strings.append(f"({101}, {0})")
         texts.append("\n".join(b_strings))
 
