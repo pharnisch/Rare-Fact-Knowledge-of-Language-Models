@@ -55,11 +55,12 @@ def plot():
         texts.append(r"""
         ymax=450,
         ymin=0, 
-        xtick = {0,10,20,30,40,50,60,70,80,90,100},
+        xtick = {0,10,20,30,40,50,60,70,80,90,100+,~},
         area style,
         xticklabel style = {rotate = -60},
         xlabel = {frequency},
         xlabel near ticks,
+        grid=none,
         ylabel = {rank}
         ]
         \addlegendimage{empty legend}
@@ -70,8 +71,9 @@ def plot():
         b_strings = []
         for key in buckets.keys():
             b = buckets[key]
+            key = key if key != 100 else "100+"
             b_strings.append(f"({key}, {mean(b)})")
-        b_strings.append(f"({101}, {0})")
+        b_strings.append(f"(~, {0})")
         texts.append("\n".join(b_strings))
 
         texts.append(r"""
