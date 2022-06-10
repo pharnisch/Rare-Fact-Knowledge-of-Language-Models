@@ -55,7 +55,8 @@ def plot():
         texts.append(r"""
         ymax=450,
         ymin=0, 
-        xtick = {0,10,20,30,40,50,60,70,80,90,100+,~},
+        ybar interval,
+        symbolic x coords = {0,10,20,30,40,50,60,70,80,90,100+,~},
         area style,
         xticklabel style = {rotate = -60},
         xlabel = {frequency},
