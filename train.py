@@ -28,6 +28,9 @@ def train():
     parser.add_argument('-ab', "--accumulated_batches", default=256, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
 
+    max_steps = 23_000
+    warm_up_rate = 0.04
+
     # for reproducability
     seed = args.seed
     torch.manual_seed(seed)
@@ -82,8 +85,8 @@ def train():
 
             lr_scheduler = transformers.get_linear_schedule_with_warmup(
                 optim,
-                num_warmup_steps=10_000,
-                num_training_steps=1_000_000
+                num_warmup_steps=max_steps*warm_up_rate,
+                num_training_steps=max_steps
             )
             lr_scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
 
@@ -100,8 +103,8 @@ def train():
     optim = AdamW(model.parameters(), lr=args.learning_rate)  # initialize optimizer
     lr_scheduler = transformers.get_linear_schedule_with_warmup(
         optim,
-        num_warmup_steps=10_000,
-        num_training_steps=1_000_000
+        num_warmup_steps=max_steps*warm_up_rate,
+        num_training_steps=max_steps
     )
     already_trained_epochs = 0
     training_procedure(model, args.model_name, optim, args.training_data_rate, args.cuda_index, args.epochs, args.batch_size, already_trained_epochs, args.num_hidden_layers, args.learning_rate, args.no_eval, args.accumulated_batches, lr_scheduler)

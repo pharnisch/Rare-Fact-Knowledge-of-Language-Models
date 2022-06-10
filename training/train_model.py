@@ -14,6 +14,7 @@ import json
 import transformers
 from transformers import DataCollatorForLanguageModeling
 
+
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches, scheduler):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
 
@@ -35,6 +36,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         loss_stored = False
         epoch_loss = 0
         batch_count = 0
+        tp_mask_predictions = 0
+        total_masks_predictions = 0
         epoch = i + already_trained_epochs
         with alive_bar(len(data_paths), title=f"Epoch {epoch + 1}") as bar:
 
@@ -75,6 +78,17 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
+                        # use logits for test accuracy
+                        print(outputs[1].shape)
+                        print(outputs[1].shape)
+                        probs = torch.softmax(outputs[1], dim=-1)
+                        print(probs)
+                        preds = torch.argmax(preds, dim=-1)
+                        print(preds)
+                        quit()
+
+
+                        # use loss for optimization
                         loss = outputs[0]  # extract loss
                         a_b_loss = loss / accumulated_batches
                         a_b_loss.backward()
