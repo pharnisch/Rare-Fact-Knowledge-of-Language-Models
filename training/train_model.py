@@ -125,7 +125,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             {
                 "path": paths[idx],
                 "epoch": int(s[5]),
-                "score": float(s[6])
+                "score": float(s[6]),
+                "accuracy": float(s[7])
             }
             for idx, s in enumerate(path_splits)
             if model_name in s[0]
@@ -139,12 +140,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         for checkpoint in checkpoints:
             if best_score_checkpoint is None:
                 best_score_checkpoint = checkpoint
-            elif checkpoint["score"] < best_score_checkpoint["score"]:
+            elif checkpoint["accuracy"] < best_score_checkpoint["accuracy"]:
                 best_score_checkpoint = checkpoint
         for checkpoint in checkpoints:
             # delete best previous epoch checkpoint only if it is worse than last epoch
             if checkpoint["epoch"] == best_score_checkpoint["epoch"]:
-                if checkpoint["score"] > epoch_relative_loss:
+                if checkpoint["accuracy"] > accuracy:
                     os.remove(checkpoint["path"])
             # delete all other epochs anyway
             else:
@@ -204,7 +205,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "by_example": False
                 })
             )
-            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}.jsonl"
+            metrics_file_name = f"{base_path}/metrics/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-{round(accuracy, 4)}.jsonl"
             with open(metrics_file_name, "x") as f:
                 f.write(json.dumps({
                     "metrics": metrics,
