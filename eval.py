@@ -65,6 +65,7 @@ def evaluate():
         num_hidden_layers = 12
         model_name = ""
         for transformer_type in TransformerType:
+            print(transformer_type)
             print(transformer_type[16:])
             if transformer_type[16:] in args.checkpoint:
                 model_name = transformer_type[16:]
