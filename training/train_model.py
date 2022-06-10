@@ -158,7 +158,6 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                         epoch_loss += loss.item()
 
-                print(f"steps after another file: {steps}")
                 bar()  # indicate that one of the epoch total paths is finished!
 
         if loss_stored:  # if last accumulated_batch did not get complete, backprop the rest loss
