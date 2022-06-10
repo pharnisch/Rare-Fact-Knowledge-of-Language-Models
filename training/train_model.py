@@ -32,6 +32,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
     absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
     data_paths = [str(x) for x in Path(absolute_path).glob('**/*.txt') if "nsp" not in str(x)]
 
+    steps = 0
     for i in range(epochs):
         loss_stored = False
         epoch_loss = 0
@@ -100,10 +101,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             optimizer.zero_grad()
                             loss_stored = False
                             scheduler.step()
+                            steps += 1
                             #print(f"lr: {scheduler.get_lr()}")
 
                         epoch_loss += loss.item()
 
+                print(f"steps after another file: {steps}")
                 bar()  # indicate that one of the epoch total paths is finished!
 
         if loss_stored:  # if last accumulated_batch did not get complete, backprop the rest loss
@@ -111,6 +114,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             optimizer.zero_grad()
             loss_stored = False
             scheduler.step()
+            steps += 1
 
 
         epoch_relative_loss = epoch_loss / batch_count
