@@ -69,10 +69,9 @@ def plot():
 
 
         b_strings = []
-        for b in enumerate(buckets):
-            print(b)
-            quit()
-            #b_strings.append(f"({start}, {mean(b)})")
+        for key in buckets.keys():
+            b = buckets[key]
+            b_strings.append(f"({key}, {mean(b)})")
         b_strings.append(f"({101}, {0})")
         texts.append("\n".join(b_strings))
 
