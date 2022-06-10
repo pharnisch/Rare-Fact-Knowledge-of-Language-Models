@@ -7,8 +7,10 @@ from pathlib import Path
 import os
 from evaluation.metrics_for_question_catalogue import GoogleREMetricCalculator, ConceptNetMetricCalculator, TRExMetricCalculator
 import json
+from training.model_configs import TransformerType, Transformer
 
 base_path = Path(__file__).parent
+
 
 
 def evaluate():
@@ -60,11 +62,20 @@ def evaluate():
         tokenizer = AutoTokenizer.from_pretrained(identifier)
         model = AutoModelForMaskedLM.from_pretrained(identifier)
     else:
-        tokenizer = BertTokenizer.from_pretrained(os.path.join(f"{base_path}", "models", "word_piece_tokenizer_30000"), max_len=512)
-        #model = BertForMaskedLM.from_pretrained(os.path.join(f"{base_path}", "models", args.model_name), return_dict=True)
+        num_hidden_layers = 12
+        model_name = ""
+        for transformer_type in TransformerType:
+            print(transformer_type[16:])
+            if transformer_type[16:] in args.checkpoint:
+                model_name = transformer_type[16:]
+
+        transformer = Transformer.get_transformer(TransformerType[model_name], num_hidden_layers)
+        tokenizer = transformer.tokenizer
         absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
         checkpoint = torch.load(absolute_path)
-        model = checkpoint["model_state_dict"]
+        model = transformer.model
+        import copy
+        model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
     model.to('cpu')
     model.eval()
 
