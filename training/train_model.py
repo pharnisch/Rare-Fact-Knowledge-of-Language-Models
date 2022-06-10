@@ -148,6 +148,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             else:
                 os.remove(checkpoint["path"])
 
+        accuracy = float(tp_replacement_predictions) / total_replacement_predictions
+        print(f"Train mask acc for the epoch was {accuracy}")
 
         # SAVE LAST EPOCH
         torch.save({
@@ -155,8 +157,9 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             "model_state_dict": model.state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
             "scheduler_state_dict": scheduler.state_dict(),
-            "loss": loss
-        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-checkpoint.pth")
+            "loss": loss,
+            "train_accuracy": accuracy
+        }, f"{base_path}/models/{model_name}-{num_hidden_layers}-{training_data_rate}-{batch_size*accumulated_batches}-{learning_rate:f}-{epoch}-{round(epoch_relative_loss, 6)}-{round(accuracy, 4)}-checkpoint.pth")
 
         if no_eval:
             continue
@@ -214,7 +217,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
             model.to(device)
             model.train()
-    print(f"Train mask acc for the epoch was {float(tp_replacement_predictions)/total_replacement_predictions}")
+
 
 
 def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc):
