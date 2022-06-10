@@ -28,6 +28,7 @@ def eval_helper(model, tokenizer, dc, device, batch_size):
     with open(data_path, 'r', encoding='utf-8') as fp:
         remaining_encodings = {"input_ids": [], "attention_mask": []}
         while True:
+            print(f"remaining lines for eval: {remaining_for_path}")
             if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                 break
             amount = min(batch_size - len(remaining_encodings["input_ids"]), remaining_for_path)
