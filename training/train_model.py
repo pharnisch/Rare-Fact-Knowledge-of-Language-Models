@@ -79,8 +79,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
                         # use logits for test accuracy
-                        probs = torch.softmax(outputs[1], dim=-1)
-                        preds = torch.argmax(probs, dim=-1)
+                        #probs = torch.softmax(outputs[1], dim=-1)
+                        #preds = torch.argmax(probs, dim=-1)
 
                         # for outer_i, outer_v in enumerate(labels):
                         #     for inner_i, inner_v in enumerate(outer_v):
