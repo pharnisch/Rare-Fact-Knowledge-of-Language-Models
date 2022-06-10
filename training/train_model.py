@@ -116,7 +116,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         epoch_relative_loss = epoch_loss / batch_count
         print(f"Average batch loss: {epoch_relative_loss}")
         accuracy = float(tp_replacement_predictions) / total_replacement_predictions
-        print(f"Train mask accuracy {accuracy}")
+        #print(f"Train mask accuracy {accuracy}")
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
@@ -140,12 +140,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         for checkpoint in checkpoints:
             if best_score_checkpoint is None:
                 best_score_checkpoint = checkpoint
-            elif checkpoint["accuracy"] < best_score_checkpoint["accuracy"]:
+            elif checkpoint["score"] < best_score_checkpoint["score"]:
                 best_score_checkpoint = checkpoint
         for checkpoint in checkpoints:
             # delete best previous epoch checkpoint only if it is worse than last epoch
             if checkpoint["epoch"] == best_score_checkpoint["epoch"]:
-                if checkpoint["accuracy"] > accuracy:
+                if checkpoint["score"] > accuracy:
                     os.remove(checkpoint["path"])
             # delete all other epochs anyway
             else:
