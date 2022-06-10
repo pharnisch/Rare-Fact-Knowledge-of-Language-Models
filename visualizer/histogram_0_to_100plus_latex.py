@@ -44,8 +44,8 @@ def plot():
             bucket_numbers.append(current_number)
             current_number += ss
         bucket_numbers.append(100)
-        buckets = {i:[dp["rank"] for dp in data_points if criteria(dp["frequency"], i)] for i in bucket_numbers}
-
+        print(bucket_numbers)
+        buckets = {i: [dp["rank"] for dp in data_points if criteria(dp["frequency"], i)] for i in bucket_numbers}
 
         texts = []
         texts.append(r"""
@@ -68,8 +68,10 @@ def plot():
 
 
         b_strings = []
-        for idx, (start, b) in enumerate(buckets):
-            b_strings.append(f"({start}, {mean(b)})")
+        for b in enumerate(buckets):
+            print(b)
+            quit()
+            #b_strings.append(f"({start}, {mean(b)})")
         b_strings.append(f"({101}, {0})")
         texts.append("\n".join(b_strings))
 
