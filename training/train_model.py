@@ -83,7 +83,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         print(outputs[1].shape)
                         probs = torch.softmax(outputs[1], dim=-1)
                         print(probs)
-                        preds = torch.argmax(preds, dim=-1)
+                        preds = torch.argmax(probs, dim=-1)
                         print(preds)
                         quit()
 
