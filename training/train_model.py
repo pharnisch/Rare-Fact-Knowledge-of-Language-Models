@@ -37,7 +37,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         epoch_loss = 0
         batch_count = 0
         tp_mask_predictions = 0
-        total_masks_predictions = 0
+        total_mask_predictions = 0
         epoch = i + already_trained_epochs
         with alive_bar(len(data_paths), title=f"Epoch {epoch + 1}") as bar:
 
@@ -81,8 +81,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         # use logits for test accuracy
                         probs = torch.softmax(outputs[1], dim=-1)
                         preds = torch.argmax(probs, dim=-1)
-                        print(input_ids.shape)
-                        print(preds.shape)
+                        print(input_ids)
+                        print(preds)
                         quit()
 
 
@@ -211,6 +211,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
             model.to(device)
             model.train()
+    print(f"Train mask acc for the epoch was {float(tp_mask_predictions)/total_mask_predictions}")
 
 
 def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc):
