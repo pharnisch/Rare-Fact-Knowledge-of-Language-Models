@@ -212,6 +212,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                     "epoch": epoch + 1,
                     "epoch_loss": round(epoch_loss, 6),
                     "epoch_loss_relative": round(epoch_relative_loss, 6),
+                    "train_accuracy": round(accuracy, 4),
                     "epoch_batch_count": batch_count,
                     "batch_size": batch_size,
                     "accumulated_batches": accumulated_batches
