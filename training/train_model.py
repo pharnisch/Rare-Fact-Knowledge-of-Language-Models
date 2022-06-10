@@ -84,7 +84,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     steps = 0
     for i in range(epochs):
-        eval_helper(model, tokenizer, dc, device, batch_size)
+        # eval_helper(model, tokenizer, dc, device, batch_size)
 
         loss_stored = False
         epoch_loss = 0
@@ -131,16 +131,16 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
 
-                        # use logits for test accuracy
-                        #probs = torch.softmax(outputs[1], dim=-1)
-                        #preds = torch.argmax(probs, dim=-1)
-
-                        # for outer_i, outer_v in enumerate(labels):
-                        #     for inner_i, inner_v in enumerate(outer_v):
-                        #         if inner_v != -100:  # ignore tokens with -100 completely
-                        #             total_replacement_predictions += 1
-                        #             if inner_v == preds[outer_i][inner_i]:
-                        #                 tp_replacement_predictions += 1
+                        if idx == len(data_paths) - 1:  # only eval last file (8421 lines)
+                            # use logits for val (train subset) accuracy
+                            probs = torch.softmax(outputs[1], dim=-1)
+                            preds = torch.argmax(probs, dim=-1)
+                            for outer_i, outer_v in enumerate(labels):
+                                for inner_i, inner_v in enumerate(outer_v):
+                                    if inner_v != -100:  # ignore tokens with -100 completely
+                                        total_replacement_predictions += 1
+                                        if inner_v == preds[outer_i][inner_i]:
+                                            tp_replacement_predictions += 1
 
                         # use loss for optimization
                         loss = outputs[0]  # extract loss
@@ -172,7 +172,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         epoch_relative_loss = epoch_loss / batch_count
         print(f"Average batch loss: {epoch_relative_loss}")
         accuracy = float(tp_replacement_predictions) / total_replacement_predictions
-        #print(f"Train mask accuracy {accuracy}")
+        print(f"Validation accuracy {accuracy}")
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
