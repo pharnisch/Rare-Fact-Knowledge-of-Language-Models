@@ -45,7 +45,6 @@ def plot():
             bucket_numbers.append(current_number)
         bucket_numbers.append(100)
 
-        print(bucket_numbers)
         buckets = {i: [dp["rank"] for dp in data_points if criteria(dp["frequency"], i)] for i in bucket_numbers}
 
         texts = []
