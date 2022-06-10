@@ -82,12 +82,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         probs = torch.softmax(outputs[1], dim=-1)
                         preds = torch.argmax(probs, dim=-1)
 
-                        for outer_i, outer_v in enumerate(labels):
-                            for inner_i, inner_v in enumerate(outer_v):
-                                if inner_v != -100:  # ignore tokens with -100 completely
-                                    total_replacement_predictions += 1
-                                    if inner_v == preds[outer_i][inner_i]:
-                                        tp_replacement_predictions += 1
+                        # for outer_i, outer_v in enumerate(labels):
+                        #     for inner_i, inner_v in enumerate(outer_v):
+                        #         if inner_v != -100:  # ignore tokens with -100 completely
+                        #             total_replacement_predictions += 1
+                        #             if inner_v == preds[outer_i][inner_i]:
+                        #                 tp_replacement_predictions += 1
 
                         # use loss for optimization
                         loss = outputs[0]  # extract loss
