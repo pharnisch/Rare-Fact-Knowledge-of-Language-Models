@@ -28,7 +28,7 @@ def train():
     args = parser.parse_args()
 
     max_steps = 100_000  # approx 10 epochs
-    warm_up_rate = 0.04
+    warm_up_rate = 0.06
 
     # for reproducability
     seed = args.seed
