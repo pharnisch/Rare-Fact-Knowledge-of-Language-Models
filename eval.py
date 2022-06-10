@@ -66,9 +66,9 @@ def evaluate():
         model_name = ""
         for transformer_type in TransformerType:
             print(transformer_type)
-            print(transformer_type[16:])
-            if transformer_type[16:] in args.checkpoint:
-                model_name = transformer_type[16:]
+            print(str(transformer_type)[16:])
+            if str(transformer_type)[16:] in args.checkpoint:
+                model_name = str(transformer_type)[16:]
 
         transformer = Transformer.get_transformer(TransformerType[model_name], num_hidden_layers)
         tokenizer = transformer.tokenizer
