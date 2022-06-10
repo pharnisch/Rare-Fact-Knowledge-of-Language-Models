@@ -114,7 +114,9 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
 
         epoch_relative_loss = epoch_loss / batch_count
-        print(f"epoch_relative_loss: {epoch_relative_loss}")
+        print(f"Average batch loss: {epoch_relative_loss}")
+        accuracy = float(tp_replacement_predictions) / total_replacement_predictions
+        print(f"Train mask accuracy {accuracy}")
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
@@ -148,8 +150,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
             else:
                 os.remove(checkpoint["path"])
 
-        accuracy = float(tp_replacement_predictions) / total_replacement_predictions
-        print(f"Train mask acc for the epoch was {accuracy}")
+
 
         # SAVE LAST EPOCH
         torch.save({
