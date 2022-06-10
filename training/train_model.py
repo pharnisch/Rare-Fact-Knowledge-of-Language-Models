@@ -212,19 +212,21 @@ def get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc):
         "input_ids": remaining_encodings["input_ids"],
         "attention_mask": remaining_encodings["attention_mask"]
     }
+    #max_tkns = tokenizer.max_len_single_sentence
+    max_tkns = 128 - 2
     if len(lines) > 0:
         stride = 20
         for _input_ids, _attention_mask in zip(encoded["input_ids"], encoded["attention_mask"]):
-            if len(_input_ids) <= tokenizer.max_len_single_sentence:
+            if len(_input_ids) <= max_tkns:
                 split_encoded["input_ids"].append(_input_ids)
                 split_encoded["attention_mask"].append(_attention_mask)
             else:  # split as many times as required, using stride
                 tokens_left = len(_input_ids)
                 idx_from = 0
                 while idx_from < tokens_left:
-                    split_encoded["input_ids"].append(_input_ids[idx_from:idx_from+tokenizer.max_len_single_sentence])
-                    split_encoded["attention_mask"].append(_attention_mask[idx_from:idx_from+tokenizer.max_len_single_sentence])
-                    idx_from += tokenizer.max_len_single_sentence - stride
+                    split_encoded["input_ids"].append(_input_ids[idx_from : idx_from + max_tkns])
+                    split_encoded["attention_mask"].append(_attention_mask[idx_from : idx_from + max_tkns])
+                    idx_from += max_tkns - stride
 
     # SEPERATE REMAINING ENCODINGS FROM BATCH ENCODINGS
     batch_encoded = {

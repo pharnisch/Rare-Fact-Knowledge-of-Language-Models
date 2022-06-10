@@ -19,13 +19,13 @@ def train():
     parser.add_argument('-fs', "--fresh-start", default=False, action='store_true', help='')
     parser.add_argument('-ne', "--no-eval", default=False, action='store_true', help='')
     parser.add_argument('-s', "--seed", default=1337, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-e', "--epochs", default=20, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-lr', "--learning-rate", default=0.0001, action='store', nargs='?', type=float, help='')
+    parser.add_argument('-e', "--epochs", default=10, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-lr', "--learning-rate", default=0.001, action='store', nargs='?', type=float, help='')
     parser.add_argument('-ci', "--cuda-index", default=0, action='store', nargs='?', type=int, help='')
     parser.add_argument('-bs', "--batch_size", default=16, action='store', nargs='?', type=int, help='')
     parser.add_argument('-hl', "--num-hidden-layers", default=12, action='store', nargs='?', type=int, help='')
     parser.add_argument('-tdr', "--training-data-rate", default=1, action='store', nargs='?', type=float, help='')
-    parser.add_argument('-ab', "--accumulated_batches", default=1, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-ab', "--accumulated_batches", default=256, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
 
     # for reproducability
