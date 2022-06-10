@@ -11,7 +11,6 @@ import transformers
 
 base_path = Path(__file__).parent
 
-
 def train():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Pretraining of Language Models.')
@@ -28,7 +27,7 @@ def train():
     parser.add_argument('-ab', "--accumulated_batches", default=256, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
 
-    max_steps = 23_000
+    max_steps = 100_000  # approx 10 epochs
     warm_up_rate = 0.04
 
     # for reproducability

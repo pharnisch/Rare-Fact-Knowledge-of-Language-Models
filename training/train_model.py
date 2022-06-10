@@ -15,6 +15,55 @@ import transformers
 from transformers import DataCollatorForLanguageModeling
 
 
+def eval_helper(model, tokenizer, dc, device, batch_size):
+    print("START EVAL")
+    mod_path = Path(__file__).parent.parent
+    absolute_path = str(os.path.join(str(mod_path), "training", "data", "wikipedia", "20200501.en"))
+    data_path = [str(x) for x in Path(absolute_path).glob('**/*.txt') if "nsp" not in str(x)][0]
+
+    tp_replacement_predictions = 0
+    total_replacement_predictions = 0
+
+    remaining_for_path = 10_000  # one complete file
+    with open(data_path, 'r', encoding='utf-8') as fp:
+        remaining_encodings = {"input_ids": [], "attention_mask": []}
+        while True:
+            if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
+                break
+            amount = min(batch_size - len(remaining_encodings["input_ids"]), remaining_for_path)
+            lines = []
+            if amount > 0:
+                for _ in range(amount):
+                    next_line = next(fp, None)
+                    if next_line is not None:
+                        lines.append(next_line.replace("\n", ""))
+                        remaining_for_path -= 1
+                    else:
+                        remaining_for_path = 0
+                        break
+            if len(lines) == 0 and len(remaining_encodings["input_ids"]) == 0:
+                break;
+
+            batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc)
+
+            input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
+            labels = batch['labels'].to(device)
+
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            probs = torch.softmax(outputs[1], dim=-1)
+            preds = torch.argmax(probs, dim=-1)
+
+            for outer_i, outer_v in enumerate(labels):
+                for inner_i, inner_v in enumerate(outer_v):
+                    if inner_v != -100:  # ignore tokens with -100 completely
+                        total_replacement_predictions += 1
+                        if inner_v == preds[outer_i][inner_i]:
+                            tp_replacement_predictions += 1
+
+    print(f"EVAL RESULT ACCURACY: {float(tp_replacement_predictions)/total_replacement_predictions}")
+
+
 def training_procedure(model, model_name, optimizer, training_data_rate, cuda_index, epochs, batch_size, already_trained_epochs, num_hidden_layers, learning_rate, no_eval, accumulated_batches, scheduler):
     device = torch.device(f"cuda:{cuda_index}") if torch.cuda.is_available() else torch.device('cpu')
 
@@ -34,6 +83,8 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
     steps = 0
     for i in range(epochs):
+        eval_helper(model, tokenizer, dc, device, batch_size)
+
         loss_stored = False
         epoch_loss = 0
         batch_count = 0
