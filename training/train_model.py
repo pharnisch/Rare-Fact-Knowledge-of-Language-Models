@@ -120,7 +120,9 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)
         absolute_path = str(os.path.join(str(base_path), "models"))
         paths = [str(x) for x in Path(absolute_path).glob('**/*.pth')]
-        path_splits = [f_name.split("-")[-8:] for f_name in paths]
+        path_splits = [f_name.split("-")[-9:] for f_name in paths]
+        print([f_name.split("-")[-8:] for f_name in paths])
+        print(path_splits)
         checkpoints = [
             {
                 "path": paths[idx],
