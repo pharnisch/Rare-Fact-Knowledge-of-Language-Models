@@ -32,7 +32,7 @@ def plot():
         texts.append(r"""
 \begin{table}[htb]
     \centering
-    \begin{tabular}{lr|ll|ll}
+    \begin{tabular}{lr|rr|rr}
         \toprule
         \multicolumn{2}{c|}{\fbox{{Cor\ac{bert}}}}
         & \multicolumn{2}{c|}{\textbf{\scriptsize Baseline}} &
