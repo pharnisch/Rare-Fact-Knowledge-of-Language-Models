@@ -27,6 +27,8 @@ def plot():
 
         data_points = metrics_dict["metrics"]["data_points"]
         import copy
+        print(copy.deepcopy(data_points))
+        print(get_rank(data_points[0]))
         data_points_rank_sorted = copy.deepcopy(data_points).sort(key=get_rank)
         data_points_frequency_sorted = copy.deepcopy(data_points).sort(key=get_frequency)
 
