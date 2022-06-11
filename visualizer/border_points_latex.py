@@ -45,22 +45,24 @@ def plot():
 
         texts = []
         texts.append(r"""
-        \begin{table}[htb]
-    \centering
-    \begin{tabular}{ccc|cccc}
-        \toprule
+\begin{table}[htb]
+\centering
+\begin{tabular}{ccc|cccc}
+\toprule
         """)
 
         texts.append("Subject & Relation & Object & Rank & Frequeny & Subject Frequency & Object Frequency \\\\")
-        texts.append("\\midrule")
+        texts.append(r"""
+\midrule
+        """)
         for i in all:
             texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & {i['sub_frequency']} & {i['obj_frequency']} \\\\")
 
         texts.append(r"""
-        \bottomrule
-    \end{tabular}
-    \caption{...}
-    \label{tab:my_label}
+\bottomrule
+\end{tabular}
+\caption{...}
+\label{tab:my_label}
 \end{table}
         """)
 
