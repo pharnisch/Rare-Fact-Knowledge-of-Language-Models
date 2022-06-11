@@ -48,16 +48,16 @@ def plot():
 \begin{table}[htb]
 \centering
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{ccc|cccc}
+\begin{tabular}{ccc|rrrr}
 \toprule
         """)
 
-        texts.append("Subject & Relation & Object & Rank & Frequeny & \\footnotesize{S. Frequency} & \\footnotesize{O. Frequency} \\\\")
+        texts.append("\\textbf{Subject} & \\textbf{Relation} & \\textbf{Object} & \\textbf{Rank} & \\textbf{Frequeny} & \\textbf{\\scriptsize{S. Frequency}} & \\textbf{\\scriptsize{O. Frequency}} \\\\")
         texts.append(r"""
 \midrule
         """)
         for i in all:
-            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & \\footnotesize{{ {i['sub_frequency']} }}& \\footnotesize{{ {i['obj_frequency']} }} \\\\")
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
 
         texts.append(r"""
 \bottomrule
