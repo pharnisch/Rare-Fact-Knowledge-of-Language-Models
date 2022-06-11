@@ -49,11 +49,11 @@ def plot():
 
         texts.append(f"\\multirow{{2}}{{*}}{{{file}}} & \\ac{{p@1}} & {baseline_metrics['p_at_1']}")
         for experiment in experiments:
-            texts.append(f" & ${experiment['metric_avgs']['p_at_1']} \scriptsize{{ \pm {round(experiment['metric_stddvs']['p_at_1'], 4)} }}$")
+            texts.append(f" & ${experiment['metric_avgs']['p_at_1']}$\scriptsize{{\pm {round(experiment['metric_stddvs']['p_at_1'], 4)} $}}")
         texts.append("\\\\")
         texts.append(f"& $\\overline{{rank}}$ & {baseline_metrics['rank_avg']}")
         for experiment in experiments:
-            texts.append(f" & ${experiment['metric_avgs']['rank_avg']} \scriptsize{{ \pm {round(experiment['metric_stddvs']['rank_avg'], 4)} }}$")
+            texts.append(f" & ${experiment['metric_avgs']['rank_avg']}$\scriptsize{{\pm {round(experiment['metric_stddvs']['rank_avg'], 4)} $}}")
         texts.append("\\\\")
 
         texts.append(r"""
