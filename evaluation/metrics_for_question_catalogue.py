@@ -156,9 +156,6 @@ class MetricCalculator(abc.ABC):
                 line_sub, _, line_obj, _, line_rel, _ = self.parse_line(line, file)
                 if relation.lower() == line_rel.lower() and subject.lower() == line_sub.lower() and object.lower() != line_obj.lower():
                     other_valid_objects.add(line_obj.lower())
-        #if len(other_valid_objects) > 0:
-        #    print(f"For {subject}--{relation}->{object} there are following object alternatives:")
-        #    print(print(other_valid_objects))
 
         # 2. Filter other valid objects
         filtered_values, filtered_indices = [], []
@@ -167,10 +164,6 @@ class MetricCalculator(abc.ABC):
             if token.lower() not in other_valid_objects:
                 filtered_values.append(top_value)
                 filtered_indices.append(top_index)
-            #else:
-            #    print(f"FILTERED: {token}")
-
-        #print(len(filtered_values))
         return filtered_values, filtered_indices
 
 
