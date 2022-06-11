@@ -56,8 +56,14 @@ def plot():
         texts.append(r"""
 \midrule
         """)
-        for i in all:
-            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+        for i in lowest_rank:
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+        for i in highest_rank:
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+        for i in lowest_frequency:
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & \\textbf{{ {i['frequency']} }}& \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+        for i in highest_frequency:
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & \\textbf{{ {i['frequency']} }}& \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
 
         texts.append(r"""
 \bottomrule
