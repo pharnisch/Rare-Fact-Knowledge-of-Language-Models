@@ -52,12 +52,12 @@ def plot():
 \toprule
         """)
 
-        texts.append("Subject & Relation & Object & Rank & Frequeny & Subject Frequency & Object Frequency \\\\")
+        texts.append("Subject & Relation & Object & Rank & Frequeny & \\footnotesize{S. Frequency} & \\footnotesize{O. Frequency} \\\\")
         texts.append(r"""
 \midrule
         """)
         for i in all:
-            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & {i['sub_frequency']} & {i['obj_frequency']} \\\\")
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & \\footnotesize{{ {i['sub_frequency']} }}& \\footnotesize{{ {i['obj_frequency']} }} \\\\")
 
         texts.append(r"""
 \bottomrule
