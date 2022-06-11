@@ -52,7 +52,7 @@ def plot():
 \toprule
         """)
 
-        texts.append("\\textbf{Subject} & \\textbf{Relation} & \\textbf{Object} & \\textbf{Rank} & \\textbf{Frequeny} & \\textbf{\\scriptsize{S. Frequency}} & \\textbf{\\scriptsize{O. Frequency}} \\\\")
+        texts.append("\\textbf{Subject} & \\textbf{Relation} & \\textbf{Object} & \\textbf{Rank} & \\textbf{Frequeny} & \\textbf{\\scriptsize{S. Freq.}} & \\textbf{\\scriptsize{O. Freq.}} \\\\")
         texts.append(r"""
 \midrule
         """)
