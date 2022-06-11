@@ -36,11 +36,15 @@ def plot():
         highest_rank = data_points_rank_sorted[-top_k:]
         lowest_frequency = data_points_frequency_sorted[:top_k]
         highest_frequency = data_points_frequency_sorted[-top_k:]
-
-        print(lowest_rank)
-        print(highest_rank)
-        print(lowest_frequency)
-        print(highest_frequency)
+        print()
+        print(lowest_rank)         # rank 1      freq 1
+        print()
+        print(highest_rank)        # rank 2655   freq 91
+        print()
+        print(lowest_frequency)    # rank 1      freq 0
+        print()
+        print(highest_frequency)   # rank 3      freq 38
+        print()
 
 
         texts = []
