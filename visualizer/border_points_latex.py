@@ -36,23 +36,35 @@ def plot():
         highest_rank = data_points_rank_sorted[-top_k:]
         lowest_frequency = data_points_frequency_sorted[:top_k]
         highest_frequency = data_points_frequency_sorted[-top_k:]
-        print()
-        print(lowest_rank)         # rank 1      freq 1
-        print()
-        print(highest_rank)        # rank 2655   freq 91
-        print()
-        print(lowest_frequency)    # rank 1      freq 0
-        print()
-        print(highest_frequency)   # rank 3      freq 38
-        print()
 
+        all = []
+        all.extend(lowest_rank)
+        all.extend(highest_rank)
+        all.extend(lowest_frequency)
+        all.extend(highest_frequency)
 
         texts = []
         texts.append(r"""
-        \begin{tikzpicture}
-        \begin{axis}[""")
+        \begin{table}[htb]
+    \centering
+    \begin{tabular}{ccc|cccc}
+        \toprule
+        """)
 
+        texts.append("Subject & Relation & Object & Rank & Frequeny & Subject Frequency & Object Frequency \\\\")
+        texts.append("\\midrule")
+        for i in all:
+            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & {i['rank']} & {i['frequency']} & {i['sub_frequency']} & {i['obj_frequency']} \\\\")
 
+        texts.append(r"""
+        \bottomrule
+    \end{tabular}
+    \caption{...}
+    \label{tab:my_label}
+\end{table}
+        """)
+
+        print("".join(texts))
 
 if __name__ == "__main__":
     plot()
