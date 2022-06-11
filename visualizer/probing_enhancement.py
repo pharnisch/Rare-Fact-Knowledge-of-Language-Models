@@ -16,7 +16,7 @@ def plot():
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     args = parser.parse_args()
 
-    with open(f"{base_path}/metrics/probing_enhancements/{args.checkpoint}", "r") as f:
+    with open(f"{base_path}/metrics/probing_enhancement/{args.checkpoint}", "r") as f:
         json_text = f.read()
         metrics_dict = json.loads(json_text)
         file = metrics_dict["file"]
