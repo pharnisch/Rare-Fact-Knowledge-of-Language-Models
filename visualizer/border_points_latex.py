@@ -30,6 +30,7 @@ def plot():
         data_points_rank_sorted = copy.deepcopy(data_points).sort(key=get_rank)
         data_points_frequency_sorted = copy.deepcopy(data_points).sort(key=get_frequency)
 
+        print(data_points_rank_sorted)
         lowest_rank = data_points_rank_sorted[:top_k]
         highest_rank = data_points_rank_sorted[-top_k:]
         lowest_frequency = data_points_frequency_sorted[:top_k]
