@@ -47,6 +47,7 @@ def plot():
         texts.append(r"""
 \begin{table}[htb]
 \centering
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{ccc|cccc}
 \toprule
         """)
@@ -61,6 +62,7 @@ def plot():
         texts.append(r"""
 \bottomrule
 \end{tabular}
+}
 \caption{...}
 \label{tab:my_label}
 \end{table}
