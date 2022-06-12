@@ -87,9 +87,13 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         # eval_helper(model, tokenizer, dc, device, batch_size)
 
         loss_stored = False
+
         epoch_loss = 0
         batch_count = 0
-        hundred_batches_loss = 0
+
+        hundred_files_loss = 0
+        hundred_files_batch_count
+
         tp_replacement_predictions = 0
         total_replacement_predictions = 0
         epoch = i + already_trained_epochs
@@ -121,6 +125,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             break;
 
                         batch_count += 1
+                        hundred_files_batch_count += 1
 
                         batch, remaining_encodings = get_batch_from_lines(lines, batch_size, tokenizer, remaining_encodings, dc)
 
@@ -159,9 +164,10 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         epoch_loss += loss.item()
                         hundred_batches_loss = loss.item()
 
-                        if batch_count % 100 == 0:
-                            print(f"100-average batch loss: {hundred_batches_loss / 100}")
-                            hundred_batches_loss = 0
+                        if idx != 0 and (idx+1) % 100 == 0:
+                            print(f"100-average batch loss: {hundred_files_loss / hundred_files_batch_count}")
+                            hundred_files_loss = 0
+                            hundred_files_batch_count = 0
 
                 bar()  # indicate that one of the epoch total paths is finished!
 
