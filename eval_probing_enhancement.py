@@ -104,7 +104,7 @@ def evaluate():
         transformer = Transformer.get_transformer(TransformerType[model_name], num_hidden_layers)
         tokenizer = transformer.tokenizer
         absolute_path = str(os.path.join(str(base_path), "models", args.checkpoint))
-        checkpoint = torch.load(absolute_path)
+        checkpoint = torch.load(absolute_path, map_location="cuda:0")
         model = transformer.model
         import copy
         model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
