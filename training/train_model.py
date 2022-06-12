@@ -89,6 +89,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         loss_stored = False
         epoch_loss = 0
         batch_count = 0
+        hundred_batches_loss = 0
         tp_replacement_predictions = 0
         total_replacement_predictions = 0
         epoch = i + already_trained_epochs
@@ -103,7 +104,6 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
                         if remaining_for_path == 0 and len(remaining_encodings["input_ids"]) == 0:
                             break
-                        #amount = batch_size - len(remaining_encodings["input_ids"]) if remaining_for_path >= batch_size - len(remaining_encodings["input_ids"]) else remaining_for_path
                         amount = min(batch_size - len(remaining_encodings["input_ids"]), remaining_for_path)
 
                         lines = []
@@ -157,6 +157,11 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             #print(f"lr: {scheduler.get_lr()}")
 
                         epoch_loss += loss.item()
+                        hundred_batches_loss = loss.item()
+
+                        if batch_count % 100 == 0:
+                            print(f"100-average batch loss: {hundred_batches_loss / 100}")
+                            hundred_batches_loss = 0
 
                 bar()  # indicate that one of the epoch total paths is finished!
 
@@ -169,7 +174,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
 
 
         epoch_relative_loss = epoch_loss / batch_count
-        print(f"Average batch loss: {epoch_relative_loss}")
+        print(f"Total average batch loss: {epoch_relative_loss}")
         accuracy = float(tp_replacement_predictions) / total_replacement_predictions
         print(f"Validation accuracy {accuracy}")
         # DELETE ALL EPOCH CHECKPOINTS (IF LAST EPOCH HAS NOT BEST SCORE, LEAVE BEST SCORE)

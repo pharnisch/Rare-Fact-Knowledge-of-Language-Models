@@ -47,13 +47,16 @@ def plot():
         #\multirow{2}{*}{P140} & \ac{p@1} & $0.12$ &    $0.12\pm0.03$  & $0.12\pm0.03$ &   $0.12\pm0.03$ \\
         #& $\overline{rank}$&                $101.23$ & $101.23\pm0.03$& $101.23\pm0.03$ & $101.23\pm0.03$\\
 
+        #p_at_ones = [baseline_metrics['p_at_1']]
+        #rank_avgs = []
+
         texts.append(f"\\multirow{{2}}{{*}}{{{file}}} & \\ac{{p@1}} & {baseline_metrics['p_at_1']}")
-        for experiment in experiments:
-            texts.append(f" & ${experiment['metric_avgs']['p_at_1']}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['p_at_1'], 4)} $}}")
+        for idx, experiment in enumerate(experiments):
+            texts.append(f" & ${round(experiment['metric_avgs']['p_at_1'], 4)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['p_at_1'], 4)} $}}")
         texts.append("\\\\")
         texts.append(f"& $\\overline{{rank}}$ & {baseline_metrics['rank_avg']}")
-        for experiment in experiments:
-            texts.append(f" & ${experiment['metric_avgs']['rank_avg']}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['rank_avg'], 4)} $}}")
+        for idx, experiment in enumerate(experiments):
+            texts.append(f" & ${round(experiment['metric_avgs']['rank_avg'], 4)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['rank_avg'], 4)} $}}")
         texts.append("\\\\")
 
         texts.append(r"""
