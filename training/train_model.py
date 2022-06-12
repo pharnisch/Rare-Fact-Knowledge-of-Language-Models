@@ -92,7 +92,7 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
         batch_count = 0
 
         hundred_files_loss = 0
-        hundred_files_batch_count
+        hundred_files_batch_count = 0
 
         tp_replacement_predictions = 0
         total_replacement_predictions = 0
