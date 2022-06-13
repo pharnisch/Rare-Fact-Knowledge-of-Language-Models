@@ -164,10 +164,10 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                         epoch_loss += loss.item()
                         hundred_batches_loss = loss.item()
 
-                        if idx != 0 and (idx+1) % 100 == 0:
-                            print(f"100-average batch loss: {hundred_files_loss / hundred_files_batch_count}")
-                            hundred_files_loss = 0
-                            hundred_files_batch_count = 0
+                if idx != 0 and (idx+1) % 100 == 0:
+                    print(f"100-file-average batch loss: {hundred_files_loss / hundred_files_batch_count}")
+                    hundred_files_loss = 0
+                    hundred_files_batch_count = 0
 
                 bar()  # indicate that one of the epoch total paths is finished!
 
