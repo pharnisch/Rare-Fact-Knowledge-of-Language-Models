@@ -162,10 +162,12 @@ def training_procedure(model, model_name, optimizer, training_data_rate, cuda_in
                             #print(f"lr: {scheduler.get_lr()}")
 
                         epoch_loss += loss.item()
-                        hundred_batches_loss = loss.item()
+                        hundred_files_loss += loss.item()
 
                 if idx != 0 and (idx+1) % 100 == 0:
-                    print(f"100-file-average batch loss: {hundred_files_loss / hundred_files_batch_count}")
+                    #print(f"100-file loss: {float(hundred_files_loss)}")
+                    #print(f"100-file batch count: {hundred_files_batch_count}")
+                    print(f"100-file-average batch loss: {float(hundred_files_loss) / hundred_files_batch_count}")
                     hundred_files_loss = 0
                     hundred_files_batch_count = 0
 
