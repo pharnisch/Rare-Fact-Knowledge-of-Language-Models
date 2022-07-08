@@ -98,8 +98,10 @@ class MetricCalculator(abc.ABC):
                     if "prediction_confidence" not in metric.keys():
                         continue  # skip facts with objects that are not within the vocabulary (TODO: document in thesis)
 
+                    print(f"{sub_label} -- {relation} -> {obj_label} :")
                     print(metric["rank"])
                     print([tokenizer.decode([i]) for i in top_vs_indices[:10]])
+                    print("---")
 
                     metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
                     metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
