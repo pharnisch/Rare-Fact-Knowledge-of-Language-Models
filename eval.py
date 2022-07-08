@@ -119,7 +119,7 @@ def evaluate():
         }
 
         keys_to_print = ["p_at_1", "rank_avg", "rank_min", "rank_max", "confidence_avg", "pearson", "pearson_p", "spearman", "spearman_p"]
-        str_to_print = f"[checkpoint: {checkpoint}]"
+        str_to_print = f"[checkpoint: {args.checkpoint}]"
         for key in keys_to_print:
             str_to_print += key + ": " + metrics[0][key] + ", "
         print(str_to_print)
