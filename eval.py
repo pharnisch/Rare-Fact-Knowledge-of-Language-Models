@@ -117,7 +117,12 @@ def evaluate():
             "max_quantile": args.max_quantile,
             "relative_examples": not args.absolute_examples
         }
-        print(save_obj)
+
+        keys_to_print = ["p_at_1", "rank_avg", "rank_min", "rank_max", "confidence_avg", "pearson", "pearson_p", "spearman", "spearman_p"]
+        str_to_print = f"[checkpoint: {checkpoint}]"
+        for key in keys_to_print:
+            str_to_print += key + ": " + metrics[0][key] + ", "
+        print(str_to_print)
 
         save_obj["metrics"] = metrics[0]
         filename = f"{base_path}/metrics/standard/{args.checkpoint}_{args.relation_file}_{args.by_example}" \
