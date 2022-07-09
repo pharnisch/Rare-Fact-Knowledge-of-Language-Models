@@ -104,4 +104,4 @@ for i in range(2):
     for i, v in enumerate(epoch_relation_pearsons[index]):
         print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_spearmans[index]):
-        print(f"({+1i}, {v})")
+        print(f"({i+1}, {v})")
