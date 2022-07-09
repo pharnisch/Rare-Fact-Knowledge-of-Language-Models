@@ -34,18 +34,20 @@ corbert = [
 for i in range(2):
     if i==0:
         files = corbert
+        print()
         print("CorBert")
     elif i==1:
         files = cordistilbert
+        print()
         print("CorDistilBert")
-    for file in files:
-        epoch_accs = []
-        epoch_losses = []
-        epoch_relation_ranks = [[],[],[]]
-        epoch_relation_precisions = [[],[],[]]
-        epoch_relation_pearsons = [[],[],[]]
-        epoch_relation_spearmans = [[],[],[]]
 
+    epoch_accs = []
+    epoch_losses = []
+    epoch_relation_ranks = [[], [], []]
+    epoch_relation_precisions = [[], [], []]
+    epoch_relation_pearsons = [[], [], []]
+    epoch_relation_spearmans = [[], [], []]
+    for file in files:
         with open(f"{base_path}/metrics/{file}", "r") as f:
             json_text = f.read()
             metrics_dict = json.loads(json_text)
@@ -65,41 +67,41 @@ for i in range(2):
 
     print("accuracies:")
     for i, v in enumerate(epoch_accs):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
 
     print("losses:")
     for i, v in enumerate(epoch_losses):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
 
     print("test:")
     index = 0
     for i, v in enumerate(epoch_relation_ranks[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_precisions[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_pearsons[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_spearmans[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
 
     print("dateofbirth:")
     index = 1
     for i, v in enumerate(epoch_relation_ranks[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_precisions[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_pearsons[index]):
-        print(f"({i}, {v})")
+        print(f"({+1i}, {v})")
     for i, v in enumerate(epoch_relation_spearmans[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
 
     print("P1376:")
     index = 2
     for i, v in enumerate(epoch_relation_ranks[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_precisions[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_pearsons[index]):
-        print(f"({i}, {v})")
+        print(f"({i+1}, {v})")
     for i, v in enumerate(epoch_relation_spearmans[index]):
-        print(f"({i}, {v})")
+        print(f"({+1i}, {v})")
