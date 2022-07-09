@@ -75,7 +75,10 @@ class MetricCalculator(abc.ABC):
                     mask_word = softmax[0, mask_index, :]
 
                     # TODO: why is tokenizer.vocab_size always 30522 even if mask_word is only 30.000 long e.g.???
-                    vs = len(mask_word[0])
+                    try:
+                        vs = len(mask_word[0])
+                    except:
+                        print(mask_word)
 
                     top_vs = torch.topk(mask_word, vs, dim=1)
                     top_vs_values = top_vs[0][0]
