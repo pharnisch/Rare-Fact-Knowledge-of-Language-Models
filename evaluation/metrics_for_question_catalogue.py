@@ -78,6 +78,7 @@ class MetricCalculator(abc.ABC):
                     try:
                         vs = len(mask_word[0])
                     except:
+                        print(masked_sent)
                         print(mask_index)
                         print(mask_word)
 
