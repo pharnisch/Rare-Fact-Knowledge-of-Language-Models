@@ -78,9 +78,7 @@ class MetricCalculator(abc.ABC):
                     try:
                         vs = len(mask_word[0])
                     except:
-                        print(masked_sent)
-                        print(mask_index)
-                        print(mask_word)
+                        continue
 
                     top_vs = torch.topk(mask_word, vs, dim=1)
                     top_vs_values = top_vs[0][0]
