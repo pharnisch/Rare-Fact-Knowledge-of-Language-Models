@@ -52,11 +52,11 @@ def plot():
 
         texts.append(f"\\multirow{{2}}{{*}}{{{file}}} & \\ac{{p@1}} & {baseline_metrics['p_at_1']}")
         for idx, experiment in enumerate(experiments):
-            texts.append(f" & ${round(experiment['metric_avgs']['p_at_1'], 4)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['p_at_1'], 4)} $}}")
+            texts.append(f" & ${round(experiment['metric_avgs']['p_at_1'], 2)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['p_at_1'], 2)} $}}")
         texts.append("\\\\")
         texts.append(f"& $\\overline{{rank}}$ & {baseline_metrics['rank_avg']}")
         for idx, experiment in enumerate(experiments):
-            texts.append(f" & ${round(experiment['metric_avgs']['rank_avg'], 4)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['rank_avg'], 4)} $}}")
+            texts.append(f" & ${round(experiment['metric_avgs']['rank_avg'], 2)}$\scriptsize{{$\pm {round(experiment['metric_stddvs']['rank_avg'], 2)} $}}")
         texts.append("\\\\")
 
         texts.append(r"""
