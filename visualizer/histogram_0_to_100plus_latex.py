@@ -11,8 +11,8 @@ def plot():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
-    parser.add_argument('-m', "--max", default=10, action='store', nargs='?', type=int, help='')
-    parser.add_argument('-ss', "--step-size", default=1, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-m', "--max", default=50, action='store', nargs='?', type=int, help='')
+    parser.add_argument('-ss', "--step-size", default=10, action='store', nargs='?', type=int, help='')
     args = parser.parse_args()
     ss = args.step_size
     max = args.max
@@ -73,7 +73,8 @@ def plot():
         for key in buckets.keys():
             b = buckets[key]
             key = key if key != 100 else "100+"
-            b_strings.append(f"({key}, {mean(b)})")
+            val = mean(b) if len(b) != 0 else 0
+            b_strings.append(f"({key}, {val})")
         b_strings.append(f"(~, {0})")
         texts.append("\n".join(b_strings))
 
