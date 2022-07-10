@@ -72,7 +72,8 @@ def plot():
             b = buckets[key]
             print(key)
             print(b)
-            b_strings.append(f"({key}, {mean(b)})")
+            val = mean(b) if len(b) != 0 else 0
+            b_strings.append(f"({key}, {val})")
         b_strings.append(f"({100 + ss}, {0})")
         texts.append("\n".join(b_strings))
 
