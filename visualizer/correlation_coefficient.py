@@ -72,7 +72,9 @@ for prefix in prefixes:
             metrics_dict = json.loads(json_text)
 
             relation_dp = metrics_dict["metrics"]["data_points"]
-            all_dp.extend(relation_dp)
+            rank_avg = metrics_dict["metrics"]["rank_avg"]
+            if rank_avg <= 1000:
+                all_dp.extend(relation_dp)
 
     var_x = [m["frequency"] for m in all_dp]
     var_y = [m["rank"] for m in all_dp]
