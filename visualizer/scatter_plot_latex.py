@@ -12,6 +12,21 @@ def scatter():
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
     args = parser.parse_args()
 
+    # bert-base-cased_pretrained_test_False_False_0_100000000_0_1_1000
+    # CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth_P31_False_False_0_100000000_0_1_1000
+
+    model = args.checkpoint.split("-")[0]
+    if model == "bert":
+        model_name = "\\ac{bert}"
+        relation = args.checkpoint.split("_")[2]
+    elif model == "CorBert":
+        model_name = "Cor\\ac{bert}"
+        relation = args.checkpoint.split("-")[-1].split("_")[1]
+    elif model == "CorDistilBert":
+        model_name = "Cor\\ac{distilbert}"
+        relation = args.checkpoint.split("-")[-1].split("_")[1]
+
+
     with open(f"{base_path}/metrics/standard/{args.checkpoint}", "r") as f:
         json_text = f.read()
         metrics_dict = json.loads(json_text)
@@ -53,12 +68,16 @@ def scatter():
     \end{axis}
     \end{tikzpicture}
     
-    \caption{Scatter plot.}
+    \caption{
+    """
+    p2 = f"Scatter plot visualization of {relation} for {model_name}."
+    p3 = r"""   
+    }
     \label{fig:}
     \end{figure}
     """
 
-    print(p1 + p4 + p5)
+    print(p1 + p2 + p3 + p4 + p5)
     print(f"N={n}")
 
 
