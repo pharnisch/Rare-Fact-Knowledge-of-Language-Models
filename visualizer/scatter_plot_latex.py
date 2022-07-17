@@ -21,13 +21,10 @@ def scatter():
     amount = 0.9
     border_index = int(n*0.9)
     dp.sort(key=lambda x: x["rank"])
-    border_rank = dp[border_index]
+    border_rank = dp[border_index]["rank"]
     dp.sort(key=lambda x: x["frequency"])
-    border_frequency = dp[border_index]
+    border_frequency = dp[border_index]["frequency"]
 
-    print(border_rank)
-    print(border_frequency)
-    print(dp[0]["rank"])
     filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
 
     p1 = r"""   
