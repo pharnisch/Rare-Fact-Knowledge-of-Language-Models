@@ -25,7 +25,7 @@ def scatter():
     dp.sort(key=lambda x: x["frequency"])
     border_frequency = dp[border_index]
 
-    filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
+    filtered_dp = {i:x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency}
 
     p1 = r"""   
     \begin{figure}[htb]
