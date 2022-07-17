@@ -60,18 +60,18 @@ def scatter():
     table[meta=label] {
     x y label
     """
-    p4 = ""
+    p2 = ""
     for p in filtered_dp:
-        p4 += f"{p['frequency']} {p['rank']} a\n"
-    p5 = r"""
+        p2 += f"{p['frequency']} {p['rank']} a\n"
+    p3 = r"""
         };
     \end{axis}
     \end{tikzpicture}
     
     \caption{
     """
-    p2 = f"Scatter plot visualization of {relation} for {model_name}."
-    p3 = r"""   
+    p4 = f"Scatter plot visualization of {relation} for {model_name}."
+    p5 = r"""   
     }
     \label{fig:}
     \end{figure}
