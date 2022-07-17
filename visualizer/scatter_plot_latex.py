@@ -16,6 +16,16 @@ def scatter():
         json_text = f.read()
         metrics_dict = json.loads(json_text)
         n = len(metrics_dict["metrics"]["data_points"])
+        dp = metrics_dict["metrics"]["data_points"]
+
+    amount = 0.9
+    border_index = int(n*0.9)
+    dp.sort(key=lambda x: x["rank"])
+    border_rank = dp[border_index]
+    dp.sort(key=lambda x: x["frequency"])
+    border_frequency = dp[border_index]
+
+    filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
 
     p1 = r"""   
     \begin{figure}[htb]
@@ -26,7 +36,7 @@ def scatter():
         xticklabel style={rotate=-60},
         xlabel={frequency},
         xlabel near ticks,
-        xmode = log,
+        %xmode = log,
         ylabel={rank},
         scatter/classes={%
         a={mark=x,draw=black}}]
@@ -36,7 +46,7 @@ def scatter():
     x y label
     """
     p4 = ""
-    for p in metrics_dict["metrics"]["data_points"]:
+    for p in filtered_dp:
         p4 += f"{p['frequency']} {p['rank']} a\n"
     p5 = r"""
         };
