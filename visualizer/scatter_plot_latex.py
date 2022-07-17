@@ -33,6 +33,11 @@ def scatter():
         n = len(metrics_dict["metrics"]["data_points"])
         dp = metrics_dict["metrics"]["data_points"]
 
+        pearson = metrics_dict["metrics"]["pearson"]
+        pearson_p = metrics_dict["metrics"]["pearson_p"]
+        spearman = metrics_dict["metrics"]["spearman"]
+        spearman_p = metrics_dict["metrics"]["spearman_p"]
+
     amount = 0.99
     border_index = int(n*amount)
     dp.sort(key=lambda x: x["rank"])
@@ -42,42 +47,60 @@ def scatter():
 
     filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
 
-    p1 = r"""   
-    \begin{figure}[htb]
-    \centering
-    
+    texts = []
+    texts.append(r"""
     \begin{tikzpicture}
     \begin{axis}[%
         xticklabel style={rotate=-60},
         xlabel={frequency},
         xlabel near ticks,
+    """)
+    texts.append(f"ymax = {border_frequency * 1.25},")
+    texts.append(r"""
         %xmode = log,
         ylabel={rank},
         scatter/classes={%
         a={mark=x,draw=black}}]
+    \addlegendimage{empty legend}
     \addplot[scatter,only marks,%
         scatter src=explicit symbolic]%
     table[meta=label] {
     x y label
-    """
-    p2 = ""
+    """)
+    tmp = ""
     for p in filtered_dp:
-        p2 += f"{p['frequency']} {p['rank']} a\n"
-    p3 = r"""
-        };
+        tmp += f"{p['frequency']} {p['rank']} a\n"
+
+    texts.append(tmp)
+    texts.append(r"""
+    };
+    \addlegendentry{{Pearson $\rho$ =
+    """)
+    texts.append(str(pearson))
+
+    texts.append(r"""
+    , $p$ =
+    """)
+    texts.append(str(pearson_p))
+    texts.append(r"""
+    }}
+    \addlegendentry{{Spearman $\rho$ =
+    """)
+    texts.append(str(spearman))
+
+    texts.append(r"""
+    , $p$ = 
+    """)
+    texts.append(str(spearman_p))
+
+    texts.append(r"""
+    }}
     \end{axis}
     \end{tikzpicture}
-    
-    \caption{
-    """
-    p4 = f"Scatter plot visualization of {relation} for {model_name}."
-    p5 = r"""   
-    }
-    \label{fig:}
-    \end{figure}
-    """
+    """)
 
-    print(p1 + p2 + p3 + p4 + p5)
+    print("".join(texts))
+
     print(f"N={n}")
 
 
