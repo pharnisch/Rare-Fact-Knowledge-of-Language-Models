@@ -55,7 +55,7 @@ def scatter():
         xlabel={frequency},
         xlabel near ticks,
     """)
-    texts.append(f"ymax = {border_frequency * 1.25},")
+    texts.append(f"ymax = {border_rank * 1.25},")
     texts.append(r"""
         %xmode = log,
         ylabel={rank},
