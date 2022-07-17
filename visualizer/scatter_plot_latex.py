@@ -18,8 +18,8 @@ def scatter():
         n = len(metrics_dict["metrics"]["data_points"])
         dp = metrics_dict["metrics"]["data_points"]
 
-    amount = 0.9
-    border_index = int(n*0.9)
+    amount = 0.99
+    border_index = int(n*amount)
     dp.sort(key=lambda x: x["rank"])
     border_rank = dp[border_index]["rank"]
     dp.sort(key=lambda x: x["frequency"])
