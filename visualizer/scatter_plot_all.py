@@ -134,5 +134,7 @@ def scatter():
 \end{figure}
     """
 
+    print(txt_all)
+
 if __name__ == "__main__":
     scatter()
