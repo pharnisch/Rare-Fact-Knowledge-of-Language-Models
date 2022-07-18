@@ -118,7 +118,6 @@ def scatter():
 
     print("".join(texts))
 
-    print(f"N={n}")
 
 
 if __name__ == "__main__":
