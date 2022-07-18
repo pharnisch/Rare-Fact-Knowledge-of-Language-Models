@@ -97,6 +97,9 @@ def scatter():
                 matrix of nodes,
                 anchor=north east,
             ] at (legend) {
+        """)
+        # texts.append(f"\\fbox{{{model_name}}}")
+        texts.append(r"""    
                 & \boldmath$\rho$ & \boldmath$p$ \\
                \textbf{Pearson} 
         """)
@@ -121,7 +124,8 @@ def scatter():
         texts.append(r"""   
     %\subcaption{Histogram.}
     \end{subfigure}%
-    \hfill""")
+    \hfill
+            """)
 
         txt_all += "".join(texts)
 
