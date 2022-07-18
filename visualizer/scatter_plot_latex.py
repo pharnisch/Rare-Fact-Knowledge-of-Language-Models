@@ -61,7 +61,6 @@ def scatter():
         ylabel={rank},
         scatter/classes={%
         a={mark=x,draw=black}}]
-    \addlegendimage{empty legend}
     \addplot[scatter,only marks,%
         scatter src=explicit symbolic]%
     table[meta=label] {
@@ -74,30 +73,36 @@ def scatter():
     texts.append(tmp)
     texts.append(r"""
     };
-    \addlegendentry{{Pearson $\rho$ =
     """)
-    texts.append(str(pearson))
 
     texts.append(r"""
-    , $p$ =
-    """)
-    texts.append(str(pearson_p))
-    texts.append(r"""
-    }}
-    \addlegendentry{{Spearman $\rho$ =
-    """)
-    texts.append(str(spearman))
-
-    texts.append(r"""
-    , $p$ = 
-    """)
-    texts.append(str(spearman_p))
-
-    texts.append(r"""
-    }}
+    \coordinate (legend) at (axis description cs:0.97,0.97);
     \end{axis}
-    \end{tikzpicture}
+        \small{
+        \matrix [
+            draw,
+            matrix of nodes,
+            anchor=north east,
+        ] at (legend) {
+            & \boldmath$\rho$ & \boldmath$p$ \\
+           \textbf{Pearson} 
     """)
+    texts.append(
+        f"& {str(pearson)}  & {str(pearson_p)}  "
+    )
+    texts.append(r"""
+           \\
+           \textbf{Spearman}
+    """)
+    texts.append(
+        f"& {str(spearman)}  & {str(spearman_p)}  "
+    )
+    texts.append(r"""
+               \\
+            };
+            }
+        \end{tikzpicture}
+        """)
 
     print("".join(texts))
 
