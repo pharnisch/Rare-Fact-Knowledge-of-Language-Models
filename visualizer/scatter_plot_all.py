@@ -124,8 +124,7 @@ def scatter():
         texts.append(r"""   
     %\subcaption{Histogram.}
     \end{subfigure}%
-    \hfill
-            """)
+    \hfill """)
 
         txt_all += "".join(texts)
 
