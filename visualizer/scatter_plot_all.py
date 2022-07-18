@@ -19,6 +19,7 @@ def scatter():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('relation', metavar="relation", type=str, help='Relation.')
+    parser.add_argument("amount", metavar="amount", type=float, default=0.97)
     args = parser.parse_args()
     relation = args.relation
 
@@ -48,7 +49,8 @@ def scatter():
             spearman = metrics_dict["metrics"]["spearman"]
             spearman_p = metrics_dict["metrics"]["spearman_p"]
 
-        amount = 0.97
+        amount = args.amount
+        print(f" ... filtering out {(1-amount)*100} % ...")
         border_index = int(n * amount)
         dp.sort(key=lambda x: x["rank"])
         border_rank = dp[border_index]["rank"]

@@ -10,6 +10,7 @@ def scatter():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('checkpoint', metavar="checkpoint", type=str, help='Checkpoint within /models.')
+    parser.add_argument("amount", metavar="amount", type=float, default=0.97)
     args = parser.parse_args()
 
     # bert-base-cased_pretrained_test_False_False_0_100000000_0_1_1000
@@ -38,7 +39,8 @@ def scatter():
         spearman = metrics_dict["metrics"]["spearman"]
         spearman_p = metrics_dict["metrics"]["spearman_p"]
 
-    amount = 0.97
+    amount = args.amount
+    print(f" ... filtering out {(1 - amount) * 100} % ...")
     border_index = int(n*amount)
     dp.sort(key=lambda x: x["rank"])
     border_rank = dp[border_index]["rank"]
@@ -46,6 +48,7 @@ def scatter():
     border_frequency = dp[border_index]["frequency"]
 
     filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
+    filtered_n = len(filtered_dp)
 
     texts = []
     texts.append(r"""
@@ -109,7 +112,7 @@ def scatter():
         \end{tikzpicture}
 \end{adjustbox}%
     """)
-    texts.append(f"\\subcaption{{Scatterplot of {model_name}, N = {n}.}}")
+    texts.append(f"\\subcaption{{Scatterplot of {model_name}, N = {n} ({filtered_n} visible).}}")
     texts.append(r"""   
 %\subcaption{Histogram.}
 \end{subfigure}%
