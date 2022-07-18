@@ -38,7 +38,7 @@ def scatter():
         spearman = metrics_dict["metrics"]["spearman"]
         spearman_p = metrics_dict["metrics"]["spearman_p"]
 
-    amount = 0.99
+    amount = 0.97
     border_index = int(n*amount)
     dp.sort(key=lambda x: x["rank"])
     border_rank = dp[border_index]["rank"]
@@ -55,7 +55,7 @@ def scatter():
         xlabel={frequency},
         xlabel near ticks,
     """)
-    texts.append(f"ymax = {border_rank * 1.25},")
+    texts.append(f"ymax = {border_rank * 1.75},")
     texts.append(r"""
         %xmode = log,
         ylabel={rank},
