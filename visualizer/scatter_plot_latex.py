@@ -41,15 +41,14 @@ def scatter():
 
     amount = args.amount
     print(f" ... filtering out {(1 - amount) * 100} % ...")
-    border_index = int(n*amount)
-    dp.sort(key=lambda x: x["rank"])
-    border_rank = dp[border_index]["rank"]
-    dp.sort(key=lambda x: x["frequency"])
-    border_frequency = dp[border_index]["frequency"]
+
 
     if amount != 1.0:
-        print("not 1.0")
-        print(amount)
+        border_index = int(n * amount)
+        dp.sort(key=lambda x: x["rank"])
+        border_rank = dp[border_index]["rank"]
+        dp.sort(key=lambda x: x["frequency"])
+        border_frequency = dp[border_index]["frequency"]
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
     else:
         filtered_dp = dp
