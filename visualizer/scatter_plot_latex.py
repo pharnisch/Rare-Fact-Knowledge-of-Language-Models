@@ -49,6 +49,8 @@ def scatter():
 
     texts = []
     texts.append(r"""
+\begin{subfigure}[t]{0.45\textwidth}
+\begin{adjustbox}{width=\linewidth, height=6cm}% rescale box
     \begin{tikzpicture}
     \begin{axis}[%
         xticklabel style={rotate=-60},
@@ -84,6 +86,9 @@ def scatter():
             matrix of nodes,
             anchor=north east,
         ] at (legend) {
+    """)
+    #texts.append(f"\\fbox{{{model_name}}}")
+    texts.append(r"""    
             & \boldmath$\rho$ & \boldmath$p$ \\
            \textbf{Pearson} 
     """)
@@ -102,6 +107,13 @@ def scatter():
             };
             }
         \end{tikzpicture}
+\end{adjustbox}%
+    """)
+    texts.append(f"\\subcaption{{Scatterplot of {model_name}, N = {n}.}}")
+    texts.append(r"""   
+%\subcaption{Histogram.}
+\end{subfigure}%
+\hfill
         """)
 
     print("".join(texts))
