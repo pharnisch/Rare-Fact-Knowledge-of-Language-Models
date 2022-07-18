@@ -24,7 +24,8 @@ def scatter():
 
     txt_all = r"""
 \begin{figure}[H]
-\centering"""
+\centering
+    """
 
     for model in prefixes:
         file_name = model + relation + suffix
@@ -76,14 +77,16 @@ def scatter():
         \addplot[scatter,only marks,%
             scatter src=explicit symbolic]%
         table[meta=label] {
-        x y label""")
+        x y label
+        """)
         tmp = ""
         for p in filtered_dp:
             tmp += f"{p['frequency']} {p['rank']} a\n"
 
         texts.append(tmp)
         texts.append(r"""
-        };""")
+        };
+        """)
 
         texts.append(r"""
         \coordinate (legend) at (axis description cs:0.97,0.97);
