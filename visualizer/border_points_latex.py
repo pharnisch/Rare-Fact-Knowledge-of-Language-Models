@@ -48,21 +48,21 @@ def plot():
 \begin{table}[htb]
 \centering
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{ccc|rrrr}
+\begin{tabular}{cc|rrrr}
 \toprule
         """)
 
-        texts.append("\\textbf{Subject} & \\textbf{Relation} & \\textbf{Object} & \\textbf{Rank} & \\textbf{Frequeny} & \\textbf{\\scriptsize{S. Freq.}} & \\textbf{\\scriptsize{O. Freq.}} \\\\")
+        texts.append("\\textbf{Subject} & \\textbf{Object} & \\textbf{Rank} & \\textbf{Frequeny} & \\textbf{\\scriptsize{S. Freq.}} & \\textbf{\\scriptsize{O. Freq.}} \\\\")
         texts.append(r"""
 \midrule
         """)
         for i in lowest_rank:
-            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+            texts.append(f"{i['sub_label']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
         texts.append(r"""
 \midrule
         """)
         for i in reversed(highest_rank):
-            texts.append(f"{i['sub_label']} & {i['relation']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+            texts.append(f"{i['sub_label']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
         texts.append(r"""
 \bottomrule
 \end{tabular}
