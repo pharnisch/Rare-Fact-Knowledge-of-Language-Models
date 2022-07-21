@@ -64,6 +64,17 @@ def plot():
         for i in reversed(highest_rank):
             texts.append(f"{i['sub_label']} & {i['obj_label']} & \\textbf{{ {i['rank']} }}& {i['frequency']} & \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
         texts.append(r"""
+\midrule
+        """)
+        for i in lowest_frequency:
+            texts.append(f"{i['sub_label']} & {i['obj_label']} & {i['rank']} & \\textbf{{ {i['frequency']} }}& \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+        texts.append(r"""
+\midrule
+        """)
+        for i in reversed(highest_frequency):
+            texts.append(f"{i['sub_label']} & {i['obj_label']} & {i['rank']} & \\textbf{{ {i['frequency']} }}& \\scriptsize{{ {i['sub_frequency']} }}& \\scriptsize{{ {i['obj_frequency']} }} \\\\")
+
+        texts.append(r"""
 \bottomrule
 \end{tabular}
 }
@@ -144,5 +155,3 @@ def plot2():
 
 if __name__ == "__main__":
     plot()
-    print()
-    plot2()
