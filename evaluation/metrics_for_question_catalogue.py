@@ -27,7 +27,6 @@ class MetricCalculator(abc.ABC):
                 cnt_for_file = 0
                 for line in f1.iter():
                     if cnt_for_file % 100 == 0:
-                        cnt_for_file += 1
                         frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt)
                         if os.path.exists(frequency_dict_path):
                             with jsonlines.open(frequency_dict_path) as f2:
@@ -38,6 +37,7 @@ class MetricCalculator(abc.ABC):
                         else:
                             print(f"frequency dict for file {file} and line {cnt} does not exist!")
                             quit()
+                    cnt_for_file += 1
 
                     sub_label, sub_aliases, obj_label, obj_aliases, relation, masked_sent = self.parse_line(line, file)
 
