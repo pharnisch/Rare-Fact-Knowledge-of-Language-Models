@@ -73,7 +73,72 @@ for prefix in prefixes:
 
             relation_dp = metrics_dict["metrics"]["data_points"]
             rank_avg = metrics_dict["metrics"]["rank_avg"]
+            all_dp.extend(relation_dp)
+
+    var_x = [m["frequency"] for m in all_dp]
+    var_y = [m["rank"] for m in all_dp]
+
+    rank_avg = sum(var_y) / len(var_y)
+    spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
+    pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
+    p_at_1 = sum([m['p_at_k'] for m in all_dp]) / len(all_dp)
+
+    print({
+        "rank_avg": round(rank_avg, 4),
+        "rank_max": max(var_y),
+        "rank_min": min(var_y),
+        "p_at_1": p_at_1,
+        "pearson": round(pearson_correlation_coefficient[0], 4),
+        "pearson_p": round(pearson_correlation_coefficient[1], 4),
+        "spearman": round(spearman_correlation_coefficient[0], 4),
+        "spearman_p": round(spearman_correlation_coefficient[1], 4),
+    })
+
+for prefix in prefixes:
+    print(prefix)
+    all_dp = []
+
+    for relation in relations:
+        with open(f"{base_path}/metrics/standard/{prefix}{relation}{suffix}", "r") as f:
+            json_text = f.read()
+            metrics_dict = json.loads(json_text)
+
+            relation_dp = metrics_dict["metrics"]["data_points"]
+            rank_avg = metrics_dict["metrics"]["rank_avg"]
             if rank_avg <= 1000:
+                all_dp.extend(relation_dp)
+
+    var_x = [m["frequency"] for m in all_dp]
+    var_y = [m["rank"] for m in all_dp]
+
+    rank_avg = sum(var_y) / len(var_y)
+    spearman_correlation_coefficient = stats.spearmanr(var_x, var_y)
+    pearson_correlation_coefficient = stats.pearsonr(var_x, var_y)
+    p_at_1 = sum([m['p_at_k'] for m in all_dp]) / len(all_dp)
+
+    print({
+        "rank_avg": round(rank_avg, 4),
+        "rank_max": max(var_y),
+        "rank_min": min(var_y),
+        "p_at_1": p_at_1,
+        "pearson": round(pearson_correlation_coefficient[0], 4),
+        "pearson_p": round(pearson_correlation_coefficient[1], 4),
+        "spearman": round(spearman_correlation_coefficient[0], 4),
+        "spearman_p": round(spearman_correlation_coefficient[1], 4),
+    })
+
+for prefix in prefixes:
+    print(prefix)
+    all_dp = []
+
+    for relation in relations:
+        with open(f"{base_path}/metrics/standard/{prefix}{relation}{suffix}", "r") as f:
+            json_text = f.read()
+            metrics_dict = json.loads(json_text)
+
+            relation_dp = metrics_dict["metrics"]["data_points"]
+            rank_avg = metrics_dict["metrics"]["rank_avg"]
+            if rank_avg <= 100:
                 all_dp.extend(relation_dp)
 
     var_x = [m["frequency"] for m in all_dp]
