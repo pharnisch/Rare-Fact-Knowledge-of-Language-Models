@@ -24,7 +24,7 @@ class MetricCalculator(abc.ABC):
         with alive_bar(max_questions, title=f"{file}") as bar:
             with jsonlines.open(self.get_path_to_file(base_path, file)) as f1:
                 cnt = 0
-                cnt_for_file = 1
+                cnt_for_file = 0
                 for line in f1.iter():
                     if cnt_for_file % 100 == 0:
                         frequency_dict_path = self.get_path_to_frequencies(base_path, file, cnt_for_file)
