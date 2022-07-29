@@ -111,6 +111,17 @@ class MetricCalculator(abc.ABC):
                     metric["frequency"] = self.get_frequency(frequency_dict, sub_label, obj_label, relation)
                     metric["sub_frequency"] = self.get_frequency(sub_frequency_dict, sub_label, obj_label, relation)
                     metric["obj_frequency"] = self.get_frequency(obj_frequency_dict, sub_label, obj_label, relation)
+                    if obj_label == "water" or obj_label == "not":
+                        print(frequency_dict)
+                        print(sub_frequency_dict)
+                        print(obj_frequency_dict)
+                        print(sub_label)
+                        print(obj_label)
+                        print(relation)
+                        print(metric["frequency"])
+                        print(metric["sub_frequency"])
+                        print(metric["obj_frequency"])
+
 
                     tmp_prod = metric["sub_frequency"] * metric["obj_frequency"]
                     metric["relative_frequency"] = metric["frequency"] / tmp_prod if tmp_prod != 0 else 0
