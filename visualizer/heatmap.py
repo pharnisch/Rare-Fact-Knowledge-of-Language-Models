@@ -78,7 +78,6 @@ import numpy as np
 np.random.seed(0)
 import seaborn as sns
 sns.set_theme()
-sns.color_palette("vlag", as_cmap=True)
 
 var_freq = [m["frequency"] for m in all_dp]
 var_relative_freq = [m["relative_frequency"] for m in all_dp]
@@ -116,5 +115,5 @@ mask = np.zeros_like(corr)
 mask[np.triu_indices_from(mask)] = True
 with sns.axes_style("white"):
     f, ax = plt.subplots(figsize=(7, 5))
-    ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels)
+    ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 35 / np.sqrt(len(all_dims))})
     plt.savefig(f"figures/heatmap.png", bbox_inches='tight')
