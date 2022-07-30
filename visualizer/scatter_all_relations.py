@@ -140,7 +140,9 @@ def scatter():
 
     txt_all = "".join(texts)
 
-    print(txt_all)
+    f = open(f"scatter_plot_ALL_{model_index}.tex", "x")
+    f.write(txt_all)
+    f.close()
 
     print(prefix)
 
