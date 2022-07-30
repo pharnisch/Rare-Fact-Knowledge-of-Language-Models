@@ -58,76 +58,32 @@ def scatter():
         filtered_dp = dp
     filtered_n = len(filtered_dp)
 
-    texts = []
-    texts.append(r"""
-\begin{subfigure}[t]{0.45\textwidth}
-\begin{adjustbox}{width=\linewidth, height=6cm}% rescale box
-    \begin{tikzpicture}
-    \begin{axis}[%
-        xticklabel style={rotate=-60},
-        xlabel={frequency},
-        xlabel near ticks,
-    """)
-    texts.append(f"ymax = {border_rank * 1.75},")
-    texts.append(r"""
-        %xmode = log,
-        ylabel={rank},
-        scatter/classes={%
-        a={mark=x,draw=black}}]
-    \addplot[scatter,only marks,%
-        scatter src=explicit symbolic]%
-    table[meta=label] {
-    x y label
-    """)
-    tmp = ""
-    for p in filtered_dp:
-        tmp += f"{p['frequency']} {p['rank']} a\n"
+    y_max = border_rank * 1.35
 
-    texts.append(tmp)
-    texts.append(r"""
-    };
-    """)
+    legend = '\n'.join((
+        r'Pearson $\rho=%.4f$ ($p=%.4f$)' % (pearson, pearson_p),
+        r'Spearman $\rho=%.4f$ ($p=%.4f$)' % (spearman, spearman_p)))
 
-    texts.append(r"""
-    \coordinate (legend) at (axis description cs:0.97,0.97);
-    \end{axis}
-        \small{
-        \matrix [
-            draw,
-            matrix of nodes,
-            anchor=north east,
-        ] at (legend) {
-    """)
-    #texts.append(f"\\fbox{{{model_name}}}")
-    texts.append(r"""    
-            & \boldmath$\rho$ & \boldmath$p$ \\
-           \textbf{Pearson} 
-    """)
-    texts.append(
-        f"& {str(pearson)}  & {str(pearson_p)}  "
-    )
-    texts.append(r"""
-           \\
-           \textbf{Spearman}
-    """)
-    texts.append(
-        f"& {str(spearman)}  & {str(spearman_p)}  "
-    )
-    texts.append(r"""
-               \\
-            };
-            }
-        \end{tikzpicture}
-\end{adjustbox}%
-    """)
-    texts.append(f"\\subcaption{{Scatterplot of {model_name}, N = {n} ({filtered_n} visible).}}")
-    texts.append(r"""   
-%\subcaption{Histogram.}
-\end{subfigure}%
-\hfill
-        """)
+    import matplotlib.pyplot as plt
 
-    print("".join(texts))
+    var_x = [m["frequency"] for m in filtered_dp]
+    var_y = [m["rank"] for m in filtered_dp]
+
+    fig, ax = plt.subplots()
+
+    ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+    ax.set_ylim([None, y_max])
+    plt.xlabel("frequency")
+    plt.ylabel("rank")
+
+    props = dict(boxstyle='square', facecolor='white', alpha=0.5)
+
+    # place a text box in upper left in axes coords
+    ax.text(0.95, 0.95, legend, transform=ax.transAxes, fontsize=14, verticalalignment='top',
+            horizontalalignment="right", bbox=props)
+
+    plt.savefig(f"figures/scatter_plot_options/scatter_plot_{relation}_{model_name}_{n}_{filtered_n}.png",
+                bbox_inches='tight')
 
 
 
