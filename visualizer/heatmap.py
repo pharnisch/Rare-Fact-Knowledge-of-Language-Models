@@ -78,6 +78,7 @@ import numpy as np
 np.random.seed(0)
 import seaborn as sns
 sns.set_theme()
+sns.color_palette("vlag", as_cmap=True)
 
 var_freq = [m["frequency"] for m in all_dp]
 var_relative_freq = [m["relative_frequency"] for m in all_dp]
