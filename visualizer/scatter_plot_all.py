@@ -52,7 +52,7 @@ def scatter():
         dp.sort(key=lambda x: x["frequency"])
         border_frequency = dp[border_index]["frequency"]
 
-        y_max = border_rank * 1.25
+        y_max = border_rank * 1.35
 
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
         filtered_n = len(filtered_dp)
