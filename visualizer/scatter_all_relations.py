@@ -140,6 +140,8 @@ def scatter():
 
     txt_all = "".join(texts)
 
+    print(txt_all)
+
     print(prefix)
 
 if __name__ == "__main__":
