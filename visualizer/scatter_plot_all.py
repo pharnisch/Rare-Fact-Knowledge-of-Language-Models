@@ -70,7 +70,7 @@ def scatter():
         fig, ax = plt.subplots()
 
         ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
-        ax.set_ylim([0, y_max])
+        ax.set_ylim([None, y_max])
         plt.xlabel("frequency")
         plt.ylabel("rank")
 
