@@ -18,13 +18,13 @@ def scatter():
 
     model = args.checkpoint.split("-")[0]
     if model == "bert":
-        model_name = "\\ac{bert}"
+        model_name = "BERT"
         relation = args.checkpoint.split("_")[2]
     elif model == "CorBert":
-        model_name = "Cor\\ac{bert}"
+        model_name = "CorBERT"
         relation = args.checkpoint.split("-")[-1].split("_")[1]
     elif model == "CorDistilBert":
-        model_name = "Cor\\ac{distilbert}"
+        model_name = "CorDISTILBERT"
         relation = args.checkpoint.split("-")[-1].split("_")[1]
 
 
