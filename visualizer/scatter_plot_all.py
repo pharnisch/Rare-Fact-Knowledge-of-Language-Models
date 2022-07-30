@@ -23,11 +23,6 @@ def scatter():
     args = parser.parse_args()
     relation = args.relation
 
-    txt_all = r"""
-\begin{figure}[H]
-\centering
-    """
-
     for model in prefixes:
         file_name = model + relation + suffix
 
@@ -57,6 +52,8 @@ def scatter():
         dp.sort(key=lambda x: x["frequency"])
         border_frequency = dp[border_index]["frequency"]
 
+        y_max = border_rank * 1.25
+
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
         filtered_n = len(filtered_dp)
 
@@ -71,7 +68,9 @@ def scatter():
         var_y = [m["rank"] for m in filtered_dp]
 
         fig, ax = plt.subplots()
+
         ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+        ax.set_ylim([0, y_max])
         plt.xlabel("frequency")
         plt.ylabel("rank")
 
