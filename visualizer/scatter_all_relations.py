@@ -140,11 +140,19 @@ def scatter():
 
     txt_all = "".join(texts)
 
-    f = open(f"scatter_plot_ALL_{model_index}.tex", "x")
-    f.write(txt_all)
-    f.close()
+    #f = open(f"scatter_plot_ALL_{model_index}.tex", "x")
+    #f.write(txt_all)
+    #f.close()
+    #print(prefix)
 
-    print(prefix)
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    var_x = [m["frequency"] for m in dp]
+    var_y = [m["rank"] for m in dp]
+
+    plt.scatter(var_x, var_y, alpha=1)
+    plt.savefig(f"scatter_plot_ALL_{model_index}.png")
 
 if __name__ == "__main__":
     scatter()
