@@ -102,9 +102,7 @@ for prefix in prefixes:
     var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
     var_relation_len = [len(m["relation"]) for m in all_dp]
 
-    var_cos_sim = [np.dot(nlp(m["obj_label"]).vector, nlp(m["sub_label"]).vector) for m in all_dp]
-
-
+    #var_cos_sim = [np.dot(nlp(m["obj_label"]).vector, nlp(m["sub_label"]).vector) for m in all_dp]
 
     all_dims = [
         var_freq,
@@ -114,6 +112,7 @@ for prefix in prefixes:
         var_rank,
         var_p_at_1,
         var_logits,
+        #var_cos_sim,
         var_relation_len,
         var_sub_label_len,
         var_obj_label_len,
@@ -129,5 +128,5 @@ for prefix in prefixes:
     mask[np.triu_indices_from(mask)] = True
     with sns.axes_style("white"):
         f, ax = plt.subplots(figsize=(14, 10))
-        ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 20 / np.sqrt(len(all_dims))})
+        ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 35 / np.sqrt(len(all_dims))})
         plt.savefig(f"figures/heatmap_{model_name}.png", bbox_inches='tight')
