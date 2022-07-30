@@ -69,8 +69,8 @@ def scatter():
 
         fig, ax = plt.subplots()
         ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
-        ax.xlabel("frequency")
-        ax.ylabel("rank")
+        plt.xlabel("frequency")
+        plt.ylabel("rank")
 
         props = dict(boxstyle='square', facecolor='white', alpha=0.5)
 
