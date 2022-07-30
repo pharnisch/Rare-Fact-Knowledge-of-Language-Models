@@ -62,58 +62,72 @@ relations = [
 
 suffix = "_False_False_0_100000000_0_1_1000"
 
-prefix = prefixes[1]
+#prefix = prefixes[1]
+for prefix in prefixes:
+    if prefix == prefixes[0]:
+        model_name = "BERT"
+    elif prefix == prefixes[1]:
+        model_name = "CorBERT"
+    elif prefix == prefixes[2]:
+        model_name = "CorDISTILBERT"
 
-all_dp = []
+    all_dp = []
 
-for relation in relations:
-    with open(f"{base_path}/metrics/standard/{prefix}{relation}{suffix}", "r") as f:
-        json_text = f.read()
-        metrics_dict = json.loads(json_text)
+    for relation in relations:
+        with open(f"{base_path}/metrics/standard/{prefix}{relation}{suffix}", "r") as f:
+            json_text = f.read()
+            metrics_dict = json.loads(json_text)
 
-        relation_dp = metrics_dict["metrics"]["data_points"]
-        all_dp.extend(relation_dp)
+            relation_dp = metrics_dict["metrics"]["data_points"]
+            all_dp.extend(relation_dp)
 
-import numpy as np
-np.random.seed(0)
-import seaborn as sns
-sns.set_theme()
+    import numpy as np
+    np.random.seed(0)
+    import seaborn as sns
+    sns.set_theme()
 
-var_freq = [m["frequency"] for m in all_dp]
-var_relative_freq = [m["relative_frequency"] for m in all_dp]
-var_obj_freq = [m["obj_frequency"] for m in all_dp]
-var_sub_freq = [m["sub_frequency"] for m in all_dp]
+    import spacy
+    nlp = spacy.load('en_core_web_lg')
 
-var_rank = [m["rank"] for m in all_dp]
-var_p_at_1 = [m["p_at_k"] for m in all_dp]
-var_logits = prediction_confidence = [m["prediction_confidence"] for m in all_dp]
+    var_freq = [m["frequency"] for m in all_dp]
+    var_relative_freq = [m["relative_frequency"] for m in all_dp]
+    var_obj_freq = [m["obj_frequency"] for m in all_dp]
+    var_sub_freq = [m["sub_frequency"] for m in all_dp]
 
-var_sub_label_len = [len(m["sub_label"]) for m in all_dp]
-var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
-var_relation_len = [len(m["relation"]) for m in all_dp]
+    var_rank = [m["rank"] for m in all_dp]
+    var_p_at_1 = [m["p_at_k"] for m in all_dp]
+    var_logits = prediction_confidence = [m["prediction_confidence"] for m in all_dp]
 
-all_dims = [
-    var_freq,
-    var_relative_freq,
-    var_obj_freq,
-    var_sub_freq,
-    var_rank,
-    var_p_at_1,
-    var_logits,
-    var_sub_label_len,
-    var_obj_label_len,
-    var_relation_len
-]
+    var_sub_label_len = [len(m["sub_label"]) for m in all_dp]
+    var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
+    var_relation_len = [len(m["relation"]) for m in all_dp]
 
-import matplotlib.pyplot as plt
+    var_cos_sim = [np.dot(nlp(m["obj_label"]).vector, nlp(m["sub_label"]).vector) for m in all_dp]
 
-x_axis_labels = ["frequency", "relative frequency", "object frequency", "subject frequency", "rank", "p@1", "logits", "subject characters", "object characters", "relation characters"] # labels for x-axis
-y_axis_labels = ["frequency", "relative frequency", "object frequency", "subject frequency", "rank", "p@1", "logits", "subject characters", "object characters", "relation characters"] # labels for y-axis
 
-corr = np.corrcoef(np.asarray(all_dims))
-mask = np.zeros_like(corr)
-mask[np.triu_indices_from(mask)] = True
-with sns.axes_style("white"):
-    f, ax = plt.subplots(figsize=(7, 5))
-    ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 20 / np.sqrt(len(all_dims))})
-    plt.savefig(f"figures/heatmap.png", bbox_inches='tight')
+
+    all_dims = [
+        var_freq,
+        var_relative_freq,
+        var_sub_freq,
+        var_obj_freq,
+        var_rank,
+        var_p_at_1,
+        var_logits,
+        var_relation_len,
+        var_sub_label_len,
+        var_obj_label_len,
+    ]
+
+    import matplotlib.pyplot as plt
+
+    x_axis_labels = ["relation frequency", "relative relation fr.", "subject frequency", "object frequency", "rank", "p@1", "logits", "relation characters", "subject characters", "object characters"] # labels for x-axis
+    y_axis_labels = ["relation frequency", "relative relation fr.", "subject frequency", "object frequency", "rank", "p@1", "logits", "relation characters", "subject characters", "object characters"] # labels for x-axis
+
+    corr = np.corrcoef(np.asarray(all_dims))
+    mask = np.zeros_like(corr)
+    mask[np.triu_indices_from(mask)] = True
+    with sns.axes_style("white"):
+        f, ax = plt.subplots(figsize=(14, 10))
+        ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 20 / np.sqrt(len(all_dims))})
+        plt.savefig(f"figures/heatmap_{model_name}.png", bbox_inches='tight')
