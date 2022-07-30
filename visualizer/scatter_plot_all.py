@@ -32,11 +32,11 @@ def scatter():
         file_name = model + relation + suffix
 
         if model == prefixes[0]:
-            model_name = "\\ac{bert}"
+            model_name = "BERT"
         elif model == prefixes[1]:
-            model_name = "Cor\\ac{bert}"
+            model_name = "CorBERT"
         elif model == prefixes[2]:
-            model_name = "Cor\\ac{distilbert}"
+            model_name = "CorDISTILBERT"
 
         with open(f"{base_path}/metrics/standard/{file_name}", "r") as f:
             json_text = f.read()
