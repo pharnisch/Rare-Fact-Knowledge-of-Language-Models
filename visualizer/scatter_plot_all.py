@@ -60,7 +60,7 @@ def scatter():
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
         filtered_n = len(filtered_dp)
 
-        legend = f"Pearson: $\rho={pearson}$ ($p={pearson_p}$)\nSpearman: $\rho={spearman}$ ($p={spearman_p}$)"
+        legend = "test" #f"Pearson: $\rho={pearson}$ ($p={pearson_p}$)\nSpearman: $\rho={spearman}$ ($p={spearman_p}$)"
 
         import matplotlib.pyplot as plt
 
