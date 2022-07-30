@@ -102,17 +102,19 @@ for prefix in prefixes:
     var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
     var_relation_len = [len(m["relation"]) for m in all_dp]
 
-    #var_cos_sim = [np.dot(nlp(m["obj_label"]).vector, nlp(m["sub_label"]).vector) for m in all_dp]
+    var_sub_embedding = [nlp(m["sub_label"]).vector for m in all_dp]
+    var_obj_embedding = [nlp(m["obj_label"]).vector for m in all_dp]
+    var_cos_sim = [np.dot(s, o)/(np.linalg.norm(s)*np.linalg.norm(o)) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
 
     all_dims = [
         var_freq,
-        var_relative_freq,
+        #var_relative_freq,
         var_sub_freq,
         var_obj_freq,
         var_rank,
         var_p_at_1,
         var_logits,
-        #var_cos_sim,
+        var_cos_sim,
         var_relation_len,
         var_sub_label_len,
         var_obj_label_len,
@@ -120,8 +122,8 @@ for prefix in prefixes:
 
     import matplotlib.pyplot as plt
 
-    x_axis_labels = ["relation frequency", "relative relation fr.", "subject frequency", "object frequency", "rank", "p@1", "logits", "relation characters", "subject characters", "object characters"] # labels for x-axis
-    y_axis_labels = ["relation frequency", "relative relation fr.", "subject frequency", "object frequency", "rank", "p@1", "logits", "relation characters", "subject characters", "object characters"] # labels for x-axis
+    x_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "relation characters", "subject characters", "object characters"] # labels for x-axis
+    y_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "relation characters", "subject characters", "object characters"] # labels for x-axis
 
     corr = np.corrcoef(np.asarray(all_dims))
     mask = np.zeros_like(corr)
