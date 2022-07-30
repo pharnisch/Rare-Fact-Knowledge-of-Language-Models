@@ -151,8 +151,8 @@ def scatter():
     var_x = [m["frequency"] for m in filtered_dp]
     var_y = [m["rank"] for m in filtered_dp]
 
-    plt.scatter(var_x, var_y, alpha=1, marker="x", color="black", bbox_inches='tight')
-    plt.savefig(f"figures/scatter_plot_ALL_{model_index}_{amount}.png")
+    plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+    plt.savefig(f"figures/scatter_plot_ALL_{model_index}_{amount}.png", bbox_inches='tight')
 
 if __name__ == "__main__":
     scatter()
