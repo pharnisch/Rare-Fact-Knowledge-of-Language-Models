@@ -148,10 +148,10 @@ def scatter():
     import numpy as np
     import matplotlib.pyplot as plt
 
-    var_x = [m["frequency"] for m in dp]
-    var_y = [m["rank"] for m in dp]
+    var_x = [m["frequency"] for m in filtered_dp]
+    var_y = [m["rank"] for m in filtered_dp]
 
-    plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+    plt.scatter(var_x, var_y, alpha=1, marker="x", color="black", bbox_inches='tight')
     plt.savefig(f"figures/scatter_plot_ALL_{model_index}_{amount}.png")
 
 if __name__ == "__main__":
