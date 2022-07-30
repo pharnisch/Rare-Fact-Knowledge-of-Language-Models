@@ -67,14 +67,15 @@ def scatter():
         var_x = [m["frequency"] for m in filtered_dp]
         var_y = [m["rank"] for m in filtered_dp]
 
-        plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
-        plt.xlabel("frequency")
-        plt.ylabel("rank")
+        fig, ax = plt.subplots()
+        ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+        ax.xlabel("frequency")
+        ax.ylabel("rank")
 
         props = dict(boxstyle='square', facecolor='white', alpha=0.5)
 
         # place a text box in upper left in axes coords
-        plt.text(0.85, 0.95, legend, transform=plt.transAxes, fontsize=14, verticalalignment='top', horizontalalignment="right", bbox=props)
+        ax.text(0.85, 0.95, legend, transform=ax.transAxes, fontsize=14, verticalalignment='top', horizontalalignment="right", bbox=props)
 
         plt.savefig(f"figures/relation_specific_plots/scatter_plot_{relation}_{model_name}_{amount}.png", bbox_inches='tight')
 
