@@ -66,8 +66,9 @@ suffix = "_False_False_0_100000000_0_1_1000"
 def scatter():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
-    parser.add_argument('model-index', metavar="model-index", type=int, default=0, help='Checkpoint within /models.')
-    parser.add_argument("amount", metavar="amount", type=float, default=0.97)
+    parser.add_argument("-mi", '--model-index', action='store', nargs='?', type=int, default=0, help='Checkpoint within /models.')
+    parser.add_argument("-a", "--amount", action='store', nargs='?', type=float, default=0.97)
+
     args = parser.parse_args()
     model_index = args.model_index
     if model_index >= 0 and model_index <= 2:
