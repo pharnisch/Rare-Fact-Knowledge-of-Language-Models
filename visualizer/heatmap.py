@@ -107,10 +107,13 @@ all_dims = [
 
 import matplotlib.pyplot as plt
 
+x_axis_labels = ["frequency", "relative frequency", "object frequency", "subject frequency", "rank", "p@1", "logits", "subject characters", "object characters", "relation characters"] # labels for x-axis
+y_axis_labels = ["frequency", "relative frequency", "object frequency", "subject frequency", "rank", "p@1", "logits", "subject characters", "object characters", "relation characters"] # labels for y-axis
+
 corr = np.corrcoef(np.asarray(all_dims))
 mask = np.zeros_like(corr)
 mask[np.triu_indices_from(mask)] = True
 with sns.axes_style("white"):
     f, ax = plt.subplots(figsize=(7, 5))
-    ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True)
+    ax = sns.heatmap(corr, mask=mask, vmax=.3, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels)
     plt.savefig(f"figures/heatmap.png", bbox_inches='tight')
