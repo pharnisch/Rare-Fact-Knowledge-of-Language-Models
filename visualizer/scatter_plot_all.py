@@ -60,8 +60,7 @@ def scatter():
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
         filtered_n = len(filtered_dp)
 
-        legend1 = f"Pearson: ρ={pearson} (p={pearson_p})"
-        legend2 = f"Spearman: ρ={spearman} (p={spearman_p})"
+        legend = f"Pearson: $\rho={pearson}$ ($p={pearson_p}$)\nSpearman: $\rho={spearman}$ ($p={spearman_p}$)"
 
         import matplotlib.pyplot as plt
 
@@ -71,13 +70,13 @@ def scatter():
         plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
         plt.xlabel("frequency")
         plt.ylabel("rank")
-        plt.annotate(legend1, xy=(-12, -12), xycoords='axes points',
-                     size=14, ha='right', va='top',
-                     bbox=dict(boxstyle='round', fc='w'))
-        plt.annotate(legend2, xy=(-12, -12), xycoords='axes points',
-                     size=14, ha='right', va='top',
-                     bbox=dict(boxstyle='round', fc='w'))
-        plt.savefig(f"figures/scatter_plot_{relation}_{model_name}_{amount}.png", bbox_inches='tight')
+
+        props = dict(boxstyle='square', facecolor='white', alpha=0.5)
+
+        # place a text box in upper left in axes coords
+        plt.text(0.85, 0.95, legend, transform=plt.transAxes, fontsize=14, verticalalignment='top', horizontalalignment="right", bbox=props)
+
+        plt.savefig(f"figures/relation_specific_plots/scatter_plot_{relation}_{model_name}_{amount}.png", bbox_inches='tight')
 
         print(f", N = {n} ({filtered_n} visible).")
 
