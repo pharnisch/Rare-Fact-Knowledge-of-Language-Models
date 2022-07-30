@@ -62,8 +62,8 @@ def scatter():
 
         #legend = r"Pearson: $\rho="+f"{pearson}"+r"$ ($p="+f"{pearson_p}"+r"$)"+"\n"+"Spearman: $\rho="+f"{spearman}"+r"$ ($p="+f"{spearman_p}"+r"$)"
         legend = '\n'.join((
-            r'Pearson $\rho=%.4f$' % (pearson,),
-            r'Spearman $\rho=%.4f$' % (spearman,)))
+            r'Pearson $\rho=%.4f$ ($p=%.4f$)' % (pearson, pearson_p),
+            r'Spearman $\rho=%.4f$ ($p=%.4f$)' % (spearman, spearman_p)))
 
         import matplotlib.pyplot as plt
 
