@@ -60,82 +60,26 @@ def scatter():
         filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
         filtered_n = len(filtered_dp)
 
-        texts = []
-        texts.append(r"""
-    \begin{subfigure}[t]{0.45\textwidth}
-    \begin{adjustbox}{width=\linewidth, height=6cm}% rescale box
-        \begin{tikzpicture}
-        \begin{axis}[%
-            xticklabel style={rotate=-60},
-            xlabel={frequency},
-            xlabel near ticks,
-        """)
-        texts.append(f"ymax = {border_rank * 1.75},")
-        texts.append(r"""
-            %xmode = log,
-            ylabel={rank},
-            scatter/classes={%
-            a={mark=x,draw=black}}]
-        \addplot[scatter,only marks,%
-            scatter src=explicit symbolic]%
-        table[meta=label] {
-        x y label
-        """)
-        tmp = ""
-        for p in filtered_dp:
-            tmp += f"{p['frequency']} {p['rank']} a\n"
+        legend1 = f"Pearson: ρ={pearson} (p={pearson_p})"
+        legend2 = f"Spearman: ρ={spearman} (p={spearman_p})"
 
-        texts.append(tmp)
-        texts.append(r"""
-        };
-        """)
+        import matplotlib.pyplot as plt
 
-        texts.append(r"""
-        \coordinate (legend) at (axis description cs:0.97,0.97);
-        \end{axis}
-            \small{
-            \matrix [
-                draw,
-                matrix of nodes,
-                anchor=north east,
-            ] at (legend) {
-        """)
-        # texts.append(f"\\fbox{{{model_name}}}")
-        texts.append(r"""    
-                & \boldmath$\rho$ & \boldmath$p$ \\
-               \textbf{Pearson} 
-        """)
-        texts.append(
-            f"& {str(pearson)}  & {str(pearson_p)}  "
-        )
-        texts.append(r"""
-               \\
-               \textbf{Spearman}
-        """)
-        texts.append(
-            f"& {str(spearman)}  & {str(spearman_p)}  "
-        )
-        texts.append(r"""
-                   \\
-                };
-                }
-            \end{tikzpicture}
-    \end{adjustbox}%
-        """)
-        texts.append(f"\\subcaption{{Scatterplot of {model_name}, N = {n} ({filtered_n} visible).}}")
-        texts.append(r"""   
-    %\subcaption{Histogram.}
-    \end{subfigure}%
-    \hfill """)
+        var_x = [m["frequency"] for m in filtered_dp]
+        var_y = [m["rank"] for m in filtered_dp]
 
-        txt_all += "".join(texts)
+        plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
+        plt.xlabel("frequency")
+        plt.ylabel("rank")
+        plt.annotate(legend1, xy=(-12, -12), xycoords='axes points',
+                     size=14, ha='right', va='top',
+                     bbox=dict(boxstyle='round', fc='w'))
+        plt.annotate(legend2, xy=(-12, -12), xycoords='axes points',
+                     size=14, ha='right', va='top',
+                     bbox=dict(boxstyle='round', fc='w'))
+        plt.savefig(f"figures/scatter_plot_{relation}_{model_name}_{amount}.png", bbox_inches='tight')
 
-    txt_all += f"\\caption{{Visualizations for the correlation of relation type {relation}, between the prediction rank of the correct answer and the frequency of a fact. These evaluations contain a pre-trained \\ac{{bert}} version from Huggingface, as well as a \\ac{{bert}} and \\ac{{distilbert}} version that we trained ourselves (denoted with a \\glqq{{}}Cor\\grqq{{}} prefix).   }}"
-    txt_all += r"""
-\end{figure}
-    """
-
-    print(txt_all)
+        print(f", N = {n} ({filtered_n} visible).")
 
 if __name__ == "__main__":
     scatter()
