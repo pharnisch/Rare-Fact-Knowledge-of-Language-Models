@@ -19,7 +19,7 @@ def scatter():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
     parser.add_argument('relation', metavar="relation", type=str, help='Relation.')
-    parser.add_argument("amount", metavar="amount", type=float, default=0.97)
+    parser.add_argument("-a", "--amount", action='store', nargs='?', type=float, default=0.97)
     args = parser.parse_args()
     relation = args.relation
 
