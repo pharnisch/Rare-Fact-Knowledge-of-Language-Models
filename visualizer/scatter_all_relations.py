@@ -156,5 +156,7 @@ def scatter():
     plt.ylabel("rank")
     plt.savefig(f"figures/scatter_plot_ALL_{model_index}_{amount}.png", bbox_inches='tight')
 
+    print(f", N = {n} ({filtered_n} visible).")
+
 if __name__ == "__main__":
     scatter()
