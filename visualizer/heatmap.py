@@ -128,7 +128,7 @@ for prefix in prefixes:
     x_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "subject characters", "object characters"] # labels for x-axis
     y_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity"] # labels for x-axis
 
-    corr = np.corrcoef(np.asarray(all_dims))[:,:7]
+    corr = np.corrcoef(np.asarray(all_dims))[:7,:]
     print(corr)
     mask = np.zeros_like(corr)
     #mask[np.triu_indices_from(mask)] = True
