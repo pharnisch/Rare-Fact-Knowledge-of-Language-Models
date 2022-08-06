@@ -103,11 +103,11 @@ for prefix in prefixes:
     var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
     var_relation_len = [len(m["relation"]) for m in all_dp]
 
-    #var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
-    #var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
+    var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
+    var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
 
-    #var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
-    var_cos_sim = var_relative_freq
+    var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
+    #var_cos_sim = var_relative_freq
 
     all_dims = [
         var_freq,
@@ -138,14 +138,14 @@ for prefix in prefixes:
         f, ax = plt.subplots(figsize=(14, 10))
         ax = sns.heatmap(corr, mask=mask, vmin=-1, vmax=1, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 50 / np.sqrt(len(all_dims))})
         plt.xticks(
-            rotation=60,
+            rotation=30,
             horizontalalignment='right',
-            fontweight='light',
+            #fontweight='light',
             fontsize='x-large'
         )
         plt.yticks(
             horizontalalignment='right',
-            fontweight='light',
+            #fontweight='light',
             fontsize='x-large'
         )
 
