@@ -118,15 +118,15 @@ for prefix in prefixes:
         var_p_at_1,
         var_logits,
         var_cos_sim,
-        var_relation_len,
+        #var_relation_len,
         var_sub_label_len,
         var_obj_label_len,
     ]
 
     import matplotlib.pyplot as plt
 
-    x_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "relation characters", "subject characters", "object characters"] # labels for x-axis
-    y_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "relation characters", "subject characters", "object characters"] # labels for x-axis
+    x_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "subject characters", "object characters"] # labels for x-axis
+    y_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "subject characters", "object characters"] # labels for x-axis
 
     corr = np.corrcoef(np.asarray(all_dims))
     mask = np.zeros_like(corr)
