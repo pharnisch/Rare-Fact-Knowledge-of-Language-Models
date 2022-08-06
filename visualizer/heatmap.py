@@ -103,11 +103,10 @@ for prefix in prefixes:
     var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
     var_relation_len = [len(m["relation"]) for m in all_dp]
 
-    #var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
-    #var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
+    var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
+    var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
 
-    #var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
-    var_cos_sim = var_relative_freq
+    var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
 
     all_dims = [
         var_freq,
