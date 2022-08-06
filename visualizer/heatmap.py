@@ -103,11 +103,11 @@ for prefix in prefixes:
     var_obj_label_len = [len(m["obj_label"]) for m in all_dp]
     var_relation_len = [len(m["relation"]) for m in all_dp]
 
-    #var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
-    #var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
+    var_sub_embedding = [nlp(m["sub_label"]) for m in all_dp]
+    var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
 
-    #var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
-    var_cos_sim = var_relative_freq
+    var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
+    #var_cos_sim = var_relative_freq
 
     all_dims = [
         var_freq,
@@ -129,7 +129,6 @@ for prefix in prefixes:
     y_axis_labels = ["relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity"] # labels for x-axis
 
     corr = np.corrcoef(np.asarray(all_dims))[:7,:]
-    print(corr)
     mask = np.zeros_like(corr)
     #mask[np.triu_indices_from(mask)] = True
     #mask[np.diag_indices_from(mask)] = True
