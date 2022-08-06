@@ -71,6 +71,7 @@ for prefix in prefixes:
     elif prefix == prefixes[2]:
         model_name = "CorDISTILBERT"
 
+    print(f"Creating heatmap for {model_name} ...")
     all_dp = []
 
     for relation in relations:
@@ -106,7 +107,7 @@ for prefix in prefixes:
     #var_obj_embedding = [nlp(m["obj_label"]) for m in all_dp]
 
     #var_cos_sim = [s.similarity(o) for (s, o) in zip(var_sub_embedding, var_obj_embedding)]
-    var_cos_sim = var_freq
+    var_cos_sim = var_relative_freq
 
     all_dims = [
         var_freq,
@@ -130,6 +131,7 @@ for prefix in prefixes:
     corr = np.corrcoef(np.asarray(all_dims))
     mask = np.zeros_like(corr)
     #mask[np.triu_indices_from(mask)] = True
+    mask[np.diag_indices_from(mask)] = True
     with sns.axes_style("white"):
         f, ax = plt.subplots(figsize=(14, 10))
         ax = sns.heatmap(corr, mask=mask, vmin=-1, vmax=1, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 35 / np.sqrt(len(all_dims))})
