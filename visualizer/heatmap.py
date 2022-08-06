@@ -132,7 +132,9 @@ for prefix in prefixes:
     print(corr)
     mask = np.zeros_like(corr)
     #mask[np.triu_indices_from(mask)] = True
-    mask[np.diag_indices_from(mask)] = True
+    #mask[np.diag_indices_from(mask)] = True
+    for i in range(7):
+        mask[i,i] = True
     with sns.axes_style("white"):
         f, ax = plt.subplots(figsize=(14, 10))
         ax = sns.heatmap(corr, mask=mask, vmin=-1, vmax=1, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 35 / np.sqrt(len(all_dims))})
