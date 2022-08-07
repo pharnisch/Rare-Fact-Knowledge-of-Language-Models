@@ -60,5 +60,5 @@ with sns.axes_style("white"):
         #fontweight='light',
         fontsize='x-large'
     )
-
+    ax.set_yticklabels(labels=ax.get_yticklabels(), va='center')
     plt.savefig(f"figures/interpret.png", bbox_inches='tight')
