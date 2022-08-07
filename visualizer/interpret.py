@@ -9,7 +9,7 @@ model = transformer.model
 checkpoint = torch.load("models/CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth", map_location="cuda:0")
 import copy
 model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
-
+model.eval()
 
 
 from transformers_interpret import TokenClassificationExplainer
@@ -35,7 +35,7 @@ inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True
 output = model(**inputs, return_dict=True)
 logits = output.logits
 softmax = torch.nn.functional.softmax(logits, dim=-1)
-mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
+mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]
 mask_word = softmax[0, mask_index, :]
 
 # take all token predictions (30522 is the vocab_size for all transformers)
