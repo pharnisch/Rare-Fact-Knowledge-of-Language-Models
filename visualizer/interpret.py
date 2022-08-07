@@ -1,7 +1,7 @@
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
 import sys
-sys.path.append('../training')
+sys.path.append('/vol/fob-vol7/mi19/harnisph/rfk/training')
 from model_configs import TransformerType, Transformer
 transformer = Transformer.get_transformer(TransformerType["CorBert"], 12)
 tokenizer = transformer.tokenizer
@@ -11,11 +11,6 @@ import copy
 model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
 
 
-model_name = "distilbert-base-uncased-finetuned-sst-2-english"
-#model = AutoModelForSequenceClassification.from_pretrained(model_name)
-#tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-# With both the model and tokenizer initialized we are now able to get explanations on an example text.
 
 from transformers_interpret import TokenClassificationExplainer
 cls_explainer = TokenClassificationExplainer(
