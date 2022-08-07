@@ -1,11 +1,11 @@
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
 
-from rfk.training.model_configs import TransformerType, Transformer
+from training.model_configs import TransformerType, Transformer
 transformer = Transformer.get_transformer(TransformerType["CorBert"], 12)
 tokenizer = transformer.tokenizer
 model = transformer.model
-checkpoint = torch.load("rfk/models/CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth", map_location="cuda:0")
+checkpoint = torch.load("../models/CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth", map_location="cuda:0")
 import copy
 model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
 
