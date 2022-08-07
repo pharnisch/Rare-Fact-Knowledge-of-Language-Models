@@ -61,4 +61,4 @@ with sns.axes_style("white"):
         fontsize='x-large'
     )
 
-    plt.savefig(f"../figures/interpret.png", bbox_inches='tight')
+    plt.savefig(f"figures/interpret.png", bbox_inches='tight')
