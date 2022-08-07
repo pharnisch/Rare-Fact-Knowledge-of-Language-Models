@@ -64,8 +64,8 @@ y_axis_labels = ["relevance"]
 arr = np.asarray(all_dims)
 mask = np.zeros_like(arr)
 with sns.axes_style("white"):
-    f, ax = plt.subplots(figsize=(14, 10))
-    ax = sns.heatmap(arr, cbar=False, fmt="", mask=mask, vmin=-1, vmax=1, annot=np.asarray([tkn_texts]), xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 10 / np.sqrt(len(all_dims))})
+    f, ax = plt.subplots(figsize=(14, 2))
+    ax = sns.heatmap(arr, cbar=False, fmt="", square=True, mask=mask, vmin=-1, vmax=1, annot=np.asarray([tkn_texts]), xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 15 / np.sqrt(len(all_dims))})
     plt.xticks(
         rotation=0,
         horizontalalignment='right',
