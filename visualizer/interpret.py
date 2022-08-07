@@ -48,7 +48,7 @@ arr = np.asarray(all_dims)
 mask = np.zeros_like(arr)
 with sns.axes_style("white"):
     f, ax = plt.subplots(figsize=(14, 10))
-    ax = sns.heatmap(arr, mask=mask, vmin=-1, vmax=1, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 50 / np.sqrt(len(all_dims))})
+    ax = sns.heatmap(arr, cbar=False, mask=mask, vmin=-1, vmax=1, square=True, annot=True, xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 20 / np.sqrt(len(all_dims))})
     plt.xticks(
         rotation=0,
         horizontalalignment='right',
