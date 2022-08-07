@@ -1,7 +1,8 @@
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
-
-from rfk.training.model_configs import TransformerType, Transformer
+import sys
+sys.path.append('../training')
+from model_configs import TransformerType, Transformer
 transformer = Transformer.get_transformer(TransformerType["CorBert"], 12)
 tokenizer = transformer.tokenizer
 model = transformer.model
