@@ -29,6 +29,23 @@ word_attributions = cls_explainer(sent, ignored_indexes=ii)
 
 print(word_attributions)
 
+
+masked_sent = sent.replace("[MASK]", tokenizer.mask_token)
+inputs = tokenizer.encode_plus(masked_sent, return_tensors="pt", truncation=True)
+output = model(**inputs, return_dict=True)
+logits = output.logits
+softmax = torch.nn.functional.softmax(logits, dim=-1)
+mask_index = torch.where(inputs["input_ids"][0] == tokenizer.mask_token_id)[0]  # TODO:DOCUMENTATION, only first [MASK] used
+mask_word = softmax[0, mask_index, :]
+
+# take all token predictions (30522 is the vocab_size for all transformers)
+top = torch.topk(mask_word, tokenizer.vocab_size, dim=1)
+top_values = top[0][0]
+top_indices = top[1][0]
+
+print([tokenizer.decode([i]) for i in top_indices[:10]])
+
+
 import numpy as np
 np.random.seed(0)
 import seaborn as sns
