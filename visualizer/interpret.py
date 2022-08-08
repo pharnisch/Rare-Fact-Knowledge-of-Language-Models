@@ -78,7 +78,7 @@ for sent in sentences:
     mask = np.zeros_like(arr)
     with sns.axes_style("white"):
         f, ax = plt.subplots(figsize=(14, 2))
-        ax = sns.heatmap(arr, cbar=False, fmt="", square=True, mask=mask, vmin=-1, vmax=1, annot=np.asarray([tkn_texts]), xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 15 / np.sqrt(len(all_dims))})
+        ax = sns.heatmap(arr, cbar=False, fmt="", square=True, mask=mask, vmin=-1, vmax=1, annot=np.asarray([tkn_texts]), xticklabels=x_axis_labels, yticklabels=y_axis_labels, cmap="vlag", annot_kws={"size": 40 / np.sqrt(len(attrs))})
         plt.xticks(
             rotation=0,
             horizontalalignment='right',
