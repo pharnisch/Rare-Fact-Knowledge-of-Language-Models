@@ -6,7 +6,8 @@ from model_configs import TransformerType, Transformer
 transformer = Transformer.get_transformer(TransformerType["CorBert"], 12)
 tokenizer = transformer.tokenizer
 model = transformer.model
-model_name = "CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth"
+#model_name = "CorBert-12-1-4096-0.000500-9-1.359077-0.713-checkpoint.pth"
+model_name = "CorDistilBert-12-1.0-4096-0.000100-9-1.693901-0.6584-checkpoint.pth"
 checkpoint = torch.load(f"models/{model_name}", map_location="cuda:0")
 import copy
 model.load_state_dict(copy.deepcopy(checkpoint["model_state_dict"]))
@@ -44,7 +45,7 @@ for sent in sentences:
 
     word_attributions = cls_explainer(sent, ignored_indexes=ii)
 
-    print(word_attributions)
+    #print(word_attributions)
 
 
     masked_sent = sent.replace("[MASK]", tokenizer.mask_token)
@@ -108,5 +109,6 @@ for sent in sentences:
     print(text)
     texts += "\n"
     texts += text
+    texts += "\n"
 
 print(texts)
