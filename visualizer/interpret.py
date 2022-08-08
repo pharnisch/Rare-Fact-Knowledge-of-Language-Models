@@ -26,11 +26,11 @@ cls_explainer = TokenClassificationExplainer(
 #sent = "Munich shares border with [MASK]."
 sentences = [
     "A firestick is made of [MASK].",
-    "Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
+    #"Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
     "Munich shares border with [MASK].",
     "Bill Gates works for [MASK].",
     "Drew Brees plays in [MASK] position.",
-    "Northern Mariana Islands Football Association is a member of [MASK]."
+    "France is a member of [MASK]."
 ]
 for sent in sentences:
 
@@ -63,7 +63,7 @@ for sent in sentences:
     print([tokenizer.decode([i]) for i in top_indices[:10]])
 
 
-
+    word_attributions = word_attributions[1: -1] # remove [CLS] and [SEP]
     attrs = [val for (key, val) in list(word_attributions["[MASK]"]["attribution_scores"])]
     tkn_texts = [key for (key, val) in list(word_attributions["[MASK]"]["attribution_scores"])]
     all_dims = [attrs]
@@ -90,6 +90,6 @@ for sent in sentences:
             #fontweight='light',
             fontsize='x-large'
         )
-        ax.set(xticklabels=[])
+        ax.set(xticklabels=[], yticklabels=[])
         ax.set_xticklabels(labels=ax.get_xticklabels(), va='center')
         plt.savefig(f"figures/interpret_{sent[:20]}_{model_name}.png", bbox_inches='tight')
