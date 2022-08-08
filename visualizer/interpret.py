@@ -26,7 +26,8 @@ cls_explainer = TokenClassificationExplainer(
 #sent = "Munich shares border with [MASK]."
 sentences = [
     "A firestick is made of [MASK].",
-    #"Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
+    "Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
+    #"Born in [MASK], Lee was raised and educated in Brownsville, Texas .",
     "Munich shares border with [MASK].",
     "Bill Gates works for [MASK].",
     "Drew Brees plays in [MASK] position.",
@@ -93,3 +94,14 @@ for sent in sentences:
         ax.set(xticklabels=[], yticklabels=[])
         ax.set_xticklabels(labels=ax.get_xticklabels(), va='center')
         plt.savefig(f"figures/interpret_{sent[:20]}_{model_name}.png", bbox_inches='tight')
+
+    # LATEX section
+    text = ""
+    for i in range(attrs):
+        attr = attrs[i]
+        tkn = tkn_texts[i]
+        if attr < 0:
+            text += f"\\negrel{{{attr}}}{{{tkn}}}"
+        else:
+            text += f"\\posrel{{{attr}}}{{{tkn}}}"
+    print(text)
