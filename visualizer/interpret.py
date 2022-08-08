@@ -97,7 +97,7 @@ for sent in sentences:
 
     # LATEX section
     text = ""
-    for i in range(attrs):
+    for i in range(len(attrs)):
         attr = attrs[i]
         tkn = tkn_texts[i]
         if attr < 0:
