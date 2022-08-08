@@ -29,7 +29,7 @@ sentences = [
     "Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
     "Munich shares border with [MASK].",
     "Bill Gates works for [MASK].",
-    "Drew Brees plays in [MASK] position."
+    "Drew Brees plays in [MASK] position.",
     "Northern Mariana Islands Football Association is a member of [MASK]."
 ]
 for sent in sentences:
