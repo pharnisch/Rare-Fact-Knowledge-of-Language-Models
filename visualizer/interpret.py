@@ -22,7 +22,7 @@ cls_explainer = TokenClassificationExplainer(
     model,
     tokenizer)
 
-texts = []
+texts = ""
 #sent = "Munich shares border with [MASK]."
 sentences = [
     "A firestick is made of [MASK].",
@@ -101,13 +101,12 @@ for sent in sentences:
         attr = attrs[i]
         tkn = tkn_texts[i]
         if attr < 0:
-            text += f"\\negrel{{{round(attr, 0)}}}{{{tkn}}}"
+            text += f"\\negrel{{{abs(round(attr*100, 0))}}}{{{tkn}}}"
         else:
-            text += f"\\posrel{{{round(attr, 0)}}}{{{tkn}}}"
-    text.replace("#", "\\texttt{\\#}")
+            text += f"\\posrel{{{abs(round(attr*100, 0))}}}{{{tkn}}}"
+    text.replace("##", "\\texttt{\\#\\#}")
     print(text)
-    texts.append(texts)
+    texts += "\n"
+    texts += text
 
-for text in texts:
-    print()
-    print(text)
+print(texts)
