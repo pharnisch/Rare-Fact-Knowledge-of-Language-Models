@@ -27,7 +27,6 @@ cls_explainer = TokenClassificationExplainer(
 sentences = [
     "A firestick is made of [MASK].",
     "Corrsin was born on 3 April 1920 in [MASK], Pennsylvania .",
-    #"Born in [MASK], Lee was raised and educated in Brownsville, Texas .",
     "Munich shares border with [MASK].",
     "Bill Gates works for [MASK].",
     "Drew Brees plays in [MASK] position.",
@@ -62,7 +61,6 @@ for sent in sentences:
     top_indices = top[1][0]
 
     print([tokenizer.decode([i]) for i in top_indices[:10]])
-
 
     word_attributions = word_attributions[1: -1] # remove [CLS] and [SEP]
     attrs = [val for (key, val) in list(word_attributions["[MASK]"]["attribution_scores"])]
