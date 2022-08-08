@@ -62,9 +62,11 @@ for sent in sentences:
 
     print([tokenizer.decode([i]) for i in top_indices[:10]])
 
-    word_attributions = word_attributions[1: -1] # remove [CLS] and [SEP]
+
     attrs = [val for (key, val) in list(word_attributions["[MASK]"]["attribution_scores"])]
     tkn_texts = [key for (key, val) in list(word_attributions["[MASK]"]["attribution_scores"])]
+    attrs = attrs[1: -1]  # remove [CLS] and [SEP]
+    tkn_texts = tkn_texts[1: -1]  # remove [CLS] and [SEP]
     all_dims = [attrs]
 
 
