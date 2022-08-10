@@ -71,6 +71,7 @@ def scatter():
     args = parser.parse_args()
     #relation = args.relation
 
+    freq_type = "relative_frequency"
     for relation in relations:
         for model in prefixes:
             file_name = model + relation + suffix
@@ -81,6 +82,7 @@ def scatter():
                 model_name = "CorBERT"
             elif model == prefixes[2]:
                 model_name = "CorDISTILBERT"
+
 
             with open(f"{base_path}/metrics/standard/{file_name}", "r") as f:
                 json_text = f.read()
@@ -98,12 +100,12 @@ def scatter():
             border_index = int(n * amount)
             dp.sort(key=lambda x: x["rank"])
             border_rank = dp[border_index]["rank"]
-            dp.sort(key=lambda x: x["frequency"])
-            border_frequency = dp[border_index]["frequency"]
+            dp.sort(key=lambda x: x[freq_type])
+            border_frequency = dp[border_index][freq_type]
 
             y_max = border_rank * 1.35
 
-            filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
+            filtered_dp = [x for x in dp if x["rank"] <= border_rank and x[freq_type] <= border_frequency]
             filtered_n = len(filtered_dp)
 
             #legend = r"Pearson: $\rho="+f"{pearson}"+r"$ ($p="+f"{pearson_p}"+r"$)"+"\n"+"Spearman: $\rho="+f"{spearman}"+r"$ ($p="+f"{spearman_p}"+r"$)"
@@ -113,14 +115,14 @@ def scatter():
 
             import matplotlib.pyplot as plt
 
-            var_x = [m["frequency"] for m in filtered_dp]
+            var_x = [m[freq_type] for m in filtered_dp]
             var_y = [m["rank"] for m in filtered_dp]
 
             fig, ax = plt.subplots()
 
             ax.scatter(var_x, var_y, alpha=1, marker="x", color="black")
             ax.set_ylim([None, y_max])
-            plt.xlabel("frequency")
+            plt.xlabel(freq_type)
             plt.ylabel("rank")
 
             props = dict(boxstyle='square', facecolor='white', alpha=0.5)
@@ -128,7 +130,7 @@ def scatter():
             # place a text box in upper left in axes coords
             ax.text(0.95, 0.95, legend, transform=ax.transAxes, fontsize=14, verticalalignment='top', horizontalalignment="right", bbox=props)
 
-            plt.savefig(f"figures/relation_specific_plots/scatter_plot_{relation}_{model_name}_{n}_{filtered_n}.png", bbox_inches='tight')
+            plt.savefig(f"figures/relation_specific_plots/{freq_type}_scatter_plot_{relation}_{model_name}_{n}_{filtered_n}.png", bbox_inches='tight')
 
 if __name__ == "__main__":
     scatter()
