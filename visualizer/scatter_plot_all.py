@@ -71,7 +71,7 @@ def scatter():
     args = parser.parse_args()
     #relation = args.relation
 
-    freq_type = "relative_frequency"
+    freq_type = "frequency"
     for relation in relations:
         for model in prefixes:
             file_name = model + relation + suffix

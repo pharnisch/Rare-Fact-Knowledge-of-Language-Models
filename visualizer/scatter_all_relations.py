@@ -63,6 +63,9 @@ relations = [
 
 suffix = "_False_False_0_100000000_0_1_1000"
 
+freq_type = "relative_frequency"
+
+
 def scatter():
     # PARSE CONSOLE ARGUMENTS
     parser = argparse.ArgumentParser(description='Evaluation of pretrained Language Models.')
@@ -91,10 +94,10 @@ def scatter():
     border_index = int(n * amount)
     dp.sort(key=lambda x: x["rank"])
     border_rank = dp[border_index]["rank"]
-    dp.sort(key=lambda x: x["frequency"])
-    border_frequency = dp[border_index]["frequency"]
+    dp.sort(key=lambda x: x[freq_type])
+    border_frequency = dp[border_index][freq_type]
 
-    filtered_dp = [x for x in dp if x["rank"] <= border_rank and x["frequency"] <= border_frequency]
+    filtered_dp = [x for x in dp if x["rank"] <= border_rank and x[freq_type] <= border_frequency]
     filtered_n = len(filtered_dp)
 
     texts = []
@@ -120,7 +123,7 @@ def scatter():
             """)
     tmp = ""
     for p in filtered_dp:
-        tmp += f"{p['frequency']} {p['rank']} a\n"
+        tmp += f"{p[freq_type]} {p['rank']} a\n"
 
     texts.append(tmp)
     texts.append(r"""
@@ -148,13 +151,13 @@ def scatter():
     import numpy as np
     import matplotlib.pyplot as plt
 
-    var_x = [m["frequency"] for m in filtered_dp]
+    var_x = [m[freq_type] for m in filtered_dp]
     var_y = [m["rank"] for m in filtered_dp]
 
     plt.scatter(var_x, var_y, alpha=1, marker="x", color="black")
-    plt.xlabel("frequency")
+    plt.xlabel(freq_type)
     plt.ylabel("rank")
-    plt.savefig(f"figures/scatter_plot_ALL_{model_index}_{amount}.png", bbox_inches='tight')
+    plt.savefig(f"figures/{freq_type}_scatter_plot_ALL_{model_index}_{amount}.png", bbox_inches='tight')
 
     print(f", N = {n} ({filtered_n} visible).")
 
