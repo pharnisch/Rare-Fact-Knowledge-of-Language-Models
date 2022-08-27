@@ -1,4 +1,4 @@
-# Evaluating Knowledge of Rare Facts in Language Models
+# Evaluating the Sample-Efficiency of Language Models for Learning Factual Knowledge (Master Thesis Project)
 
 This repository contains a framework to analyze the capability of a LM to learn rare fact knowledge.
 It is part of the masters thesis for computer science studies of Philipp Lars Harnisch.
@@ -17,7 +17,7 @@ pip3 install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu
 ```
 python setup.py load-and-clean
 ```
-Data files containing each a maximum of texts of 10.000 Wikipedia articles, and are stored under "/training/data/wikipedia/20200501.en/".
+Data files containing each a maximum of texts of 10.000 Wikipedia articles, and are stored under "/training/data/wikipedia/20200501.en/". This makes lazy-loading of the data possible within processing loops like the pre-training or statistics calculations.
 
 ### (Pre)Training
 
