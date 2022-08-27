@@ -80,9 +80,6 @@ spacy-transformers==1.1.5
 srsly==2.4.4
 thinc==8.1.0
 tokenizers==0.11.6
-torch==1.10.2+cu113
-torchaudio==0.10.2+cu113
-torchvision==0.11.3+cu113
 tqdm==4.62.3
 traitlets==4.3.3
 transformers==4.17.0
