@@ -9,6 +9,11 @@ It is part of the masters thesis for computer science studies of Philipp Lars Ha
 
 ## Running the Code
 
+### Requirements
+
+Python 3.6.15
+pip 21.3.1
+
 ### Installing required packages
 
 ```
