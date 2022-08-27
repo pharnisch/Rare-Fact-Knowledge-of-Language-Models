@@ -1,6 +1,10 @@
 # Evaluating the Sample-Efficiency of Language Models for Learning Factual Knowledge (Master Thesis Project)
 
-This repository contains a framework to analyze the capability of a LM to learn rare fact knowledge.
+This repository contains a framework to analyze the capability of a LM to learn rare fact knowledge. The code includes pipelines to
+- i) download and clean the pre-training corpus (English Wikipedia),
+- ii) train Hugging Face transformer language models, 
+- iii) estimate frequencies of facts from the knowledge bases ConceptNet, Google-RE and T-REx, 
+- iv) calculate evaluation results like correlation coefficients between estimated fact frequencies and the respective model's precision at one score.
 It is part of the masters thesis for computer science studies of Philipp Lars Harnisch.
 
 ## Running the Code
