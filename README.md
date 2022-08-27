@@ -48,7 +48,7 @@ For example:
 ```
 python train.py CorBert
 ```
-A checkpoint is saved for every epoch in directory ```/models```. The command searches for identical checkpoints and will continue the latest model state if there is any. Possible options for model_name are ```CorBert```, ```CorRoberta```, ```CorElectra``` and ```CorDistilBert```. Please see ```python train.py --help``` for more options. 
+A checkpoint is saved for every epoch in directory ```models```. The command searches for identical checkpoints and will continue the latest model state if there is any. Possible options for model_name are ```CorBert```, ```CorRoberta```, ```CorElectra``` and ```CorDistilBert```. Please see ```python train.py --help``` for more options. 
 
 ### Evaluation
 
@@ -59,11 +59,20 @@ For example:
 ```
 python eval.py BERT-6-1-16-0.0001-20-2.503282-checkpoint.pth --max-questions-per-file=-1
 ```
-This command creates a json-file in directory ```/metrics/standard``` containing all single fact data points of the evaluated relation type, and some aggregations like the Pearson and Spearman correlation coefficient. ```--k=1``` refers to the implementation of the precision at one metric which can be changed to other upper rank boundaries to count successful predictions. ```--by-example``` enables a probing enhancement method of prepending 10 randomly selected examples of the same relation type. With ```--min-quantile``` and  ```--max-quantile``` it can be controlled how rare or common the fact examples should be, the quantile refers the the dimension of estimated fact frequencies.
+This command creates a json-file in directory ```metrics/standard``` containing all single fact data points of the evaluated relation type, and some aggregations like the Pearson and Spearman correlation coefficient. ```--k=1``` refers to the implementation of the precision at one metric which can be changed to other upper rank boundaries to count successful predictions. ```--by-example``` enables a probing enhancement method of prepending 10 randomly selected examples of the same relation type. With ```--min-quantile``` and  ```--max-quantile``` it can be controlled how rare or common the fact examples should be, the quantile refers the the dimension of estimated fact frequencies.
 Please see ```python eval.py --help``` for more options.
 
 #### Visualization
 
+```
+python visualizer/scatter_plot_all.py
+```
+This creates scatter plots for all relation types as ```figures/relation_specific_plots/frequency_scatter_plot_<relation>_<model_name>_<n>_<filtered_n>.png``` where n refers to all data points of the evaluation file and filtered_n refers to the data points within the scatter plot (we hide the highest 3 % of both dimensions for a better visualization of most points). These images are generated for all full model names of the scripts prefixes list.
+
+```
+python visualizer/heatmap.py
+```
+This creates a heatmap of Pearson correlations on the dimensions "relation frequency", "subject frequency", "object frequency", "rank", "p@1", "logits", "cosine similarity", "subject characters" and "object characters" as ```figures/heatmap_<model_name>.png``` for all full model names of the scripts prefixes list.
 
 ## Further Information
 
