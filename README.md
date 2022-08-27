@@ -43,14 +43,19 @@ e.g.:
 ```
 python train.py CorBert
 ```
-A checkpoint is saved for every epoch. The command searches for identical checkpoints and will continue the latest model state if there is any. Possible options for model_name are ```CorBert```, ```CorRoberta```, ```CorElectra``` and ```CorDistilBert```. Please see ```python train.py --help``` for more options. 
+A checkpoint is saved for every epoch in directory ```/models```. The command searches for identical checkpoints and will continue the latest model state if there is any. Possible options for model_name are ```CorBert```, ```CorRoberta```, ```CorElectra``` and ```CorDistilBert```. Please see ```python train.py --help``` for more options. 
 
 ### Evaluation
 
 ```
+python eval.py <relation_file> [--seed=1337] [--k=1] [--max-questions-per-file=100] [--by-example] [--min-quantile=0] [--max-quantile=1]
+```
+e.g.:
+```
 python eval.py BERT-6-1-16-0.0001-20-2.503282-checkpoint.pth --max-questions-per-file=-1
 ```
-This command creates a json-file containing all single fact data points of the evaluated relation type, and some aggregations like the Pearson and Spearman correlation coefficient. Please see ```python eval.py --help``` for more options.
+This command creates a json-file in directory ```/metrics/standard``` containing all single fact data points of the evaluated relation type, and some aggregations like the Pearson and Spearman correlation coefficient. ```--k=1``` refers to the implementation of the precision at one metric which can be changed to other upper rank boundaries to count successful predictions. ```--by-example``` enables a probing enhancement method of prepending 10 randomly selected examples of the same relation type. With ```--min-quantile``` and  ```--max-quantile``` it can be controlled how rare or common the fact examples should be, the quantile refers the the dimension of estimated fact frequencies.
+Please see ```python eval.py --help``` for more options.
 
 #### Visualization
 
