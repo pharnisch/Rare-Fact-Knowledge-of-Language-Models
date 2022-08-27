@@ -7,7 +7,7 @@ import training
 
 def load_and_clean():
     dataset_name = "wikipedia"
-    dataset_version = "20200501.en"
+    dataset_version = "20220301.en"
     dataset = load_dataset(dataset_name, dataset_version)
 
     mod_path = Path(training.__file__).parent.parent
