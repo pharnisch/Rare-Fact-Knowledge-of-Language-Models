@@ -5,6 +5,7 @@ This repository contains a framework to analyze the capability of a LM to learn 
 - ii) train Hugging Face transformer language models, 
 - iii) estimate frequencies of facts from the knowledge bases ConceptNet, Google-RE and T-REx, 
 - iv) calculate evaluation results like correlation coefficients between estimated fact frequencies and the respective model's precision at one score.
+
 It is part of the masters thesis for computer science studies of Philipp Lars Harnisch.
 
 ## Running the Code
