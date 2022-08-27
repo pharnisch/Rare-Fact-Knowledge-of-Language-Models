@@ -1,6 +1,6 @@
 # Evaluating the Sample-Efficiency of Language Models for Learning Factual Knowledge (Master Thesis Project)
 
-This repository contains a framework to analyze the capability of a LM to learn rare fact knowledge. The code includes pipelines to
+This repository contains a framework to analyze the capability of a LM to learn rare fact knowledge. In this context, the term fact refers to commonsense or factual knowledge in the form of a subject-relation-object triple. The code includes pipelines to
 - i) download and clean the pre-training corpus (English Wikipedia),
 - ii) train Hugging Face transformer language models, 
 - iii) estimate frequencies of facts from the knowledge bases ConceptNet, Google-RE and T-REx, 
