@@ -24,7 +24,6 @@ filelock==3.4.0
 frozenlist==1.2.0
 fsspec==2021.11.1
 grapheme==0.6.0
-huggingface-hub==0.4.0
 idna==3.3
 idna-ssl==1.1.0
 immutables==0.17
