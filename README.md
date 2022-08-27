@@ -28,7 +28,9 @@ Data files containing each a maximum of texts of 10.000 Wikipedia articles, and 
 #### Tokenizer Model
 ```
 python setup.py train-tokenizer <tokenizer_name>
+```
 e.g.:
+```
 python setup.py train-tokenizer word_piece
 ```
 Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) and ```word_piece``` (e.g. for BERT).
@@ -36,7 +38,9 @@ Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) 
 #### Transformer Language Model
 ```
 python train.py <model_name> [--fresh-start] [--no-eval] [--seed=1337] [--epochs=10] [--learning-rate=0.001] [--cuda-index=0] [--batch_size=16] [--num-hidden-layers=12] [--training-data-rate=1] [--accumulated_batches=256]
+```
 e.g.:
+```
 python train.py CorBert
 ```
 A checkpoint is saved for every epoch. The command searches for identical checkpoints and will continue the latest model state if there is any. Possible options for model_name are ```CorBert```, ```CorRoberta```, ```CorElectra``` and ```CorDistilBert```. Please see ```python train.py --help``` for more options. 
