@@ -63,6 +63,7 @@ This command creates a json-file in directory ```metrics/standard``` containing 
 Please see ```python eval.py --help``` for more options.
 
 #### Visualization
+Visualization scripts are not polished yet and contain some static information. Thus, they are lacking flexibility in terms of console arguments that can control the evaluated model, for instance. 
 
 ```
 python visualizer/scatter_plot_all.py
