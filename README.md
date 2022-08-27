@@ -11,8 +11,8 @@ It is part of the masters thesis for computer science studies of Philipp Lars Ha
 
 ### Requirements
 
-Python 3.6.15
-pip 21.3.1
+- Python 3.6.15
+- pip 21.3.1
 
 ### Installing required packages
 
@@ -34,7 +34,7 @@ Data files containing each a maximum of texts of 10.000 Wikipedia articles, and 
 ```
 python setup.py train-tokenizer <tokenizer_name>
 ```
-e.g.:
+For example:
 ```
 python setup.py train-tokenizer word_piece
 ```
@@ -44,7 +44,7 @@ Possible options for tokenizer_name are ```byte_level_bpe``` (e.g. for RoBERTa) 
 ```
 python train.py <model_name> [--fresh-start] [--no-eval] [--seed=1337] [--epochs=10] [--learning-rate=0.001] [--cuda-index=0] [--batch_size=16] [--num-hidden-layers=12] [--training-data-rate=1] [--accumulated_batches=256]
 ```
-e.g.:
+For example:
 ```
 python train.py CorBert
 ```
@@ -55,7 +55,7 @@ A checkpoint is saved for every epoch in directory ```/models```. The command se
 ```
 python eval.py <relation_file> [--seed=1337] [--k=1] [--max-questions-per-file=100] [--by-example] [--min-quantile=0] [--max-quantile=1]
 ```
-e.g.:
+For example:
 ```
 python eval.py BERT-6-1-16-0.0001-20-2.503282-checkpoint.pth --max-questions-per-file=-1
 ```
